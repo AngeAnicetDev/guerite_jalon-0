@@ -1,0 +1,560 @@
+<title>Demo Logistics — Maquettes V0</title>
+<meta name="description" content="Jalon 0 — maquette Paramètres : seuils, objectifs et règles éditables, valeurs à définir et historique des modifications.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#eef1ef;
+    --surface:#ffffff;
+    --surface-2:#e3e8e5;
+    --surface-3:#d8ded9;
+    --ink:#1a211f;
+    --ink-dim:#59635f;
+    --ink-faint:#8a938e;
+    --border:#c7cfca;
+    --border-strong:#aab3ad;
+    --accent:#b97a17;
+    --accent-ink:#5a3c0a;
+    --accent-soft:#f3e2c2;
+
+    --st-planifiee:#6b746f;
+    --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#3a6ea8;
+    --st-detectee-bg:#dde8f3;
+    --st-rapprochee:#2f8f7a;
+    --st-rapprochee-bg:#dcefea;
+    --st-proposee:#7a5cb0;
+    --st-proposee-bg:#e9e2f5;
+    --st-validee:#3f8b52;
+    --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b;
+    --st-anomalie-bg:#f8dede;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
+
+    --radius-sm:7px;
+    --radius-md:10px;
+    --radius-lg:14px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121613;
+      --surface:#181e1a;
+      --surface-2:#202722;
+      --surface-3:#2a322b;
+      --ink:#e8ece9;
+      --ink-dim:#a3aca6;
+      --ink-faint:#707972;
+      --border:#323b34;
+      --border-strong:#454f47;
+      --accent:#e0a13c;
+      --accent-ink:#1c1305;
+      --accent-soft:#3a2c11;
+
+      --st-planifiee:#a3aca6;
+      --st-planifiee-bg:#242b26;
+      --st-detectee:#7ba7d8;
+      --st-detectee-bg:#1c2a38;
+      --st-rapprochee:#6fc4ac;
+      --st-rapprochee-bg:#16302a;
+      --st-proposee:#b39cdd;
+      --st-proposee-bg:#291f3a;
+      --st-validee:#7bc492;
+      --st-validee-bg:#17301e;
+      --st-anomalie:#e58080;
+      --st-anomalie-bg:#3a1a1a;
+
+      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121613;
+    --surface:#181e1a;
+    --surface-2:#202722;
+    --surface-3:#2a322b;
+    --ink:#e8ece9;
+    --ink-dim:#a3aca6;
+    --ink-faint:#707972;
+    --border:#323b34;
+    --border-strong:#454f47;
+    --accent:#e0a13c;
+    --accent-ink:#1c1305;
+    --accent-soft:#3a2c11;
+
+    --st-planifiee:#a3aca6;
+    --st-planifiee-bg:#242b26;
+    --st-detectee:#7ba7d8;
+    --st-detectee-bg:#1c2a38;
+    --st-rapprochee:#6fc4ac;
+    --st-rapprochee-bg:#16302a;
+    --st-proposee:#b39cdd;
+    --st-proposee-bg:#291f3a;
+    --st-validee:#7bc492;
+    --st-validee-bg:#17301e;
+    --st-anomalie:#e58080;
+    --st-anomalie-bg:#3a1a1a;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+    --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
+  .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
+  a{ color:inherit; }
+  button{ font:inherit; }
+
+  /* ---------- maquette banner ---------- */
+  .maquette-banner{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
+    padding:8px 16px; border-bottom:1px solid var(--border);
+  }
+  .mb-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent-ink); background:var(--accent-soft);
+    border-radius:999px; padding:3px 9px;
+  }
+
+  /* ---------- shell header / tabs ---------- */
+  .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
+  .brand-row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
+  .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
+  .logo-mark::before{ top:0; background:var(--accent); }
+  .logo-mark::after{ bottom:0; background:var(--ink); opacity:.82; }
+  .brand-text{ display:flex; flex-direction:column; gap:1px; }
+  .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
+  .brand-sub{ color:var(--ink-faint); font-size:12px; }
+  .jalon-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
+    letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:4px 11px;
+  }
+
+  .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
+  .tab{
+    display:flex; align-items:center; gap:8px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
+    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:default;
+  }
+  .tab.done{ color:var(--ink-dim); }
+  .tab.active{ color:var(--accent-ink); background:var(--accent-soft); }
+  .badge-soon{
+    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
+    letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:2px 7px;
+  }
+
+  /* ---------- screen header ---------- */
+  .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
+  .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
+  .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:78ch; margin-top:6px; }
+
+  .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
+  .spacer{ flex:1 1 auto; }
+
+  .controls-bar{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    margin:20px 0 20px 0; padding:14px 16px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
+  }
+  .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{ display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 13px 6px 11px; }
+  .chip .n{ font-family:"IBM Plex Mono", monospace; font-weight:500; font-size:13.5px; }
+  .chip .lbl{ font-size:11.5px; color:var(--ink-dim); }
+  .chip.warn{ background:var(--st-proposee-bg); border-color:transparent; }
+  .chip.warn .n, .chip.warn .lbl{ color:var(--st-proposee); }
+  .chip.faint{ background:transparent; border-style:dashed; }
+  .chip.faint .n, .chip.faint .lbl{ color:var(--ink-faint); }
+
+  /* ---------- layout ---------- */
+  .pr-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start; }
+  @media (max-width:980px){ .pr-grid{ grid-template-columns:1fr; } }
+  .col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
+
+  .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; }
+  .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
+  .panel-sub{ font-size:11px; color:var(--ink-faint); }
+  .panel-lede{ font-size:12.5px; color:var(--ink-dim); margin:8px 18px 0 18px; max-width:82ch; }
+  .panel-body{ padding:14px 18px 18px 18px; }
+
+  /* ---------- editable parameters ---------- */
+  .param-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px 20px; }
+  .param-item{ display:flex; flex-direction:column; gap:6px; }
+  .param-label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); }
+  .param-input-row{ display:flex; align-items:center; gap:8px; }
+  input[type="number"], input[type="time"], input[type="text"].param-text{
+    font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    padding:7px 10px; min-height:34px; width:100%; max-width:120px;
+    transition:border-color .12s ease, box-shadow .12s ease;
+  }
+  input[type="number"]{ max-width:84px; }
+  input:hover{ border-color:var(--ink-faint); }
+  input:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .param-unit{ font-size:12px; color:var(--ink-faint); white-space:nowrap; }
+  .param-meta{ font-size:10.5px; color:var(--ink-faint); }
+  .param-meta a{ text-decoration:underline; text-decoration-style:dotted; }
+
+  .tbd-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
+    color:var(--ink-faint); background:transparent; border:1.5px dashed var(--border-strong);
+    border-radius:999px; padding:4px 11px; width:fit-content;
+  }
+
+  .info-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 22px; }
+  .info-item dt{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 3px 0; }
+  .info-item dd{ margin:0; font-size:13.5px; color:var(--ink); }
+
+  .proposal-note{
+    background:var(--st-proposee-bg); border:1px dashed color-mix(in srgb, var(--st-proposee) 55%, var(--border));
+    border-radius:var(--radius-md); padding:12px 14px;
+  }
+  .proposal-label{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--st-proposee); margin:0 0 5px 0;
+  }
+  .proposal-note p{ margin:0; font-size:12.5px; color:var(--ink-dim); }
+
+  .tbd-note{
+    background:var(--surface-2); border:1px dashed var(--border-strong);
+    border-radius:var(--radius-md); padding:12px 14px;
+  }
+  .tbd-note p{ margin:6px 0 0 0; font-size:12px; color:var(--ink-dim); }
+
+  .rule-note{ font-size:12.5px; color:var(--ink-dim); }
+  .rule-note b{ color:var(--ink); }
+
+  /* ---------- historique ---------- */
+  .history-list{ display:flex; flex-direction:column; gap:10px; }
+  .history-item{ padding:11px 13px; border-radius:var(--radius-md); background:var(--surface-2); border:1px solid var(--border); }
+  .history-param{ font-weight:600; font-size:13px; margin:0 0 5px 0; }
+  .history-change{ font-size:12.5px; }
+  .history-change .old{ color:var(--ink-faint); text-decoration:line-through; }
+  .history-change .arrow{ color:var(--ink-faint); margin:0 6px; }
+  .history-change .new{ color:var(--st-validee); font-weight:600; }
+  .history-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:5px; }
+
+  /* ---------- legend & footnote ---------- */
+  .legend{
+    margin-top:20px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+    padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim);
+  }
+  .legend-group{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .legend-title{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px; }
+  .legend-swatch{ display:inline-flex; align-items:center; gap:6px; font-size:12px; }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+  .legend-dot.ok{ background:var(--st-validee); }
+  .legend-dot.tbd{ background:transparent; border:1.5px dashed var(--border-strong); }
+  .legend-dot.proposal{ background:var(--st-proposee); }
+
+  .footnote{
+    margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
+    color:var(--ink-dim); font-size:12.5px; max-width:92ch;
+  }
+  .footnote .fn-badge{
+    flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
+  }
+  .footnote b{ color:var(--ink); }
+  .footnote p{ margin:0 0 8px 0; }
+  .footnote p:last-child{ margin-bottom:0; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — données fictives, wireframe à valider avant tout développement.</div>
+
+<header class="shell-header">
+  <div class="brand-row">
+    <div class="brand">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <span class="brand-mark">Demo Logistics</span>
+        <span class="brand-sub">Console opérations — Transport de conteneurs</span>
+      </div>
+    </div>
+    <span class="jalon-tag">Jalon 0 · Maquettes</span>
+  </div>
+  <nav class="tabs" aria-label="Écrans du jalon 0">
+    <div class="tab done">Planning des opérations</div>
+    <div class="tab done">File de validation</div>
+    <div class="tab done">Live tracking</div>
+    <div class="tab done">Fiche conteneur</div>
+    <div class="tab done">Rapport de shift</div>
+    <div class="tab active">Paramètres</div>
+  </nav>
+</header>
+
+<main class="screen">
+  <div class="screen-title-row">
+    <div>
+      <h1 class="screen-title">Paramètres</h1>
+      <p class="screen-caption">Tout seuil, objectif et règle est une donnée en base, éditable ici — jamais en dur. Un changement ne réécrit pas le passé : les shifts, rapports et alertes déjà générés restent calculés avec la valeur qui était en vigueur à leur date. Cette maquette ne couvre que les seuils/objectifs/règles ; les référentiels (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) sont hors périmètre de cet écran.</p>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="stat-chips">
+      <div class="chip"><span class="n num">11</span><span class="lbl">paramètres validés</span></div>
+      <div class="chip warn"><span class="n num">4</span><span class="lbl">à définir / proposition</span></div>
+      <div class="chip faint"><span class="lbl">preset</span><span class="n">TRANSPORT</span></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat-chips">
+      <div class="chip"><span class="n num">2</span><span class="lbl">modifications historisées</span></div>
+    </div>
+  </div>
+
+  <div class="pr-grid">
+
+    <div class="col">
+
+      <!-- Shifts et horaires -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Shifts et horaires</h2>
+          <span class="panel-sub">SPEC_PRESET_TRANSPORT §6</span>
+        </div>
+        <div class="panel-body">
+          <div class="param-grid">
+            <div class="param-item">
+              <span class="param-label">Shift jour</span>
+              <div class="param-input-row">
+                <input type="time" value="06:00"> <span class="param-unit">→</span> <input type="time" value="18:00">
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Shift nuit</span>
+              <div class="param-input-row">
+                <input type="time" value="18:00"> <span class="param-unit">→</span> <input type="time" value="06:00">
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Dépassement compté 2ᵉ shift</span>
+              <div class="param-input-row">
+                <input type="number" value="5"> <span class="param-unit">heures après la fin du shift</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Heure de référence — Nord</span>
+              <div class="param-input-row">
+                <input type="time" value="09:00"> <span class="param-unit">contrainte légale de circulation</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Heure de référence — Sud</span>
+              <div class="param-input-row">
+                <input type="time" value="07:00"> <span class="param-unit">opérationnelle</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Alerte retard début de shift</span>
+              <div class="param-input-row">
+                <input type="number" value="30"> <span class="param-unit">min après l'heure de référence</span>
+              </div>
+              <span class="param-meta">Modifié le 19/07/2026 — <a href="#historique">voir l'historique</a></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Objectifs de rotation -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Objectifs de rotation</h2>
+          <span class="panel-sub">par famille × zone</span>
+        </div>
+        <p class="panel-lede">Paramètres par famille × zone, modifiables sans code et historisés : un changement d'objectif n'affecte que les shifts à venir.</p>
+        <div class="panel-body">
+          <div class="param-grid">
+            <div class="param-item">
+              <span class="param-label">Livraison-Récup — Nord</span>
+              <div class="param-input-row">
+                <input type="number" value="5"> <span class="param-unit">rotations / jour</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Livraison-Récup — Sud</span>
+              <div class="param-input-row">
+                <input type="number" value="3"> <span class="param-unit">rotations / jour</span>
+              </div>
+              <span class="param-meta">Modifié le 15/07/2026 — <a href="#historique">voir l'historique</a></span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Transfert (Nord ↔ Sud)</span>
+              <div class="param-input-row">
+                <input type="number" value="3"> <span class="param-unit">rotations / jour</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <dl class="info-grid" style="grid-template-columns:1fr; gap:0;">
+                <div class="info-item">
+                  <dt>Mission client</dt>
+                  <dd>Défini par mission — pas un seuil global, réglé à la création de chaque mission client.</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Alertes chauffeur / mission -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Alertes chauffeur / mission</h2>
+          <span class="panel-sub">cahier des charges §7.2</span>
+        </div>
+        <div class="panel-body">
+          <div class="param-grid">
+            <div class="param-item">
+              <span class="param-label">Survitesses</span>
+              <div class="param-input-row">
+                <input type="number" value="3"> <span class="param-unit">événements / shift</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Camion muet</span>
+              <div class="param-input-row">
+                <input type="number" value="2"> <span class="param-unit">heures sans émission</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">6ᵉ jour consécutif</span>
+              <div class="param-input-row">
+                <input type="number" value="6"> <span class="param-unit">jours de travail consécutifs</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Accélérations rapides / freinages brusques</span>
+              <span class="tbd-badge">À définir</span>
+            </div>
+          </div>
+
+          <div class="tbd-note" style="margin-top:16px;">
+            <p><b>Accélérations / freinages brusques</b> — seuils à définir avec le fournisseur télématique (SPEC_PRESET_TRANSPORT §6). Aucune valeur de départ n'est donnée dans les documents.</p>
+          </div>
+
+          <div class="proposal-note" style="margin-top:12px;">
+            <p class="proposal-label">Proposition à valider</p>
+            <p><b>Modalité de l'alerte faible rotation</b> — contrôle continu au prorata du temps écoulé pendant le shift, pour alerter pendant qu'il est encore temps d'agir. Non tranchée (cahier des charges §7.2, question ouverte §9.2).</p>
+          </div>
+
+          <p class="rule-note" style="margin-top:12px;"><b>Identité chauffeur</b> — règle de croisement (iButton × guérite × tracking, caméra à terme), pas un seuil numérique : toute divergence déclenche une alerte.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="col">
+
+      <!-- Alertes conteneur -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Alertes conteneur</h2>
+          <span class="panel-sub">cahier des charges Conteneurs §5</span>
+        </div>
+        <p class="panel-lede">Aucune valeur de départ n'est fournie pour ces trois seuils dans les documents — affichés « à définir » plutôt qu'inventés.</p>
+        <div class="panel-body">
+          <div class="param-grid">
+            <div class="param-item">
+              <span class="param-label">Séjour long sur site</span>
+              <span class="tbd-badge">À définir</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Conteneur « perdu »</span>
+              <span class="tbd-badge">À définir</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Vide non restitué</span>
+              <span class="tbd-badge">À définir</span>
+            </div>
+          </div>
+          <div class="tbd-note" style="margin-top:16px;">
+            <p><b>Séjour long sur site</b> — le mécanisme prévu est un seuil par défaut <i>plus</i> un seuil par armateur (les franchises detention/demurrage diffèrent). Valeurs réelles à fournir (question ouverte §9.2 du cahier Conteneurs).</p>
+            <p><b>Conteneur « perdu »</b> et <b>vide non restitué</b> — même logique « > N jours », N non défini.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Historique -->
+      <section class="panel" id="historique">
+        <div class="panel-head">
+          <h2 class="panel-title">Historique des modifications</h2>
+          <span class="panel-sub">2 entrées</span>
+        </div>
+        <p class="panel-lede">Un changement de paramètre ne réécrit pas le passé (cahier des charges §3, critère d'acceptation §10.5) : les shifts déjà clôturés restent calculés avec la valeur en vigueur à leur date.</p>
+        <div class="panel-body">
+          <div class="history-list">
+            <div class="history-item">
+              <p class="history-param">Objectif Livraison-Récup — Sud</p>
+              <p class="history-change"><span class="old num">4</span><span class="arrow">→</span><span class="new num">3</span> rotations / jour</p>
+              <p class="history-meta">Effectif depuis le 16/07/2026 · modifié le 15/07/2026 par le gérant</p>
+            </div>
+            <div class="history-item">
+              <p class="history-param">Alerte retard début de shift</p>
+              <p class="history-change"><span class="old num">45</span><span class="arrow">→</span><span class="new num">30</span> min</p>
+              <p class="history-meta">Effectif depuis le 20/07/2026 · modifié le 19/07/2026 par le gérant</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <div class="legend-group">
+      <span class="legend-title">Statuts</span>
+      <span class="legend-swatch"><span class="legend-dot ok"></span>Valeur validée</span>
+      <span class="legend-swatch"><span class="legend-dot tbd"></span>À définir</span>
+      <span class="legend-swatch"><span class="legend-dot proposal"></span>Proposition à valider</span>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <span class="fn-badge">i</span>
+    <div>
+      <p><b>Notes de conception (jalon 0)</b> — Le preset est de la configuration transversale, consommée par les quatre couches ; il ne produit ni ne consomme d'événements (SPEC_PRESET_TRANSPORT, en-tête). Tout seuil, objectif et règle affiché ici est une donnée en base, jamais en dur (cadrage §3, règle 2). Cette maquette est un wireframe : les champs sont présentés comme éditables mais aucune sauvegarde n'est fonctionnelle.</p>
+      <p><b>Hors périmètre de cette maquette</b> — Les référentiels (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) sont exclus par décision explicite, bien que bundlés avec Paramètres au jalon 1 (cadrage §5). Les pondérations de la notation chauffeurs (8 critères) sont un sous-système distinct, non défini (question ouverte §9.3) et planifié au jalon 7, pas au jalon 0. Congés/RH et rôles d'édition ne sont pas détaillés dans les documents source.</p>
+    </div>
+  </div>
+</main>

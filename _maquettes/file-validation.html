@@ -1,0 +1,811 @@
+<title>Demo Logistics — Maquettes V0</title>
+<meta name="description" content="Jalon 0 — maquette File de validation, écran de l'agent tracking : missions proposées et anomalies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#eef1ef;
+    --surface:#ffffff;
+    --surface-2:#e3e8e5;
+    --surface-3:#d8ded9;
+    --ink:#1a211f;
+    --ink-dim:#59635f;
+    --ink-faint:#8a938e;
+    --border:#c7cfca;
+    --border-strong:#aab3ad;
+    --accent:#b97a17;
+    --accent-ink:#5a3c0a;
+    --accent-soft:#f3e2c2;
+
+    --st-planifiee:#6b746f;
+    --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#3a6ea8;
+    --st-detectee-bg:#dde8f3;
+    --st-rapprochee:#2f8f7a;
+    --st-rapprochee-bg:#dcefea;
+    --st-proposee:#7a5cb0;
+    --st-proposee-bg:#e9e2f5;
+    --st-validee:#3f8b52;
+    --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b;
+    --st-anomalie-bg:#f8dede;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
+
+    --radius-sm:7px;
+    --radius-md:10px;
+    --radius-lg:14px;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#121613;
+      --surface:#181e1a;
+      --surface-2:#202722;
+      --surface-3:#2a322b;
+      --ink:#e8ece9;
+      --ink-dim:#a3aca6;
+      --ink-faint:#707972;
+      --border:#323b34;
+      --border-strong:#454f47;
+      --accent:#e0a13c;
+      --accent-ink:#1c1305;
+      --accent-soft:#3a2c11;
+
+      --st-planifiee:#a3aca6;
+      --st-planifiee-bg:#242b26;
+      --st-detectee:#7ba7d8;
+      --st-detectee-bg:#1c2a38;
+      --st-rapprochee:#6fc4ac;
+      --st-rapprochee-bg:#16302a;
+      --st-proposee:#b39cdd;
+      --st-proposee-bg:#291f3a;
+      --st-validee:#7bc492;
+      --st-validee-bg:#17301e;
+      --st-anomalie:#e58080;
+      --st-anomalie-bg:#3a1a1a;
+
+      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121613;
+    --surface:#181e1a;
+    --surface-2:#202722;
+    --surface-3:#2a322b;
+    --ink:#e8ece9;
+    --ink-dim:#a3aca6;
+    --ink-faint:#707972;
+    --border:#323b34;
+    --border-strong:#454f47;
+    --accent:#e0a13c;
+    --accent-ink:#1c1305;
+    --accent-soft:#3a2c11;
+
+    --st-planifiee:#a3aca6;
+    --st-planifiee-bg:#242b26;
+    --st-detectee:#7ba7d8;
+    --st-detectee-bg:#1c2a38;
+    --st-rapprochee:#6fc4ac;
+    --st-rapprochee-bg:#16302a;
+    --st-proposee:#b39cdd;
+    --st-proposee-bg:#291f3a;
+    --st-validee:#7bc492;
+    --st-validee-bg:#17301e;
+    --st-anomalie:#e58080;
+    --st-anomalie-bg:#3a1a1a;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+    --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
+  .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
+  a{ color:inherit; }
+  button{ font:inherit; }
+
+  /* ---------- maquette banner ---------- */
+  .maquette-banner{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
+    padding:8px 16px; border-bottom:1px solid var(--border);
+  }
+  .mb-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:.06em; text-transform:uppercase;
+    color:var(--accent-ink); background:var(--accent-soft);
+    border-radius:999px; padding:3px 9px;
+  }
+
+  /* ---------- shell header / tabs ---------- */
+  .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
+  .brand-row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
+  .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
+  .logo-mark::before{ top:0; background:var(--accent); }
+  .logo-mark::after{ bottom:0; background:var(--ink); opacity:.82; }
+  .brand-text{ display:flex; flex-direction:column; gap:1px; }
+  .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
+  .brand-sub{ color:var(--ink-faint); font-size:12px; }
+  .jalon-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
+    letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:4px 11px;
+  }
+
+  .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
+  .tab{
+    display:flex; align-items:center; gap:8px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
+    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:default;
+  }
+  .tab.done{ color:var(--ink-dim); }
+  .tab.active{ color:var(--accent-ink); background:var(--accent-soft); }
+  .badge-soon{
+    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
+    letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:2px 7px;
+  }
+
+  /* ---------- screen header ---------- */
+  .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
+  .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
+  .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:70ch; margin-top:6px; }
+
+  .controls-bar{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    margin:20px 0 14px 0; padding:14px 16px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
+  }
+  .field{ display:flex; flex-direction:column; gap:4px; }
+  .field label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+  .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
+  input[type="date"]{
+    font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    padding:7px 10px; min-height:34px; transition:border-color .12s ease, box-shadow .12s ease;
+  }
+  input[type="date"]:hover{ border-color:var(--ink-faint); }
+  input[type="date"]:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible{
+    outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .segmented{ display:flex; gap:2px; padding:3px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); }
+  .segmented button{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    padding:6px 13px; border:none; border-radius:6px; background:transparent; color:var(--ink-dim);
+    cursor:pointer; transition:background .12s ease, color .12s ease, box-shadow .12s ease;
+  }
+  .segmented button.on{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
+  .spacer{ flex:1 1 auto; }
+
+  .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{ display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 13px 6px 11px; }
+  .chip .n{ font-family:"IBM Plex Mono", monospace; font-weight:500; font-size:13.5px; }
+  .chip .lbl{ font-size:11.5px; color:var(--ink-dim); }
+  .chip.warn{ background:var(--st-anomalie-bg); border-color:transparent; }
+  .chip.warn .n, .chip.warn .lbl{ color:var(--st-anomalie); }
+  .chip.info{ background:var(--st-proposee-bg); border-color:transparent; }
+  .chip.info .n, .chip.info .lbl{ color:var(--st-proposee); }
+
+  /* ---------- filter pills ---------- */
+  .filter-pills{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px 0; }
+  .filter-pill{
+    display:flex; align-items:center; gap:8px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    padding:7px 14px 7px 15px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--ink-dim);
+  }
+  .filter-pill .n{ font-family:"IBM Plex Mono", monospace; font-size:11px; background:var(--surface-2); color:var(--ink-dim); padding:1px 7px; border-radius:999px; }
+  .filter-pill.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+  .filter-pill.on .n{ background:var(--surface); color:var(--accent-ink); }
+
+  /* ---------- queue ----------
+     .queue-scroll-wrap > .queue-scroll > .queue-table > (.queue-head, .queue)
+     .queue-table is a column flex box sized with width:fit-content: its used
+     width is derived from the real content of its widest child (never a
+     hardcoded guess), and align-items:stretch (flex default) then forces
+     .queue-head and .queue — and therefore every .queue-card, since it is
+     stretched in turn — to that exact same width. Header, rows and the
+     scrollable area's own edge are thus always pixel-identical. */
+  .queue-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .queue-table{ display:flex; flex-direction:column; width:fit-content; min-width:100%; }
+  .queue-head{
+    display:grid; grid-template-columns: 68px 148px 168px 148px 190px 150px minmax(220px,1fr) 142px 158px 196px;
+    gap:14px; padding:0 18px 8px 18px; border:1px solid transparent;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px;
+    letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint);
+  }
+  .queue{ display:flex; flex-direction:column; gap:14px; }
+
+  /* affordance for the horizontal scroll below: sits above the table, fades out once fully scrolled right */
+  .scroll-hint{
+    display:flex; align-items:center; justify-content:flex-end; gap:5px;
+    margin:0 0 8px 0; padding:0 2px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint);
+    opacity:1; transition:opacity .2s ease;
+  }
+  .scroll-hint .arrow{ display:inline-block; animation:scroll-hint-nudge 1.4s ease-in-out infinite; }
+  .scroll-hint.is-hidden{ opacity:0; }
+  @keyframes scroll-hint-nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(3px); } }
+  @media (prefers-reduced-motion: reduce){ .scroll-hint .arrow{ animation:none; } }
+
+  .queue-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-sm); transition:box-shadow .12s ease;
+  }
+  .queue-card:hover{ box-shadow:var(--shadow-md); }
+  .queue-card.is-open{ box-shadow:var(--shadow-md); }
+  .queue-card.anomalie{ border-left:4px solid var(--st-anomalie); }
+  .queue-card.needs-id{ border-left:4px solid var(--st-proposee); }
+
+  .qc-summary{
+    display:grid; grid-template-columns: 68px 148px 168px 148px 190px 150px minmax(220px,1fr) 142px 158px 196px;
+    gap:14px; align-items:center; padding:16px 18px;
+  }
+  .qc-cell{ min-width:0; }
+  .qc-heure{ font-family:"IBM Plex Mono", monospace; color:var(--ink-dim); font-size:13px; }
+  .qc-name{ font-weight:600; font-size:13.5px; }
+  .qc-sub{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
+  .qc-material .num{ font-size:12.5px; color:var(--ink-dim); }
+  .qc-material .num + .num{ margin-left:2px; }
+  .qc-route{ display:flex; align-items:center; gap:7px; font-size:13px; }
+  .qc-route .arrow{ color:var(--ink-faint); flex:none; }
+  .qc-route .dest.unresolved{ color:var(--st-proposee); font-style:italic; }
+  .qc-tag-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+
+  .tag-flag{
+    display:inline-flex; align-items:center; gap:4px;
+    font-size:10.5px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    letter-spacing:.03em; text-transform:uppercase;
+    border-radius:5px; padding:3px 7px; white-space:nowrap;
+  }
+  .tag-flag.warn{ color:var(--st-proposee); background:var(--st-proposee-bg); }
+  .tag-flag.info{ color:var(--st-detectee); background:var(--st-detectee-bg); }
+
+  .container-code{
+    display:inline-block; font-family:"IBM Plex Mono", monospace; font-size:12.5px; letter-spacing:.01em;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:4px 8px; white-space:nowrap;
+  }
+  .container-code.pending{ color:var(--ink-faint); font-style:italic; border-style:dashed; background:transparent; }
+
+  .statut-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:5px 11px; white-space:nowrap;
+  }
+  .statut-chip .dot{ width:6px; height:6px; border-radius:50%; flex:none; }
+  .statut-chip.st-proposee{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .statut-chip.st-proposee .dot{ background:var(--st-proposee); }
+  .statut-chip.st-anomalie{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .statut-chip.st-anomalie .dot{ background:var(--st-anomalie); }
+
+  .qc-proofs{ display:flex; gap:5px; }
+  .proof-badge{
+    width:34px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:700; letter-spacing:.01em;
+  }
+  .proof-badge.ok{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .proof-badge.attn{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+
+  .qc-actions{ display:flex; flex-direction:column; gap:5px; align-items:flex-start; }
+  .btn{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.02em; padding:7px 13px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; }
+  .btn-row{ display:flex; gap:6px; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
+  .btn-ghost:hover{ background:var(--surface-2); color:var(--ink); }
+  .btn-disabled{ background:var(--surface-2); color:var(--ink-faint); border-color:var(--border); cursor:not-allowed; }
+  .btn-disabled:hover{ filter:none; }
+  .qc-hint{ font-size:10.5px; color:var(--ink-faint); max-width:180px; }
+
+  /* ---------- detail panel ---------- */
+  .qc-detail{ border-top:1px solid var(--border); padding:20px 22px 22px 22px; background:var(--surface-2); border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+  .qc-section{ margin-bottom:20px; }
+  .qc-section:last-child{ margin-bottom:0; }
+  .qc-section h3{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 10px 0;
+  }
+  .qc-section .qc-lede{ font-size:12.5px; color:var(--ink-dim); margin:-4px 0 12px 0; max-width:78ch; }
+
+  .info-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px 22px; }
+  .info-item dt{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 3px 0; }
+  .info-item dd{ margin:0; font-size:13.5px; color:var(--ink); }
+
+  .proof-list{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
+  .proof-item{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:13px 14px; }
+  .proof-item .src{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
+  .proof-item .val{ font-size:13.5px; font-weight:600; margin:5px 0 4px 0; }
+  .proof-item .meta{ font-size:11.5px; color:var(--ink-dim); }
+
+  .id-compare{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
+  .id-card{ border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; background:var(--surface); }
+  .id-card.mismatch{ border-color:color-mix(in srgb, var(--st-anomalie) 45%, var(--border)); background:var(--st-anomalie-bg); }
+  .id-card.corrobore{ border-color:color-mix(in srgb, var(--st-validee) 45%, var(--border)); background:var(--st-validee-bg); }
+  .id-card .src{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
+  .id-card .val{ font-size:15px; font-weight:700; margin:5px 0 6px 0; }
+  .id-card .meta{ font-size:11.5px; color:var(--ink-dim); line-height:1.5; }
+  .id-state{
+    display:inline-flex; align-items:center; gap:5px; margin-top:10px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
+    border-radius:999px; padding:3px 9px;
+  }
+  .id-state.bad{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .id-state.good{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .id-card.mismatch .id-state.bad, .id-card.corrobore .id-state.good{ background:var(--surface); }
+
+  .resolve-panel{ margin-top:4px; }
+  .choice-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .choice-chip{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px;
+    padding:8px 15px; border-radius:999px; border:1.5px solid var(--border-strong); background:var(--surface); color:var(--ink-dim); cursor:pointer;
+  }
+  .choice-chip.selected{ background:var(--st-validee-bg); border-color:var(--st-validee); color:var(--st-validee); }
+
+  select.field-select{
+    -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    width:100%; max-width:340px; font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
+    background-color:var(--surface); background-image:var(--chevron); background-repeat:no-repeat; background-position:right 12px center; background-size:10px 7px;
+    border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:9px 30px 9px 12px; min-height:38px;
+  }
+  select.field-select:hover{ border-color:var(--ink-faint); }
+
+  textarea.qc-comment{
+    width:100%; max-width:560px; min-height:60px; border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    padding:9px 11px; font-family:"IBM Plex Sans", sans-serif; font-size:13px; color:var(--ink); background:var(--surface); resize:vertical;
+  }
+  .field-note{ font-size:11.5px; color:var(--ink-faint); margin-top:5px; max-width:60ch; }
+  .resolve-footer{ display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .btn-lg{ padding:9px 18px; font-size:13.5px; }
+
+  /* ---------- legend & footnote ---------- */
+  .legend{
+    margin-top:6px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;
+    padding:13px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
+    box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim);
+  }
+  .legend-group{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .legend-title{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px; }
+
+  .footnote{
+    margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
+    color:var(--ink-dim); font-size:12.5px; max-width:88ch;
+  }
+  .footnote .fn-badge{
+    flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
+  }
+  .footnote b{ color:var(--ink); }
+  .footnote p{ margin:0 0 8px 0; }
+  .footnote p:last-child{ margin-bottom:0; }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — données fictives, wireframe à valider avant tout développement.</div>
+
+<header class="shell-header">
+  <div class="brand-row">
+    <div class="brand">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <span class="brand-mark">Demo Logistics</span>
+        <span class="brand-sub">Console opérations — Transport de conteneurs</span>
+      </div>
+    </div>
+    <span class="jalon-tag">Jalon 0 · Maquettes</span>
+  </div>
+  <nav class="tabs" aria-label="Écrans du jalon 0">
+    <div class="tab done">Planning des opérations</div>
+    <div class="tab active">File de validation</div>
+    <div class="tab">Live tracking<span class="badge-soon">à venir</span></div>
+    <div class="tab">Fiche conteneur<span class="badge-soon">à venir</span></div>
+    <div class="tab">Rapport de shift<span class="badge-soon">à venir</span></div>
+    <div class="tab">Paramètres<span class="badge-soon">à venir</span></div>
+  </nav>
+</header>
+
+<main class="screen">
+  <div class="screen-title-row">
+    <div>
+      <h1 class="screen-title">File de validation</h1>
+      <p class="screen-caption">L'agent tracking examine ici les missions <strong>Proposées</strong> par le moteur de rapprochement et traite les missions en <strong>Anomalie</strong>. L'automate propose, l'humain valide : rien n'est confirmé sans son action explicite.</p>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="field">
+      <label for="f-date">Date</label>
+      <input type="date" id="f-date" value="2026-08-25">
+    </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label>Shift</label>
+      <div class="segmented" role="group" aria-label="Shift">
+        <button type="button" class="on">Jour · 6h→18h</button>
+        <button type="button">Nuit · 18h→6h</button>
+      </div>
+    </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label>Site</label>
+      <div class="segmented" role="group" aria-label="Site">
+        <button type="button" class="on">Tous</button>
+        <button type="button">Nord</button>
+        <button type="button">Sud</button>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat-chips">
+      <div class="chip"><span class="n num">5</span><span class="lbl">missions à traiter</span></div>
+      <div class="chip info"><span class="n num">1</span><span class="lbl">client à identifier</span></div>
+      <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie</span></div>
+    </div>
+  </div>
+
+  <div class="filter-pills">
+    <span class="filter-pill on">Toutes <span class="n num">5</span></span>
+    <span class="filter-pill">Propositions <span class="n num">4</span></span>
+    <span class="filter-pill">Anomalies <span class="n num">1</span></span>
+    <span class="filter-pill">Client à identifier <span class="n num">1</span></span>
+  </div>
+
+  <div class="queue-scroll-wrap">
+   <div class="scroll-hint" aria-hidden="true"><span>Défiler</span><span class="arrow">→</span></div>
+   <div class="queue-scroll">
+    <div class="queue-table">
+    <div class="queue-head" aria-hidden="true">
+      <span>Heure</span>
+      <span>Chauffeur</span>
+      <span>Camion · remorque</span>
+      <span>Type</span>
+      <span>Client</span>
+      <span>Conteneur</span>
+      <span>Trajet</span>
+      <span>Statut</span>
+      <span>Preuves</span>
+      <span>Actions</span>
+    </div>
+
+    <div class="queue">
+
+      <!-- 1 — simple, valide directement -->
+      <article class="queue-card">
+        <div class="qc-summary">
+          <div class="qc-cell qc-heure">06:05</div>
+          <div class="qc-cell"><div class="qc-name">Ibrahim Traoré</div></div>
+          <div class="qc-cell qc-material"><span class="num">TR-027</span> · <span class="num">RQ-133</span><div class="qc-sub">Remorque 40'</div></div>
+          <div class="qc-cell">Transfert</div>
+          <div class="qc-cell"><div class="qc-name">— Port → Site (plein)</div></div>
+          <div class="qc-cell"><span class="container-code">CMAU 987654-3</span></div>
+          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span>Site Nord</span></div>
+          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
+          <div class="qc-cell qc-proofs">
+            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
+            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+          </div>
+          <div class="qc-cell qc-actions">
+            <div class="btn-row">
+              <button class="btn btn-ghost" type="button">Examiner</button>
+              <button class="btn btn-primary" type="button">Valider</button>
+            </div>
+            <span class="qc-hint">Deux géofences connues — validation directe possible.</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 — sans géofence, ouverte -->
+      <article class="queue-card needs-id is-open">
+        <div class="qc-summary">
+          <div class="qc-cell qc-heure">07:05</div>
+          <div class="qc-cell"><div class="qc-name">Serge Bamba</div></div>
+          <div class="qc-cell qc-material"><span class="num">TR-041</span> · <span class="num">RQ-149</span><div class="qc-sub">Remorque 20'</div></div>
+          <div class="qc-cell">Livraison-Récup</div>
+          <div class="qc-cell">
+            <div class="qc-name" style="color:var(--st-proposee);">À identifier</div>
+            <div class="qc-tag-row"><span class="tag-flag warn">Sans géofence</span></div>
+          </div>
+          <div class="qc-cell"><span class="container-code">MAEU 456789-0</span></div>
+          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span class="dest unresolved">« Client non identifié — Zone Sud »</span></div>
+          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
+          <div class="qc-cell qc-proofs">
+            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+            <span class="proof-badge attn" title="GPS : arrivée hors géofence connue">GPS</span>
+            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+          </div>
+          <div class="qc-cell qc-actions">
+            <div class="btn-row">
+              <button class="btn btn-ghost" type="button">Replier</button>
+              <button class="btn btn-disabled" type="button" disabled>Valider</button>
+            </div>
+            <span class="qc-hint">Identification du client requise avant validation.</span>
+          </div>
+        </div>
+
+        <div class="qc-detail">
+          <div class="qc-section">
+            <h3>Informations de la mission</h3>
+            <dl class="info-grid">
+              <div class="info-item"><dt>Chauffeur</dt><dd>Serge Bamba</dd></div>
+              <div class="info-item"><dt>Camion</dt><dd>TR-041</dd></div>
+              <div class="info-item"><dt>Remorque</dt><dd>RQ-149 · 20'</dd></div>
+              <div class="info-item"><dt>Type de mission</dt><dd>Livraison-Récup</dd></div>
+              <div class="info-item"><dt>Conteneur</dt><dd>MAEU 456789-0</dd></div>
+              <div class="info-item"><dt>Site / zone</dt><dd>Sud</dd></div>
+              <div class="info-item"><dt>Départ</dt><dd>Port d'Abidjan</dd></div>
+              <div class="info-item"><dt>Destination déclarée</dt><dd>« Client non identifié — Zone Sud »</dd></div>
+            </dl>
+          </div>
+
+          <div class="qc-section">
+            <h3>Preuves datées et sourcées</h3>
+            <p class="qc-lede">Règle de double preuve : la dernière trace guérite et la dernière trace mission/GPS sont toujours affichées ensemble, jamais l'une sans l'autre.</p>
+            <div class="proof-list">
+              <div class="proof-item">
+                <div class="src">Dernière trace guérite</div>
+                <div class="val">Sortie Port — destination déclarée : « Zone Sud »</div>
+                <div class="meta">25/08/2026 · 07:03 — Sheet guérite Port, ligne #1147</div>
+              </div>
+              <div class="proof-item">
+                <div class="src">Dernière trace mission / GPS</div>
+                <div class="val">Arrivée hors géofence connue (zone Sud)</div>
+                <div class="meta">25/08/2026 · 07:41 — télématique camion TR-041</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="qc-section resolve-panel">
+            <h3>Identification du client requise</h3>
+            <p class="qc-lede">Le nom affiché par défaut vient de la déclaration guérite. Confirmez le client réel pour que le point de livraison soit géofencé à l'avenir.</p>
+            <div class="field">
+              <label for="client-reel-2">Client réel</label>
+              <select class="field-select" id="client-reel-2">
+                <option selected disabled>— à identifier —</option>
+                <option>SOCACI</option>
+                <option>Nestlé CI</option>
+                <option>CFAO Motors</option>
+                <option>Groupe Sifca</option>
+                <option>SIVAC</option>
+                <option>Unilever CI</option>
+                <option>+ Créer un nouveau client</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top:12px;">
+              <label for="comment-2">Commentaire agent (tracé)</label>
+              <textarea class="qc-comment" id="comment-2" placeholder="Ex. : client confirmé par téléphone avec le chauffeur."></textarea>
+            </div>
+            <div class="resolve-footer">
+              <button class="btn btn-primary btn-lg" type="button">Confirmer le client et valider la mission</button>
+              <button class="btn btn-ghost btn-lg" type="button">Replier sans confirmer</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 — simple -->
+      <article class="queue-card">
+        <div class="qc-summary">
+          <div class="qc-cell qc-heure">07:35</div>
+          <div class="qc-cell"><div class="qc-name">Aya Kouassi</div></div>
+          <div class="qc-cell qc-material"><span class="num">TR-009</span> · <span class="num">RQ-175</span><div class="qc-sub">Remorque 20'</div></div>
+          <div class="qc-cell">Mission client</div>
+          <div class="qc-cell"><div class="qc-name">Unilever CI</div></div>
+          <div class="qc-cell"><span class="container-code pending">—</span></div>
+          <div class="qc-cell qc-route"><span>Site Nord</span><span class="arrow">→</span><span>Unilever CI</span></div>
+          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
+          <div class="qc-cell qc-proofs">
+            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
+            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+          </div>
+          <div class="qc-cell qc-actions">
+            <div class="btn-row">
+              <button class="btn btn-ghost" type="button">Examiner</button>
+              <button class="btn btn-primary" type="button">Valider</button>
+            </div>
+            <span class="qc-hint">Camion TR-009 réutilisé par un second chauffeur ce shift (segment).</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4 — hors planning -->
+      <article class="queue-card">
+        <div class="qc-summary">
+          <div class="qc-cell qc-heure">08:10</div>
+          <div class="qc-cell"><div class="qc-name">Koffi N'Guessan</div></div>
+          <div class="qc-cell qc-material"><span class="num">TR-014</span> · <span class="num">RQ-108</span><div class="qc-sub">Remorque 20'</div></div>
+          <div class="qc-cell">Livraison-Récup</div>
+          <div class="qc-cell"><div class="qc-name">Nestlé CI</div></div>
+          <div class="qc-cell"><span class="container-code">MSCU 778899-0</span></div>
+          <div class="qc-cell qc-route"><span>Site Nord</span><span class="arrow">→</span><span>Nestlé CI</span></div>
+          <div class="qc-cell">
+            <span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span>
+            <div class="qc-tag-row"><span class="tag-flag info">Détectée hors planning</span></div>
+          </div>
+          <div class="qc-cell qc-proofs">
+            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
+            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+          </div>
+          <div class="qc-cell qc-actions">
+            <div class="btn-row">
+              <button class="btn btn-ghost" type="button">Examiner</button>
+              <button class="btn btn-primary" type="button">Valider</button>
+            </div>
+            <span class="qc-hint">Aucune ligne planifiée ne correspond — signalé au planning.</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5 — anomalie, ouverte -->
+      <article class="queue-card anomalie is-open">
+        <div class="qc-summary">
+          <div class="qc-cell qc-heure">08:20</div>
+          <div class="qc-cell"><div class="qc-name">Fatou Cissé</div><div class="qc-sub">déclarée en guérite</div></div>
+          <div class="qc-cell qc-material"><span class="num">TR-021</span> · <span class="num">RQ-162</span><div class="qc-sub">Remorque 40'</div></div>
+          <div class="qc-cell">Livraison-Récup</div>
+          <div class="qc-cell"><div class="qc-name">Groupe Sifca</div></div>
+          <div class="qc-cell"><span class="container-code">CMAU 112233-4</span></div>
+          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span>Groupe Sifca (Sud)</span></div>
+          <div class="qc-cell"><span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span></div>
+          <div class="qc-cell qc-proofs">
+            <span class="proof-badge mismatch" title="Guérite : contestée">G</span>
+            <span class="proof-badge ok" title="GPS : cohérent avec l'iButton">GPS</span>
+            <span class="proof-badge mismatch" title="iButton : diverge de la guérite">iB</span>
+          </div>
+          <div class="qc-cell qc-actions">
+            <div class="btn-row">
+              <button class="btn btn-ghost" type="button">Replier</button>
+              <button class="btn btn-disabled" type="button" disabled>Valider</button>
+            </div>
+            <span class="qc-hint">Identité divergente — à résoudre avant validation.</span>
+          </div>
+        </div>
+
+        <div class="qc-detail">
+          <div class="qc-section">
+            <h3>Comparaison d'identité — triple croisement</h3>
+            <p class="qc-lede">Principe du socle : aucun fait n'est établi par une source unique. Le chauffeur déclaré en guérite doit être confirmé par l'iButton du camion et par la cohérence du tracking.</p>
+            <div class="id-compare">
+              <div class="id-card mismatch">
+                <div class="src">Guérite (déclaré à l'entrée)</div>
+                <div class="val">Fatou Cissé</div>
+                <div class="meta">25/08/2026 · 08:15<br>Sheet guérite Sud, ligne #482</div>
+                <span class="id-state bad">Divergent</span>
+              </div>
+              <div class="id-card mismatch">
+                <div class="src">iButton (camion TR-021)</div>
+                <div class="val">Ibrahim Traoré</div>
+                <div class="meta">25/08/2026 · 08:16<br>Lecteur iButton, télématique camion</div>
+                <span class="id-state bad">Divergent</span>
+              </div>
+              <div class="id-card corrobore">
+                <div class="src">Tracking (cohérence position)</div>
+                <div class="val">Cohérent avec Ibrahim Traoré</div>
+                <div class="meta">Mouvements de TR-021 depuis 07:40 alignés sur son historique de conduite<br>Source : GPS camion TR-021</div>
+                <span class="id-state good">Corrobore l'iButton</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="qc-section">
+            <h3>Informations de la mission</h3>
+            <dl class="info-grid">
+              <div class="info-item"><dt>Type de mission</dt><dd>Livraison-Récup</dd></div>
+              <div class="info-item"><dt>Client</dt><dd>Groupe Sifca</dd></div>
+              <div class="info-item"><dt>Conteneur</dt><dd>CMAU 112233-4</dd></div>
+              <div class="info-item"><dt>Camion</dt><dd>TR-021</dd></div>
+              <div class="info-item"><dt>Remorque</dt><dd>RQ-162 · 40'</dd></div>
+              <div class="info-item"><dt>Site / zone</dt><dd>Sud</dd></div>
+              <div class="info-item"><dt>Départ</dt><dd>Port d'Abidjan</dd></div>
+              <div class="info-item"><dt>Destination</dt><dd>Groupe Sifca</dd></div>
+            </dl>
+          </div>
+
+          <div class="qc-section resolve-panel">
+            <h3>Résolution de l'anomalie</h3>
+            <p class="qc-lede">La mission reste en Anomalie jusqu'à ce que l'agent confirme l'identité réelle du conducteur. Aucune donnée n'est supprimée : la déclaration guérite reste conservée telle quelle, la résolution s'ajoute en référence.</p>
+            <div class="choice-row" role="group" aria-label="Confirmer l'identité du chauffeur">
+              <button class="choice-chip" type="button">Confirmer : Fatou Cissé (déclaration guérite)</button>
+              <button class="choice-chip selected" type="button">Confirmer : Ibrahim Traoré (iButton + tracking)</button>
+              <button class="choice-chip" type="button">Autre chauffeur — préciser en commentaire</button>
+            </div>
+            <div class="field">
+              <label for="comment-5">Commentaire agent (tracé)</label>
+              <textarea class="qc-comment" id="comment-5" placeholder="Ex. : Ibrahim confirme avoir pris le camion de Fatou, badge non échangé au dépôt.">L'iButton et le tracking concordent sur Ibrahim Traoré ; la guérite a probablement noté le nom du chauffeur habituel du camion par erreur. Appel passé au chauffeur pour confirmation.</textarea>
+            </div>
+            <div class="resolve-footer">
+              <button class="btn btn-primary btn-lg" type="button">Enregistrer la résolution et valider</button>
+              <button class="btn btn-ghost btn-lg" type="button">Replier sans résoudre</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+    </div>
+   </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-group">
+      <span class="legend-title">Statuts de cette file</span>
+      <span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span>
+      <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
+    </div>
+    <div class="v-divider" style="height:20px;"></div>
+    <div class="legend-group">
+      <span class="legend-title">Preuves</span>
+      <span class="proof-badge ok" style="width:auto;padding:4px 8px;">G / GPS / iB</span>
+      <span style="color:var(--ink-dim);">cohérente</span>
+      <span class="proof-badge attn" style="width:auto;padding:4px 8px;">…</span>
+      <span style="color:var(--ink-dim);">à vérifier</span>
+      <span class="proof-badge mismatch" style="width:auto;padding:4px 8px;">…</span>
+      <span style="color:var(--ink-dim);">divergente</span>
+    </div>
+    <div class="v-divider" style="height:20px;"></div>
+    <div class="legend-group">
+      <span class="legend-title">Bordure de carte</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:4px;height:14px;background:var(--st-proposee);border-radius:2px;"></span>identification requise</span>
+      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:4px;height:14px;background:var(--st-anomalie);border-radius:2px;"></span>anomalie</span>
+    </div>
+  </div>
+
+  <div class="footnote">
+    <span class="fn-badge">i</span>
+    <div>
+      <p><b>Notes de conception (jalon 0)</b> — Cette file n'affiche que les missions <b>Proposées</b> et <b>Anomalies</b> (cycle de vie de la spec Missions §2.2) ; les autres statuts vivent dans le Planning des opérations. « Valider » exécute la même règle partout dans le produit : l'automate propose, l'humain valide — jamais l'inverse.</p>
+      <p>Aucune donnée n'est supprimée : une résolution d'anomalie ou une identification de client s'ajoute en référence, elle ne réécrit ni n'efface la déclaration d'origine. Cet écran ne calcule aucun KPI, aucune rotation et aucune notation — ces éléments appartiennent aux écrans Rapport de shift et Notation, à venir.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  (function(){
+    var scrollEl = document.querySelector('.queue-scroll');
+    var hint = document.querySelector('.scroll-hint');
+    if (!scrollEl || !hint) return;
+    function update(){
+      var hasOverflow = scrollEl.scrollWidth - scrollEl.clientWidth > 4;
+      var atEnd = scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 4;
+      hint.classList.toggle('is-hidden', !hasOverflow || atEnd);
+    }
+    scrollEl.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
