@@ -1,5 +1,5 @@
 <title>Demo Logistics — Maquettes V0</title>
-<meta name="description" content="Jalon 0 — maquette Planning des opérations, écran d'attribution des missions avant shift.">
+<meta name="description" content="Jalon 0 — maquette Planning des opérations, suivi des camions du shift : chauffeurs, service, kilomètres et rotations suggérés par la guérite, le GPS et l'iButton.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -223,12 +223,22 @@
     letter-spacing:.002em; text-wrap:balance; margin:0;
   }
   .screen-caption{
-    color:var(--ink-dim); font-size:13.5px; max-width:64ch; margin-top:6px;
+    color:var(--ink-dim); font-size:13.5px; max-width:70ch; margin-top:6px;
+  }
+
+  .tip-line{
+    display:flex; align-items:center; gap:9px; margin:12px 0 0 0;
+    font-size:12px; color:var(--ink-faint); max-width:80ch;
+  }
+  .tip-line .tip-badge{
+    flex:none; width:16px; height:16px; border-radius:50%; background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:700; color:var(--ink-faint);
   }
 
   .controls-bar{
     display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    margin:20px 0 16px 0;
+    margin:20px 0 6px 0;
     padding:14px 16px;
     background:var(--surface);
     border:1px solid var(--border);
@@ -265,6 +275,7 @@
     padding:6px 13px; border:none; border-radius:6px;
     background:transparent; color:var(--ink-dim);
     cursor:pointer; transition:background .12s ease, color .12s ease, box-shadow .12s ease;
+    white-space:nowrap;
   }
   .segmented button.on{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
 
@@ -283,6 +294,19 @@
   .chip.ref{ background:transparent; border-style:dashed; }
   .chip.ref .lbl, .chip.ref .n{ color:var(--ink-faint); font-size:11.5px; }
 
+  .sort-note{ font-size:11px; color:var(--ink-faint); width:100%; margin-top:-2px; }
+
+  /* ---------- table scroll affordance ---------- */
+  .scroll-hint{
+    display:flex; align-items:center; justify-content:flex-end; gap:5px;
+    margin:14px 0 8px 0; padding:0 2px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .scroll-hint .arrow{ display:inline-block; animation:scroll-hint-nudge 1.4s ease-in-out infinite; }
+  .scroll-hint.is-hidden{ opacity:0; }
+  @keyframes scroll-hint-nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(3px); } }
+
   /* ---------- table ---------- */
   .table-wrap{
     background:transparent;
@@ -290,31 +314,41 @@
     padding-bottom:2px;
   }
   table.plan{
-    border-collapse:separate; border-spacing:0 12px; width:100%; min-width:1360px;
+    border-collapse:separate; border-spacing:0 12px; width:100%; min-width:1900px;
   }
   table.plan thead th{
     text-align:left;
     font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px;
     letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint);
-    padding:0 16px 8px 16px;
+    padding:0 13px 8px 13px;
     white-space:nowrap;
   }
 
-  table.plan thead th:nth-child(1){ width:88px; }
-  table.plan thead th:nth-child(6){ min-width:230px; }
-  table.plan thead th:nth-child(9){ width:140px; }
-  table.plan thead th:nth-child(10){ width:210px; }
+  table.plan thead th:nth-child(1){ width:76px; }
+  table.plan thead th:nth-child(2){ width:206px; }
+  table.plan thead th:nth-child(3){ width:88px; }
+  table.plan thead th:nth-child(4){ width:132px; }
+  table.plan thead th:nth-child(5){ width:158px; }
+  table.plan thead th:nth-child(6){ width:168px; }
+  table.plan thead th:nth-child(7){ width:190px; }
+  table.plan thead th:nth-child(8){ width:132px; }
+  table.plan thead th:nth-child(9){ width:132px; }
+  table.plan thead th:nth-child(10){ width:152px; }
   table.plan thead th:nth-child(11){ width:150px; }
+  table.plan thead th:nth-child(12){ width:158px; }
+  table.plan thead th:nth-child(13){ width:148px; }
+  table.plan thead th:nth-child(14){ width:120px; }
 
   table.plan tbody td{
-    padding:15px 16px;
+    padding:14px 13px;
     background:var(--surface);
     border-top:1px solid var(--border);
     border-bottom:1px solid var(--border);
-    vertical-align:middle;
+    vertical-align:top;
   }
   table.plan tbody td:first-child{ border-left:1px solid var(--border); border-top-left-radius:var(--radius-md); border-bottom-left-radius:var(--radius-md); }
   table.plan tbody td:last-child{ border-right:1px solid var(--border); border-top-right-radius:var(--radius-md); border-bottom-right-radius:var(--radius-md); }
+  table.plan tbody td.col-heure{ padding-top:16px; }
 
   table.plan tbody tr{ box-shadow:var(--shadow-sm); border-radius:var(--radius-md); }
   table.plan tbody tr td{ transition:background .12s ease, box-shadow .12s ease; }
@@ -324,13 +358,13 @@
   table.plan tbody tr.row-anomalie td{ background:var(--st-anomalie-bg); border-color:color-mix(in srgb, var(--st-anomalie) 35%, var(--border)); }
   table.plan tbody tr.row-anomalie td:first-child{ border-left:4px solid var(--st-anomalie); }
   table.plan tbody tr.row-anomalie:hover td{ background:var(--st-anomalie-bg); }
-  table.plan tbody tr.row-ecart td:first-child{ border-left:4px solid var(--st-detectee); }
+  table.plan tbody tr.row-ecart td:first-child{ border-left:4px solid var(--st-proposee); }
 
   td.col-heure{ font-family:"IBM Plex Mono", monospace; color:var(--ink-dim); font-size:13px; white-space:nowrap; }
 
   select.mini-select{
     -webkit-appearance:none; -moz-appearance:none; appearance:none;
-    display:block; width:100%; min-width:148px; max-width:210px;
+    display:block; width:100%; min-width:120px; max-width:210px;
     font-family:"IBM Plex Sans", sans-serif; font-size:13px; color:var(--ink);
     background-color:var(--surface);
     background-image:var(--chevron);
@@ -345,14 +379,18 @@
   select.mini-select.empty{ color:var(--ink-faint); border-style:dashed; background-color:transparent; }
 
   .cell-multi{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+  .cell-sub{ font-size:11px; color:var(--ink-faint); margin-top:3px; }
+
+  .truck-code{ font-size:14px; font-weight:600; letter-spacing:.01em; }
 
   .tag-flag{
     display:inline-flex; align-items:center; gap:4px;
     font-size:10.5px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
     letter-spacing:.03em; text-transform:uppercase;
     color:var(--st-proposee); background:var(--st-proposee-bg);
-    border-radius:5px; padding:3px 7px; white-space:nowrap;
+    border-radius:5px; padding:3px 7px; white-space:nowrap; margin-top:5px;
   }
+  .tag-flag.detected{ color:var(--st-detectee); background:var(--st-detectee-bg); }
 
   .container-code{
     display:inline-block;
@@ -361,6 +399,13 @@
     padding:4px 8px; white-space:nowrap;
   }
   .container-code.pending{ color:var(--ink-faint); font-style:italic; border-style:dashed; background:transparent; }
+  .container-stack{ display:flex; flex-direction:column; gap:8px; align-items:flex-start; }
+  .container-item{ display:flex; flex-direction:column; gap:3px; align-items:flex-start; }
+  .container-state{ font-size:10.5px; color:var(--ink-faint); }
+
+  .ocr-flag{ display:inline-flex; align-items:center; gap:4px; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.02em; }
+  .ocr-flag.ok{ color:var(--st-validee); }
+  .ocr-flag.warn{ color:var(--st-proposee); }
 
   .statut-chip{
     display:inline-flex; align-items:center; gap:6px;
@@ -381,6 +426,7 @@
   .statut-chip.st-validee .dot{ background:var(--st-validee); }
   .statut-chip.st-anomalie{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
   .statut-chip.st-anomalie .dot{ background:var(--st-anomalie); }
+  .status-stack{ display:flex; flex-direction:column; gap:7px; align-items:flex-start; }
 
   .ecart{
     display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:500; white-space:nowrap;
@@ -398,9 +444,11 @@
   .ecart.hors .glyph{ background:var(--st-detectee-bg); color:var(--st-detectee); }
   .ecart.div{ color:var(--st-anomalie); }
   .ecart.div .glyph{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .ecart.under{ color:var(--st-proposee); }
+  .ecart.under .glyph{ background:var(--st-proposee-bg); color:var(--st-proposee); }
   .ecart.na{ color:var(--ink-faint); font-style:italic; }
 
-  .row-actions{ display:flex; gap:6px; white-space:nowrap; }
+  .row-actions{ display:flex; gap:6px; white-space:nowrap; flex-wrap:wrap; }
   .row-actions button{
     font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:12px;
     letter-spacing:.02em;
@@ -410,6 +458,139 @@
   }
   .row-actions button:hover{ background:var(--surface-2); color:var(--ink); }
   .row-actions button.danger:hover{ color:var(--st-anomalie); border-color:var(--st-anomalie); background:var(--st-anomalie-bg); }
+
+  /* ---------- suggestion / evidence components ---------- */
+  .driver-cell{ display:flex; flex-direction:column; gap:2px; }
+  .driver-name{ font-size:13.5px; font-weight:600; }
+  .proof-row{ display:flex; gap:4px; margin:5px 0 4px 0; flex-wrap:wrap; }
+  .proof-badge{
+    min-width:28px; height:19px; padding:0 6px; border-radius:5px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:9.5px; font-weight:700;
+  }
+  .proof-badge.ok{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .proof-badge.attn{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+
+  .field-alert{
+    display:inline-flex; align-items:center; gap:5px;
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:13px;
+    color:var(--st-anomalie); cursor:pointer;
+  }
+  .field-alert:hover{ text-decoration:underline; }
+  .field-alert.soft{ color:var(--st-proposee); }
+
+  details.popover{ margin:0; }
+  details.popover > summary{ list-style:none; cursor:pointer; }
+  details.popover > summary::-webkit-details-marker{ display:none; }
+  .link-trigger{
+    display:inline-block; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11.5px;
+    color:var(--accent);
+  }
+  .link-trigger:hover{ text-decoration:underline; }
+  .popover-panel{
+    margin-top:8px; padding:11px 12px; max-width:270px;
+    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+  }
+  .popover-title{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:.03em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 8px 0;
+  }
+  .popover-compare{ display:flex; flex-direction:column; gap:5px; margin:0 0 10px 0; }
+  .popover-compare > div{ display:flex; justify-content:space-between; gap:10px; font-size:11.5px; }
+  .popover-compare dt{ margin:0; color:var(--ink-faint); font-weight:600; }
+  .popover-compare dd{ margin:0; font-weight:600; text-align:right; }
+  .popover-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+  .popover-note{ font-size:11px; color:var(--ink-dim); margin:0 0 9px 0; }
+
+  .btn{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.02em; padding:6px 11px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
+  .btn-ghost:hover{ background:var(--surface); color:var(--ink); }
+
+  .segment-list{ display:flex; flex-direction:column; gap:9px; }
+  .segment-item{ display:flex; flex-direction:column; gap:2px; }
+  .segment-time{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-faint); }
+  .segment-driver{ display:flex; align-items:center; gap:5px; font-size:13.5px; font-weight:600; }
+  .segment-driver .chk{ color:var(--st-validee); font-size:11px; font-family:"IBM Plex Mono",monospace; }
+  .segment-note{ font-size:10.5px; color:var(--st-proposee); margin-top:2px; }
+  .segment-add{
+    display:inline-flex; align-items:center; gap:5px; align-self:flex-start; margin-top:2px;
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px;
+    color:var(--accent); background:transparent; border:1.3px dashed var(--border-strong);
+    border-radius:999px; padding:4px 10px 4px 8px; cursor:pointer;
+    transition:border-color .12s ease, background .12s ease;
+  }
+  .segment-add:hover{ border-color:var(--accent); background:var(--accent-soft); border-style:solid; }
+  .segment-add .plus{ font-family:"IBM Plex Mono",monospace; font-size:11px; }
+
+  .service-cell{ display:flex; flex-direction:column; gap:2px; }
+  .service-value{ font-size:13.5px; font-weight:500; }
+  .service-source{ font-size:10.5px; color:var(--ink-faint); }
+  .service-modify{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px; color:var(--accent);
+    background:none; border:none; padding:0; margin-top:4px; text-align:left; cursor:pointer; align-self:flex-start;
+  }
+  .service-modify:hover{ text-decoration:underline; }
+  .service-flag{ margin-top:5px; }
+
+  .km-cell{ display:flex; flex-direction:column; gap:2px; }
+  .km-value{ font-size:13.5px; }
+  .km-source{ font-size:10.5px; color:var(--ink-faint); }
+  .km-breakdown{ display:flex; flex-direction:column; gap:4px; }
+  .km-breakdown > div{ display:flex; justify-content:space-between; gap:8px; font-size:11.5px; }
+
+  .rotation-cell{ display:flex; flex-direction:column; gap:5px; align-items:flex-start; }
+  .rotation-count{ display:flex; align-items:baseline; gap:6px; }
+  .history-list{ display:flex; flex-direction:column; gap:8px; }
+  .history-item{ font-size:11px; border-left:2px solid var(--border-strong); padding-left:8px; }
+  .history-time{ font-family:"IBM Plex Mono",monospace; color:var(--ink-faint); display:block; }
+  .history-route{ font-weight:600; }
+  .history-cargo{ color:var(--ink-dim); }
+
+  .anomaly-chip{
+    display:inline-flex; align-items:center; gap:4px;
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px;
+    padding:4px 9px; border-radius:6px; margin-bottom:6px;
+  }
+  .anomaly-chip.high{ color:var(--st-anomalie); background:var(--st-anomalie-bg); }
+  .anomaly-chip.soft{ color:var(--st-proposee); background:var(--st-proposee-bg); }
+  .anomaly-none{ color:var(--ink-faint); font-size:12.5px; }
+
+  /* ---------- hors-planning banner row ---------- */
+  tr.row-banner td{ padding:4px 0; background:transparent; border:none; box-shadow:none; }
+  .banner-alert{
+    display:flex; align-items:flex-start; gap:14px; flex-wrap:wrap;
+    padding:14px 16px; background:var(--st-detectee-bg);
+    border:1.5px solid color-mix(in srgb, var(--st-detectee) 40%, var(--border)); border-radius:var(--radius-md);
+  }
+  .banner-icon{
+    flex:none; width:28px; height:28px; border-radius:50%; background:var(--surface); color:var(--st-detectee);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;
+  }
+  .banner-body{ flex:1 1 320px; min-width:220px; }
+  .banner-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:13.5px; color:var(--st-detectee); margin:2px 0 3px 0; }
+  .banner-meta{ font-size:12.5px; color:var(--ink-dim); }
+  .banner-meta .num{ font-weight:600; color:var(--ink); }
+  .banner-actions{ display:flex; gap:8px; align-items:center; flex:none; margin-top:2px; }
+
+  /* ---------- garage section ---------- */
+  tr.garage-divider td{ padding:24px 13px 6px 13px; background:transparent; border:none; box-shadow:none; }
+  .gd-row{ display:flex; align-items:center; gap:12px; }
+  .gd-label{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:11px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--ink-faint); white-space:nowrap;
+  }
+  .gd-line{ flex:1 1 auto; height:1px; background:var(--border); }
+  tr.row-garage td{ background:var(--surface-2); color:var(--ink-dim); }
+  tr.row-garage td:first-child{ border-left:4px solid var(--border-strong); }
+  tr.row-garage:hover td{ background:var(--surface-2); }
+  .garage-tag{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--ink-faint); background:var(--surface-3); border-radius:6px; padding:3px 9px;
+    display:inline-block; margin-top:5px;
+  }
 
   .add-row td{
     padding:0; background:transparent;
@@ -442,11 +623,15 @@
     font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px;
     letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px;
   }
+  .anomaly-type-chip{
+    font-size:11px; color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
+    border-radius:999px; padding:3px 9px;
+  }
 
   .footnote{
     margin-top:20px; display:flex; gap:12px;
     padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
-    color:var(--ink-dim); font-size:12.5px; max-width:82ch;
+    color:var(--ink-dim); font-size:12.5px; max-width:88ch;
   }
   .footnote .fn-badge{
     flex:none; width:19px; height:19px; border-radius:50%;
@@ -455,6 +640,8 @@
     font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
   }
   .footnote b{ color:var(--ink); }
+  .footnote p{ margin:0 0 8px 0; }
+  .footnote p:last-child{ margin-bottom:0; }
 
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; }
@@ -488,7 +675,8 @@
   <div class="screen-title-row">
     <div>
       <h1 class="screen-title">Planning des opérations</h1>
-      <p class="screen-caption">Attribution des missions avant shift par le service des opérations. Le statut et l'écart de chaque ligne sont produits par le moteur de rapprochement (couche traitement) — cet écran ne calcule rien, il saisit et lit.</p>
+      <p class="screen-caption">Suivi des camions du shift : chauffeur, début/fin de service, kilomètres et rotations sont <strong>suggérés</strong> à partir de la guérite, du GPS et de l'iButton. L'agent vérifie, corrige si nécessaire et valide — cet écran ne calcule rien, il rapproche et confirme.</p>
+      <p class="tip-line"><span class="tip-badge">i</span>Les informations provenant du GPS, de la guérite et de l'iButton sont proposées automatiquement. L'agent vérifie, corrige si nécessaire et valide.</p>
     </div>
   </div>
 
@@ -514,15 +702,26 @@
         <button type="button">Sud</button>
       </div>
     </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label>Tri</label>
+      <div class="segmented" role="group" aria-label="Tri">
+        <button type="button" class="on">Urgence</button>
+        <button type="button">Chauffeur A→Z</button>
+        <button type="button">Chauffeur Z→A</button>
+      </div>
+    </div>
     <div class="spacer"></div>
     <div class="stat-chips">
-      <div class="chip"><span class="n num">10</span><span class="lbl">missions planifiées</span></div>
-      <div class="chip warn"><span class="n num">2</span><span class="lbl">écarts</span></div>
+      <div class="chip"><span class="n num">8</span><span class="lbl">missions planifiées</span></div>
+      <div class="chip warn"><span class="n num">4</span><span class="lbl">à vérifier / écarts</span></div>
       <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie</span></div>
       <div class="chip ref"><span class="lbl">objectifs jour —</span><span class="n num">Nord 5</span><span class="lbl">·</span><span class="n num">Sud 3</span><span class="lbl">·</span><span class="n num">Transf. 3</span></div>
     </div>
+    <span class="sort-note">Tri par défaut : urgence → moins urgent. Les véhicules au garage restent toujours en bas de liste.</span>
   </div>
 
+  <div class="scroll-hint" aria-hidden="true"><span>Défiler pour voir toutes les colonnes</span><span class="arrow">→</span></div>
   <div class="table-wrap">
     <table class="plan">
       <thead>
@@ -534,148 +733,590 @@
           <th>Type de mission</th>
           <th>Client / donneur d'ordre</th>
           <th>Conteneur(s)</th>
-          <th>Site / zone</th>
+          <th>Début de service</th>
+          <th>Fin de service</th>
+          <th>Km parcourus</th>
+          <th>Rotation(s)</th>
+          <th>Anomalies</th>
           <th>Statut</th>
-          <th>Planifié vs réalisé</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
 
-        <tr>
-          <td class="col-heure">06:00</td>
-          <td><select class="mini-select"><option selected>Koffi N'Guessan</option><option>Ibrahim Traoré</option><option>Aya Kouassi</option></select></td>
-          <td><select class="mini-select"><option selected>TR-014</option><option>TR-027</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-108 · 20'</option><option>RQ-133 · 40'</option></select></td>
-          <td><select class="mini-select"><option selected>Livraison-Récup</option><option>Transfert</option><option>Mission client</option><option>Travaux sur site</option></select></td>
-          <td><select class="mini-select"><option selected>SOCACI</option><option>Nestlé CI</option></select></td>
-          <td><span class="container-code">MSCU 123456-7</span></td>
-          <td><select class="mini-select"><option selected>Nord</option><option>Sud</option><option>Port</option></select></td>
-          <td><span class="statut-chip st-validee"><span class="dot"></span>Validée</span></td>
-          <td><span class="ecart ok"><span class="glyph">✓</span>Conforme</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr>
-          <td class="col-heure">06:00</td>
-          <td><select class="mini-select"><option selected>Ibrahim Traoré</option></select></td>
-          <td><select class="mini-select"><option selected>TR-027</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-133 · 40'</option></select></td>
-          <td><select class="mini-select"><option selected>Transfert</option></select></td>
-          <td><select class="mini-select"><option selected>— Port → Site (plein)</option></select></td>
-          <td><span class="container-code">CMAU 987654-3</span></td>
-          <td><select class="mini-select"><option selected>Nord</option></select></td>
-          <td><span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span></td>
-          <td><span class="ecart ok"><span class="glyph">✓</span>Conforme</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr>
-          <td class="col-heure">06:30</td>
-          <td><select class="mini-select"><option selected>Aya Kouassi</option></select></td>
-          <td><select class="mini-select"><option selected>TR-032</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-201 + RQ-202 · bi-train</option></select></td>
-          <td><select class="mini-select"><option selected>Transfert</option></select></td>
-          <td><select class="mini-select"><option selected>— Site → Port (vide)</option></select></td>
-          <td><span class="container-code pending">annoncé — n° à venir</span></td>
-          <td><select class="mini-select"><option selected>Sud</option></select></td>
-          <td><span class="statut-chip st-planifiee"><span class="dot"></span>Planifiée</span></td>
-          <td><span class="ecart wait"><span class="glyph">…</span>Pas encore détectée</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr>
-          <td class="col-heure">07:00</td>
-          <td><select class="mini-select"><option selected>Serge Bamba</option></select></td>
-          <td><select class="mini-select"><option selected>TR-041</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-149 · 20'</option></select></td>
-          <td><select class="mini-select"><option selected>Livraison-Récup</option></select></td>
-          <td>
-            <div class="cell-multi">
-              <select class="mini-select"><option selected>Client non identifié — Zone Sud</option></select>
-              <span class="tag-flag">Sans géofence</span>
-            </div>
-          </td>
-          <td><span class="container-code">MAEU 456789-0</span></td>
-          <td><select class="mini-select"><option selected>Sud</option></select></td>
-          <td><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></td>
-          <td><span class="ecart ok"><span class="glyph">✓</span>Conforme</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr>
-          <td class="col-heure">07:00</td>
-          <td><select class="mini-select"><option selected>Moussa Diabaté</option></select></td>
-          <td><select class="mini-select"><option selected>TR-055</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-116 · 20'</option></select></td>
-          <td><select class="mini-select"><option selected>Mission client</option></select></td>
-          <td><select class="mini-select"><option selected>CFAO Motors</option></select></td>
-          <td><span class="container-code pending">—</span></td>
-          <td><select class="mini-select"><option selected>Sud</option></select></td>
-          <td><span class="statut-chip st-validee"><span class="dot"></span>Validée</span></td>
-          <td><span class="ecart ok"><span class="glyph">✓</span>Conforme</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr class="row-ecart">
-          <td class="col-heure">—</td>
-          <td><select class="mini-select empty"><option selected>À affecter</option></select></td>
-          <td><select class="mini-select empty"><option selected>À affecter</option></select></td>
-          <td><select class="mini-select empty"><option selected>À affecter</option></select></td>
-          <td><select class="mini-select"><option selected>Livraison-Récup</option></select></td>
-          <td><select class="mini-select"><option selected>Nestlé CI</option></select></td>
-          <td><span class="container-code">MSCU 778899-0</span></td>
-          <td><select class="mini-select"><option selected>Nord</option></select></td>
-          <td><span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span></td>
-          <td><span class="ecart hors"><span class="glyph">!</span>Détectée hors planning</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
-        <tr>
-          <td class="col-heure">09:00</td>
-          <td><select class="mini-select"><option selected>Jean-Baptiste Yao</option></select></td>
-          <td><select class="mini-select"><option selected>TR-018</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-140 · 20'</option></select></td>
-          <td><select class="mini-select"><option selected>Travaux sur site</option></select></td>
-          <td><select class="mini-select"><option selected>— interne</option></select></td>
-          <td><span class="container-code pending">—</span></td>
-          <td><select class="mini-select"><option selected>Nord</option></select></td>
-          <td><span class="statut-chip st-planifiee"><span class="dot"></span>Planifiée</span></td>
-          <td><span class="ecart na">Sans objectif de rotation</span></td>
-          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
-        </tr>
-
+        <!-- 1 — TR-021 : anomalie, identité divergente (cf. File de validation / Live tracking) -->
         <tr class="row-anomalie">
           <td class="col-heure">08:15</td>
-          <td><select class="mini-select"><option selected>Fatou Cissé</option></select></td>
-          <td><select class="mini-select"><option selected>TR-021</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-162 · 40'</option></select></td>
-          <td><select class="mini-select"><option selected>Livraison-Récup</option></select></td>
-          <td><select class="mini-select"><option selected>Groupe Sifca</option></select></td>
-          <td><span class="container-code">CMAU 112233-4</span></td>
-          <td><select class="mini-select"><option selected>Sud</option></select></td>
-          <td><span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span></td>
-          <td><span class="ecart div"><span class="glyph">⚠</span>Identité divergente — iButton ≠ guérite</span></td>
+          <td>
+            <div class="driver-cell">
+              <details class="popover">
+                <summary class="field-alert">⚠ Identité divergente</summary>
+                <div class="popover-panel">
+                  <div class="popover-title">Identité incohérente</div>
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
+                    <div><dt>iButton</dt><dd>Ibrahim Traoré</dd></div>
+                    <div><dt>GPS</dt><dd>Ibrahim Traoré</dd></div>
+                  </dl>
+                  <div class="popover-actions">
+                    <button class="btn btn-ghost" type="button">Voir les preuves</button>
+                    <button class="btn btn-primary" type="button">Corriger</button>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-021</div><div class="cell-sub">Sud</div></td>
+          <td><select class="mini-select"><option selected>RQ-162 · 40'</option><option>RQ-108 · 20'</option></select></td>
+          <td><select class="mini-select"><option selected>Livraison-Récup</option><option>Transfert</option><option>Mission client</option><option>Travaux sur site</option></select></td>
+          <td><select class="mini-select"><option selected>Groupe Sifca</option><option>Nestlé CI</option><option>CFAO Motors</option><option>SOCACI</option></select></td>
+          <td><span class="container-code">CMAU 112233-4</span><div class="ocr-flag ok">OCR ✓</div></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">08:15</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">14:20</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">46,8 km</span>
+              <span class="km-source">GPS · à confirmer (identité en cours de vérification)</span>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">1</span></div>
+              <details class="popover">
+                <summary class="link-trigger">Voir le trajet</summary>
+                <div class="popover-panel">
+                  <div class="history-item">
+                    <span class="history-time num">08:15 → 14:20</span>
+                    <div class="history-route">Port d'Abidjan → Groupe Sifca (Sud)</div>
+                    <div class="history-cargo">Conteneur plein · CMAU 112233-4</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td>
+            <details class="popover">
+              <summary class="anomaly-chip high">⚠ Identité incohérente</summary>
+              <div class="popover-panel">
+                <div class="popover-title">Identité incohérente</div>
+                <dl class="popover-compare">
+                  <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
+                  <div><dt>iButton</dt><dd>Ibrahim Traoré</dd></div>
+                  <div><dt>GPS</dt><dd>Ibrahim Traoré</dd></div>
+                </dl>
+                <div class="popover-actions">
+                  <button class="btn btn-ghost" type="button">Voir les preuves</button>
+                  <button class="btn btn-primary" type="button">Corriger</button>
+                </div>
+              </div>
+            </details>
+          </td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
+              <span class="ecart div"><span class="glyph">⚠</span>Divergente</span>
+            </div>
+          </td>
           <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
         </tr>
 
-        <tr>
-          <td class="col-heure">10:00</td>
-          <td><select class="mini-select"><option selected>Paul Kouadio</option></select></td>
-          <td><select class="mini-select"><option selected>TR-009</option></select></td>
-          <td><select class="mini-select"><option selected>RQ-175 · 20'</option></select></td>
-          <td><select class="mini-select"><option selected>Mission client</option></select></td>
-          <td><select class="mini-select"><option selected>SIVAC</option></select></td>
-          <td><span class="container-code pending">—</span></td>
-          <td><select class="mini-select"><option selected>Nord</option></select></td>
-          <td><span class="statut-chip st-validee"><span class="dot"></span>Validée</span></td>
-          <td><span class="ecart ok"><span class="glyph">✓</span>Conforme</span></td>
+        <!-- 2 — activité hors planning détectée sur TR-027 -->
+        <tr class="row-banner">
+          <td colspan="14">
+            <div class="banner-alert">
+              <span class="banner-icon" aria-hidden="true">⚠</span>
+              <div class="banner-body">
+                <div class="banner-title">Mission détectée hors planning</div>
+                <p class="banner-meta">
+                  <span class="num">15:42</span> · <span class="num">TR-027</span> · chauffeur à confirmer (badge guérite non scanné) · Site Nord → Client X
+                  <select class="mini-select" style="margin-top:7px;"><option selected>Mission client</option><option>Transfert</option><option>Livraison-Récup</option><option>Travaux sur site</option></select>
+                  <span class="tag-flag detected">Type détecté</span>
+                </p>
+              </div>
+              <div class="banner-actions">
+                <button class="btn btn-ghost" type="button">Examiner</button>
+                <button class="btn btn-primary" type="button">Ajouter au planning</button>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <!-- 3 — TR-032 : Aya Kouassi, bi-train, 2 conteneurs, lecture à vérifier -->
+        <tr class="row-ecart">
+          <td class="col-heure">06:30</td>
+          <td>
+            <div class="driver-cell">
+              <div class="driver-name">Aya Kouassi</div>
+              <div class="proof-row">
+                <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+                <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+              </div>
+              <span class="tag-flag">Suggestion — à confirmer</span>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-032</div><div class="cell-sub">Sud</div></td>
+          <td><select class="mini-select"><option selected>RQ-201 + RQ-202 · bi-train</option></select></td>
+          <td><select class="mini-select"><option selected>Transfert</option><option>Livraison-Récup</option><option>Mission client</option><option>Travaux sur site</option></select></td>
+          <td><select class="mini-select"><option selected>— Site → Port (vide)</option></select></td>
+          <td>
+            <div class="container-stack">
+              <div class="container-item">
+                <span class="container-code">MSCU 778812-4</span>
+                <span class="container-state">Vide</span>
+                <span class="ocr-flag ok">OCR ✓</span>
+              </div>
+              <div class="container-item">
+                <details class="popover">
+                  <summary class="field-alert soft">⚠ Lecture à vérifier</summary>
+                  <div class="popover-panel">
+                    <div class="popover-title">Lecture OCR incertaine</div>
+                    <p class="popover-note">Numéro capté avec un score de confiance faible sur le dernier caractère de contrôle.</p>
+                    <dl class="popover-compare">
+                      <div><dt>Lecture OCR</dt><dd>TCLU 445566-2</dd></div>
+                      <div><dt>Confiance</dt><dd>62 %</dd></div>
+                    </dl>
+                    <div class="popover-actions">
+                      <button class="btn btn-ghost" type="button">Voir les preuves</button>
+                      <button class="btn btn-primary" type="button">Corriger</button>
+                    </div>
+                  </div>
+                </details>
+                <span class="container-code" style="margin-top:5px;">TCLU 445566-2</span>
+                <span class="container-state">Plein</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">06:32</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">08:50</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+              <span class="cell-sub">Camion libéré — Aya Kouassi poursuit sur TR-009</span>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">41,4 km</span>
+              <span class="km-source">GPS · direct</span>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">1</span></div>
+              <details class="popover">
+                <summary class="link-trigger">Voir le trajet</summary>
+                <div class="popover-panel">
+                  <div class="history-item">
+                    <span class="history-time num">06:32 → 08:50</span>
+                    <div class="history-route">Site Sud → Port d'Abidjan</div>
+                    <div class="history-cargo">Conteneur vide · MSCU 778812-4</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td>
+            <span class="anomaly-chip soft">⚠ Lecture conteneur</span>
+          </td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span>
+              <span class="ecart ok"><span class="glyph">✓</span>Conforme</span>
+            </div>
+          </td>
           <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- 4 — TR-018 : Jean-Baptiste Yao, travaux sur site, chevauchement de shift -->
+        <tr>
+          <td class="col-heure">09:00</td>
+          <td>
+            <div class="driver-cell">
+              <div class="driver-name">Jean-Baptiste Yao</div>
+              <div class="proof-row">
+                <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+                <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+              </div>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-018</div><div class="cell-sub">Nord</div></td>
+          <td><select class="mini-select"><option selected>RQ-140 · 20'</option></select></td>
+          <td><select class="mini-select"><option selected>Travaux sur site</option><option>Livraison-Récup</option><option>Transfert</option><option>Mission client</option></select></td>
+          <td><select class="mini-select"><option selected>— interne</option></select></td>
+          <td><span class="container-code pending">—</span></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">09:00</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">18:15</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+              <div class="service-flag">
+                <details class="popover">
+                  <summary class="field-alert soft">⚠ Chevauche le shift suivant</summary>
+                  <div class="popover-panel">
+                    <p class="popover-note">Le camion est encore en mouvement au démarrage du shift Nuit (18h00 → 06h00). Basculer le segment si l'activité appartient au shift suivant.</p>
+                    <div class="popover-title" style="margin-top:2px;">Changer de shift</div>
+                    <div class="popover-actions">
+                      <button class="btn btn-ghost" type="button">Shift précédent</button>
+                      <button class="btn btn-ghost" type="button">Shift suivant</button>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value" style="color:var(--ink-faint);">—</span>
+              <span class="km-source">Présence site, sans trajet</span>
+            </div>
+          </td>
+          <td>
+            <span class="ecart na">Sans objectif de rotation</span>
+          </td>
+          <td><span class="anomaly-none">—</span></td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-planifiee"><span class="dot"></span>Planifiée</span>
+              <span class="ecart na">Jugement de la journée non tranché</span>
+            </div>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- 5 — TR-027 : Ibrahim Traoré, suggestion simple -->
+        <tr>
+          <td class="col-heure">06:00</td>
+          <td>
+            <div class="driver-cell">
+              <div class="driver-name">Ibrahim Traoré</div>
+              <div class="proof-row">
+                <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+                <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+              </div>
+              <span class="tag-flag">Suggestion — à confirmer</span>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-027</div><div class="cell-sub">Nord</div></td>
+          <td><select class="mini-select"><option selected>RQ-133 · 40'</option></select></td>
+          <td><select class="mini-select"><option selected>Transfert</option><option>Livraison-Récup</option><option>Mission client</option><option>Travaux sur site</option></select></td>
+          <td><select class="mini-select"><option selected>— Port → Site (plein)</option></select></td>
+          <td><span class="container-code">CMAU 987654-3</span><div class="ocr-flag ok">OCR ✓</div></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">06:02</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">06:24</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+              <span class="cell-sub">Camion libéré — Ibrahim Traoré poursuit sur TR-021</span>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">8,6 km</span>
+              <span class="km-source">GPS · direct</span>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">1</span></div>
+              <details class="popover">
+                <summary class="link-trigger">Voir le trajet</summary>
+                <div class="popover-panel">
+                  <div class="history-item">
+                    <span class="history-time num">06:02 → 06:24</span>
+                    <div class="history-route">Port d'Abidjan → Site Nord</div>
+                    <div class="history-cargo">Conteneur plein · CMAU 987654-3</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td><span class="anomaly-none">—</span></td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span>
+              <span class="ecart ok"><span class="glyph">✓</span>Conforme</span>
+            </div>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- 6 — TR-009 : segments Aya Kouassi puis Paul Kouadio -->
+        <tr>
+          <td class="col-heure">08:50</td>
+          <td>
+            <div class="driver-cell">
+              <div class="segment-list">
+                <div class="segment-item">
+                  <span class="segment-time">08:50 → 09:45</span>
+                  <span class="segment-driver">Aya Kouassi <span class="chk">✓ validé</span></span>
+                </div>
+                <div class="segment-item">
+                  <span class="segment-time">09:45 → 14:00</span>
+                  <span class="segment-driver">Paul Kouadio <span class="chk">✓ validé</span></span>
+                </div>
+                <button class="segment-add" type="button"><span class="plus">+</span>Ajouter un segment chauffeur</button>
+              </div>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-009</div><div class="cell-sub">Sud</div></td>
+          <td><select class="mini-select"><option selected>RQ-175 · 20'</option></select></td>
+          <td>
+            <select class="mini-select"><option selected>Mission client</option><option>Transfert</option><option>Livraison-Récup</option><option>Travaux sur site</option></select>
+            <div class="cell-sub">Segment 1 (Aya Kouassi) : Transfert</div>
+          </td>
+          <td><select class="mini-select"><option selected>SIVAC</option><option>Nestlé CI</option><option>SOCACI</option></select></td>
+          <td><span class="container-code pending">—</span></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">08:50</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">14:00</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">95,2 km</span>
+              <span class="km-source">GPS · direct</span>
+              <details class="popover">
+                <summary class="link-trigger">TR-009 — répartition par chauffeur</summary>
+                <div class="popover-panel">
+                  <div class="km-breakdown">
+                    <div><span>Aya Kouassi</span><span class="num">34,2 km</span></div>
+                    <div><span>Paul Kouadio</span><span class="num">61,0 km</span></div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">4</span><span class="ecart under"><span class="glyph">↓</span>sous objectif</span></div>
+              <details class="popover">
+                <summary class="link-trigger">Voir l'historique</summary>
+                <div class="popover-panel" style="max-width:290px;">
+                  <div class="history-list">
+                    <div class="history-item">
+                      <span class="history-time num">08:52</span>
+                      <div class="history-route">Site Sud → Port d'Abidjan</div>
+                      <div class="history-cargo">Conteneur vide · Aya Kouassi</div>
+                    </div>
+                    <div class="history-item">
+                      <span class="history-time num">09:41</span>
+                      <div class="history-route">Port d'Abidjan → Site Sud</div>
+                      <div class="history-cargo">Conteneur plein · Aya Kouassi</div>
+                    </div>
+                    <div class="history-item">
+                      <span class="history-time num">11:05</span>
+                      <div class="history-route">Site Sud → SIVAC</div>
+                      <div class="history-cargo">Conteneur plein · Paul Kouadio</div>
+                    </div>
+                    <div class="history-item">
+                      <span class="history-time num">13:20</span>
+                      <div class="history-route">SIVAC → Site Sud</div>
+                      <div class="history-cargo">Conteneur vide · Paul Kouadio</div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td><span class="anomaly-none">—</span></td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-validee"><span class="dot"></span>Validée</span>
+              <span class="ecart ok"><span class="glyph">✓</span>Conforme</span>
+            </div>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- 7 — TR-014 : Koffi N'Guessan, clean -->
+        <tr>
+          <td class="col-heure">06:00</td>
+          <td>
+            <div class="driver-cell">
+              <div class="driver-name">Koffi N'Guessan</div>
+              <div class="proof-row">
+                <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+                <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+              </div>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-014</div><div class="cell-sub">Nord</div></td>
+          <td><select class="mini-select"><option selected>RQ-108 · 20'</option></select></td>
+          <td><select class="mini-select"><option selected>Livraison-Récup</option><option>Transfert</option><option>Mission client</option><option>Travaux sur site</option></select></td>
+          <td><select class="mini-select"><option selected>SOCACI</option><option>Nestlé CI</option></select></td>
+          <td><span class="container-code">MSCU 123456-7</span><div class="ocr-flag ok">OCR ✓</div></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">06:00</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">13:50</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">88,0 km</span>
+              <span class="km-source">GPS · direct</span>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">2</span></div>
+              <span class="ecart under"><span class="glyph">↓</span>Nord 2 / 5</span>
+              <details class="popover">
+                <summary class="link-trigger">Voir le trajet</summary>
+                <div class="popover-panel">
+                  <div class="history-item">
+                    <span class="history-time num">06:00 → 13:50</span>
+                    <div class="history-route">Site Nord ⇄ SOCACI</div>
+                    <div class="history-cargo">2 rotations · MSCU 123456-7</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td><span class="anomaly-none">—</span></td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-validee"><span class="dot"></span>Validée</span>
+              <span class="ecart ok"><span class="glyph">✓</span>Conforme</span>
+            </div>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- 8 — TR-055 : Moussa Diabaté, clean / visé -->
+        <tr>
+          <td class="col-heure">07:00</td>
+          <td>
+            <div class="driver-cell">
+              <div class="driver-name">Moussa Diabaté</div>
+              <div class="proof-row">
+                <span class="proof-badge ok" title="Guérite : cohérente">G</span>
+                <span class="proof-badge ok" title="iButton : cohérent">iB</span>
+              </div>
+            </div>
+          </td>
+          <td><div class="truck-code num">TR-055</div><div class="cell-sub">Sud</div></td>
+          <td><select class="mini-select"><option selected>RQ-116 · 20'</option></select></td>
+          <td><select class="mini-select"><option selected>Mission client</option><option>Livraison-Récup</option><option>Transfert</option><option>Travaux sur site</option></select></td>
+          <td><select class="mini-select"><option selected>CFAO Motors</option><option>Nestlé CI</option></select></td>
+          <td><span class="container-code pending">—</span></td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">07:00</span>
+              <span class="service-source">GPS · première sortie géofence</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="service-cell">
+              <span class="service-value num">12:30</span>
+              <span class="service-source">GPS · suggestion</span>
+              <button class="service-modify" type="button">Modifier</button>
+            </div>
+          </td>
+          <td>
+            <div class="km-cell">
+              <span class="km-value num">54,0 km</span>
+              <span class="km-source">GPS · direct</span>
+            </div>
+          </td>
+          <td>
+            <div class="rotation-cell">
+              <div class="rotation-count"><span class="num">1</span></div>
+              <span class="ecart ok"><span class="glyph">✓</span>objectif atteint</span>
+              <details class="popover">
+                <summary class="link-trigger">Voir le trajet</summary>
+                <div class="popover-panel">
+                  <div class="history-item">
+                    <span class="history-time num">07:00 → 12:30</span>
+                    <div class="history-route">Site Sud → CFAO Motors</div>
+                    <div class="history-cargo">Mission client · objectif atteint</div>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </td>
+          <td><span class="anomaly-none">—</span></td>
+          <td>
+            <div class="status-stack">
+              <span class="statut-chip st-validee"><span class="dot"></span>Validée</span>
+              <span class="ecart ok"><span class="glyph">✓</span>Conforme</span>
+            </div>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button><button class="danger">Annuler</button></div></td>
+        </tr>
+
+        <!-- véhicules au garage : toujours en bas, sortis du tri d'urgence -->
+        <tr class="garage-divider">
+          <td colspan="14">
+            <div class="gd-row"><span class="gd-label">Véhicules au garage</span><span class="gd-line"></span></div>
+          </td>
+        </tr>
+
+        <tr class="row-garage">
+          <td class="col-heure">—</td>
+          <td><span style="color:var(--ink-faint);">—</span></td>
+          <td><div class="truck-code num">TR-041</div><span class="garage-tag">Au garage</span></td>
+          <td colspan="9"><span style="color:var(--ink-faint);">Maintenance planifiée — non disponible pour ce shift.</span></td>
+          <td>
+            <span class="statut-chip st-planifiee"><span class="dot"></span>Non utilisé</span>
+          </td>
+          <td><div class="row-actions"><button>Modifier</button></div></td>
         </tr>
 
         <tr class="add-row">
-          <td colspan="11">
-            <button type="button"><span class="plus">+</span>Ajouter une ligne de mission</button>
+          <td colspan="14">
+            <button type="button"><span class="plus">+</span>Ajouter une ligne de camion</button>
           </td>
         </tr>
 
@@ -700,13 +1341,52 @@
       <span class="ecart wait"><span class="glyph">…</span>Pas encore détectée</span>
       <span class="ecart hors"><span class="glyph">!</span>Détectée hors planning</span>
       <span class="ecart div"><span class="glyph">⚠</span>Divergente / anomalie</span>
+      <span class="ecart under"><span class="glyph">↓</span>Sous objectif de rotation</span>
+    </div>
+    <div class="v-divider" style="height:20px;"></div>
+    <div class="legend-group">
+      <span class="legend-title">Preuves</span>
+      <span class="proof-badge ok" style="width:auto;padding:4px 8px;">G / iB / GPS</span>
+      <span>cohérente</span>
+      <span class="proof-badge mismatch" style="width:auto;padding:4px 8px;">…</span>
+      <span>divergente</span>
+    </div>
+    <div class="v-divider" style="height:20px;"></div>
+    <div class="legend-group">
+      <span class="legend-title">Types d'anomalies suivis</span>
+      <span class="anomaly-type-chip">Survitesse</span>
+      <span class="anomaly-type-chip">Retard</span>
+      <span class="anomaly-type-chip">Freinage brusque</span>
+      <span class="anomaly-type-chip">Accélération rapide</span>
+      <span class="anomaly-type-chip">Temps de travail dépassé</span>
+      <span class="anomaly-type-chip">Temps de conduite continue dépassé</span>
+      <span class="anomaly-type-chip">Identité chauffeur incohérente</span>
+      <span class="anomaly-type-chip">Mission incohérente</span>
+      <span class="anomaly-type-chip">Informations contradictoires</span>
     </div>
   </div>
 
   <div class="footnote">
     <span class="fn-badge">i</span>
-    <p style="margin:0;">
-      <b>Notes de conception (jalon 0)</b> — Les listes déroulantes (chauffeur, camion, remorque, client) se remplissent depuis les référentiels du jalon 1 ; aucune donnée réelle ici. Le bouton « Annuler » remplace « Supprimer » : aucune ligne n'est détruite, conformément à la règle « rien de supprimé » du cadrage. Les objectifs de rotation affichés en rappel (Nord 5 · Sud 3 · Transfert 3) sont des paramètres éditables dans l'écran Paramètres, jamais des valeurs figées ici.
-    </p>
+    <div>
+      <p><b>Notes de conception (jalon 0)</b> — Cet écran suit désormais les <b>camions du shift</b>, pas seulement les missions : un camion peut être utilisé par plusieurs chauffeurs dans la même journée, représenté par des segments (voir TR-009). Le début de service, la fin de service, le kilométrage et les rotations sont des <b>suggestions</b> du moteur de rapprochement à partir du GPS, de la guérite et de l'iButton — l'agent vérifie, corrige si besoin via « Modifier », puis valide ; rien ne s'affiche ici comme une saisie manuelle obligatoire.</p>
+      <p>Le bouton « Annuler » remplace « Supprimer » : aucune ligne n'est détruite, conformément à la règle « rien de supprimé » du cadrage. Les anomalies s'affichent au niveau du champ concerné (chauffeur, conteneur, service…) et sont reprises dans la colonne Anomalies pour un balayage rapide ; « Voir les preuves » et « Corriger » ouvrent la même comparaison de sources partout où une divergence apparaît. Les rotations ne comptent que les trajets productifs site ↔ site pertinent (Port d'Abidjan, Site Proline Nord, Site Proline Sud, Client) — le reste n'est pas compté. Les véhicules au garage restent triés en bas de liste, distingués sans excès de couleur.</p>
+    </div>
   </div>
 </main>
+
+<script>
+  (function(){
+    var scrollEl = document.querySelector('.table-wrap');
+    var hint = document.querySelector('.scroll-hint');
+    if (!scrollEl || !hint) return;
+    function update(){
+      var hasOverflow = scrollEl.scrollWidth - scrollEl.clientWidth > 4;
+      var atEnd = scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 4;
+      hint.classList.toggle('is-hidden', !hasOverflow || atEnd);
+    }
+    scrollEl.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+</script>
