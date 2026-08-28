@@ -167,10 +167,11 @@
   .tab{
     display:flex; align-items:center; gap:8px;
     font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
-    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:default;
+    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none;
   }
+  a.tab:hover{ background:var(--surface-2); }
   .tab.done{ color:var(--ink-dim); }
-  .tab.active{ color:var(--accent-ink); background:var(--accent-soft); }
+  .tab.active{ color:var(--accent-ink); background:var(--accent-soft); cursor:default; }
   .badge-soon{
     font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
     letter-spacing:.04em; text-transform:uppercase;
@@ -373,12 +374,12 @@
     <span class="jalon-tag">Jalon 0 · Maquettes</span>
   </div>
   <nav class="tabs" aria-label="Écrans du jalon 0">
-    <div class="tab done">Planning des opérations</div>
-    <div class="tab done">File de validation</div>
-    <div class="tab done">Live tracking</div>
-    <div class="tab done">Fiche conteneur</div>
-    <div class="tab active">Rapport de shift</div>
-    <div class="tab">Paramètres<span class="badge-soon">à venir</span></div>
+    <a class="tab done" href="planning-operations.html">Planning des opérations</a>
+    <a class="tab done" href="file-validation.html">File de validation</a>
+    <a class="tab done" href="live-tracking.html">Live tracking</a>
+    <a class="tab done" href="fiche-conteneur.html">Fiche conteneur</a>
+    <div class="tab active" aria-current="page">Rapport de shift</div>
+    <a class="tab" href="parametres.html">Paramètres</a>
   </nav>
 </header>
 
