@@ -247,9 +247,53 @@
     display:inline-flex; align-items:center; gap:4px;
     font-size:10px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
     letter-spacing:.03em; text-transform:uppercase;
-    border-radius:5px; padding:2px 6px; white-space:nowrap;
+    border-radius:5px; padding:2px 6px; white-space:nowrap; margin-top:4px;
   }
   .tag-flag.info{ color:var(--st-detectee); background:var(--st-detectee-bg); }
+  .tag-flag.warn{ color:var(--st-proposee); background:var(--st-proposee-bg); }
+  .tag-flag.critical{ color:var(--st-anomalie); background:var(--st-anomalie-bg); }
+
+  /* ---------- popover / detail disclosure (shared pattern) ---------- */
+  details.popover{ margin:0; }
+  details.popover > summary{ list-style:none; cursor:pointer; }
+  details.popover > summary::-webkit-details-marker{ display:none; }
+  .link-trigger{ display:inline-block; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11.5px; color:var(--accent); cursor:pointer; }
+  .link-trigger:hover{ text-decoration:underline; }
+  .popover-panel{
+    margin-top:8px; padding:11px 12px; max-width:320px;
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+  }
+  .popover-title{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:11.5px;
+    letter-spacing:.03em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 8px 0;
+  }
+  .popover-compare{ display:flex; flex-direction:column; gap:5px; margin:0 0 10px 0; }
+  .popover-compare > div{ display:flex; justify-content:space-between; gap:10px; font-size:11.5px; }
+  .popover-compare dt{ margin:0; color:var(--ink-faint); font-weight:600; }
+  .popover-compare dd{ margin:0; font-weight:600; text-align:right; }
+  .popover-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+  .popover-note{ font-size:11px; color:var(--ink-dim); margin:0 0 9px 0; }
+  .popover-timeline{ display:flex; flex-direction:column; gap:6px; margin:0 0 9px 0; }
+  .popover-timeline-item{ font-size:11px; border-left:2px solid var(--border-strong); padding-left:8px; }
+  .popover-timeline-item.is-exit{ color:var(--ink-faint); }
+  .popover-timeline-item b{ color:var(--ink); font-family:"IBM Plex Mono",monospace; }
+
+  .btn{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.02em; padding:6px 11px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
+  .btn-ghost:hover{ background:var(--surface); color:var(--ink); }
+
+  .proof-row{ display:flex; gap:4px; margin:4px 0 0 0; flex-wrap:wrap; align-items:center; }
+  .proof-badge{
+    min-width:26px; height:18px; padding:0 5px; border-radius:5px;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:9.5px; font-weight:700;
+  }
+  .proof-badge.ok{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .proof-badge.attn{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .proof-badge.missing{ background:var(--surface-3); color:var(--ink-faint); border:1px dashed var(--border-strong); }
 
   /* ---------- tracking layout ---------- */
   .tracking-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start; }
@@ -271,18 +315,56 @@
   .zone-sub{ font-family:"IBM Plex Sans", sans-serif; font-size:9.5px; fill:var(--ink-faint); }
   .no-geofence-box{ fill:var(--st-proposee-bg); stroke:var(--st-proposee); stroke-width:1.3; stroke-dasharray:3 3; }
   .no-geofence-label{ font-family:"Barlow Condensed", sans-serif; font-style:italic; font-weight:600; font-size:9.5px; fill:var(--st-proposee); }
+  .client-zone-box{ fill:var(--st-detectee-bg); stroke:var(--st-detectee); stroke-width:1.3; stroke-dasharray:3 3; cursor:pointer; }
+  .client-zone-box:hover{ stroke-width:2; }
+  .client-zone-label{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.02em; fill:var(--st-detectee); cursor:pointer; }
+  .client-zone-sub{ font-family:"IBM Plex Sans", sans-serif; font-size:8.5px; fill:var(--st-detectee); opacity:.85; }
   .link-line{ fill:none; stroke:var(--st-proposee); stroke-width:1; stroke-dasharray:2 3; opacity:.8; }
-  .truck-dot{ stroke:var(--surface); stroke-width:2; }
+  .truck-dot{ stroke:var(--surface); stroke-width:2; cursor:pointer; }
+  .truck-hit{ fill:transparent; cursor:pointer; }
   .truck-dot.st-rapprochee{ fill:var(--st-rapprochee); }
   .truck-dot.st-anomalie{ fill:var(--st-anomalie); }
   .truck-dot.st-detectee{ fill:var(--st-detectee); }
   .truck-dot.st-proposee{ fill:var(--st-proposee); }
   .truck-dot.st-validee{ fill:var(--st-validee); }
-  .truck-label{ font-family:"IBM Plex Mono", monospace; font-size:9px; fill:var(--ink-dim); }
-  .pulse-ring{ fill:none; stroke:var(--st-anomalie); stroke-width:2; opacity:.55; transform-box:fill-box; transform-origin:center; animation:pulse-ring 2.2s ease-out infinite; }
+  .truck-label{ font-family:"IBM Plex Mono", monospace; font-size:9px; fill:var(--ink-dim); cursor:pointer; }
+  .truck-dwell{ font-family:"IBM Plex Sans", monospace; font-size:8px; fill:var(--ink-faint); }
+  .pulse-ring{ fill:none; stroke:var(--st-anomalie); stroke-width:2; opacity:.55; transform-box:fill-box; transform-origin:center; animation:pulse-ring 2.2s ease-out infinite; pointer-events:none; }
   @keyframes pulse-ring{ 0%{ transform:scale(1); opacity:.55; } 100%{ transform:scale(2.4); opacity:0; } }
   @media (prefers-reduced-motion: reduce){ .pulse-ring{ animation:none; opacity:.35; } }
   .map-note{ margin-top:10px; font-size:11px; color:var(--ink-faint); }
+
+  /* ---------- détail camion (clic sur la carte) ---------- */
+  .truck-detail{
+    margin-top:12px; padding:12px 14px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:var(--radius-md); font-size:12px;
+  }
+  .truck-detail.is-empty{ color:var(--ink-faint); font-style:italic; }
+  .td-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+  .td-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:14.5px; }
+  .td-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; }
+  .td-row dt{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0; }
+  .td-row dd{ margin:2px 0 0 0; font-size:12.5px; }
+
+  /* ---------- présence en géofence ---------- */
+  .geofence-list{ display:flex; flex-direction:column; gap:7px; margin-top:12px; }
+  .geofence-item{
+    display:flex; flex-direction:column; gap:0; padding:0; border-radius:var(--radius-sm);
+    background:var(--surface-2); border:1px solid var(--border);
+  }
+  .geofence-item > summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:8px 11px;
+  }
+  .geofence-item > summary::-webkit-details-marker{ display:none; }
+  .geofence-truck{ font-weight:600; font-size:12.5px; }
+  .geofence-zone{ font-size:10.5px; color:var(--ink-faint); }
+  .geofence-dwell{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; font-weight:600; color:var(--ink-dim);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:999px; padding:3px 9px; white-space:nowrap;
+  }
+  .geofence-item.has-grace .geofence-dwell{ color:var(--st-proposee); border-color:transparent; background:var(--st-proposee-bg); }
+  .geofence-detail{ padding:0 11px 10px 11px; font-size:11px; color:var(--ink-dim); border-top:1px dashed var(--border-strong); margin:0 11px; padding-top:8px; }
 
   /* ---------- missions en cours ---------- */
   .table-scroll{ overflow-x:auto; }
@@ -304,10 +386,19 @@
   .tt-dim{ color:var(--ink-faint); font-style:italic; }
 
   /* ---------- alertes ---------- */
+  .alert-group-title{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--ink-faint); margin:14px 0 2px 0;
+  }
+  .alert-group-title:first-child{ margin-top:0; }
   .alert-list{ display:flex; flex-direction:column; gap:9px; }
-  .alert-card{ display:flex; gap:10px; padding:11px 12px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-2); }
+  .alert-card{ padding:0; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-2); overflow:hidden; }
   .alert-card.sev-critical{ background:var(--st-anomalie-bg); border-color:color-mix(in srgb, var(--st-anomalie) 40%, var(--border)); }
   .alert-card.sev-attn{ background:var(--st-proposee-bg); border-color:color-mix(in srgb, var(--st-proposee) 35%, var(--border)); }
+  .alert-card > details{ width:100%; }
+  .alert-card > details > summary{ list-style:none; cursor:pointer; display:flex; gap:10px; padding:11px 12px; }
+  .alert-card > details > summary::-webkit-details-marker{ display:none; }
+  .alert-card > details > summary:hover .alert-title{ text-decoration:underline; }
   .alert-badge{
     flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
     font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:11px; margin-top:1px;
@@ -318,6 +409,14 @@
   .alert-desc{ font-size:11.5px; color:var(--ink-dim); margin:0; }
   .alert-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .alert-meta .resolve-note{ font-style:italic; }
+  .alert-source-tag{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:9.5px; letter-spacing:.04em; text-transform:uppercase;
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:5px; padding:1px 6px; color:var(--ink-dim);
+  }
+  .alert-detail{
+    padding:0 12px 12px 44px; font-size:11.5px; color:var(--ink-dim);
+    border-top:1px dashed var(--border-strong); margin:0 12px; padding-top:9px;
+  }
 
   /* ---------- données à compléter ---------- */
   .complete-note{ font-size:12px; color:var(--ink-dim); margin:0 0 12px 0; }
@@ -332,6 +431,9 @@
   .complete-chip.warn .n{ color:var(--st-anomalie); }
   .complete-chip.info{ background:var(--st-proposee-bg); border-color:transparent; }
   .complete-chip.info .n{ color:var(--st-proposee); }
+  .complete-chip > details.popover{ flex:1 1 auto; }
+  .complete-chip > details.popover > summary{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .complete-chip .popover-panel{ max-width:none; }
 
   /* ---------- legend & footnote ---------- */
   .legend{
@@ -417,10 +519,11 @@
     </div>
     <div class="spacer"></div>
     <div class="stat-chips">
-      <div class="chip"><span class="n num">10</span><span class="lbl">missions en cours</span></div>
+      <div class="chip"><span class="n num">11</span><span class="lbl">missions en cours</span></div>
       <div class="chip info"><span class="n num">1</span><span class="lbl">client à identifier</span></div>
       <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie</span></div>
-      <div class="chip"><span class="n num">5</span><span class="lbl">alertes actives</span></div>
+      <div class="chip"><span class="n num">13</span><span class="lbl">alertes actives</span></div>
+      <div class="chip info"><span class="n num">1</span><span class="lbl">QR code à changer</span></div>
     </div>
   </div>
 
@@ -435,7 +538,7 @@
           <span class="panel-sub">Aperçu simulé à 10:42</span>
         </div>
         <div class="panel-body">
-          <svg class="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord et Site Sud, avec la position des camions en mission">
+          <svg class="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord, Site Sud et zone client, avec la position des camions en mission — cliquer un camion ou une zone pour son détail">
             <!-- routes -->
             <path class="route-line" d="M 206 150 C 320 130, 380 90, 466 68"></path>
             <path class="route-line" d="M 206 168 C 320 195, 380 235, 466 252"></path>
@@ -454,35 +557,72 @@
             <rect class="zone-rect" x="470" y="20" width="210" height="100" rx="16"></rect>
             <text class="zone-label" x="575" y="38" text-anchor="middle">Site Nord</text>
             <text class="zone-sub" x="575" y="52" text-anchor="middle">géofence connue</text>
-            <text class="truck-label" x="575" y="82" text-anchor="middle">TR-014 · N'Guessan</text>
-            <circle class="truck-dot st-proposee" cx="575" cy="97" r="7"></circle>
+            <text class="truck-label" x="575" y="82" text-anchor="middle" data-map-id="truck:TR-014">TR-014 · N'Guessan</text>
+            <circle class="truck-dot st-proposee" cx="575" cy="97" r="7" data-map-id="truck:TR-014"></circle>
+            <text class="truck-dwell" x="575" y="112" text-anchor="middle" id="dwell-TR-014"></text>
 
             <!-- zone Sud -->
             <rect class="zone-rect" x="470" y="200" width="210" height="100" rx="16"></rect>
             <text class="zone-label" x="575" y="218" text-anchor="middle">Site Sud</text>
             <text class="zone-sub" x="575" y="232" text-anchor="middle">géofence connue</text>
-            <text class="truck-label" x="518" y="258" text-anchor="middle">TR-041 · Bamba</text>
-            <circle class="truck-dot st-proposee" cx="518" cy="273" r="7"></circle>
-            <text class="truck-label" x="632" y="258" text-anchor="middle">TR-055 · Diabaté</text>
-            <circle class="truck-dot st-validee" cx="632" cy="273" r="7"></circle>
+            <text class="truck-label" x="518" y="258" text-anchor="middle" data-map-id="truck:TR-041">TR-041 · Bamba</text>
+            <circle class="truck-dot st-proposee" cx="518" cy="273" r="7" data-map-id="truck:TR-041"></circle>
+            <text class="truck-dwell" x="518" y="288" text-anchor="middle" id="dwell-TR-041"></text>
+            <text class="truck-label" x="632" y="258" text-anchor="middle" data-map-id="truck:TR-055">TR-055 · Diabaté</text>
+            <circle class="truck-dot st-validee" cx="632" cy="273" r="7" data-map-id="truck:TR-055"></circle>
+            <text class="truck-dwell" x="632" y="288" text-anchor="middle" id="dwell-TR-055"></text>
 
             <!-- zone sans géofence -->
             <line class="link-line" x1="518" y1="280" x2="560" y2="306"></line>
             <rect class="no-geofence-box" x="524" y="306" width="150" height="24" rx="7"></rect>
             <text class="no-geofence-label" x="599" y="322" text-anchor="middle">« Client non identifié »</text>
 
+            <!-- zone Client identifiée -->
+            <rect class="client-zone-box" x="24" y="250" width="180" height="54" rx="14" data-map-id="client:CFAO"></rect>
+            <text class="client-zone-label" x="114" y="274" text-anchor="middle" data-map-id="client:CFAO">Client — CFAO Motors</text>
+            <text class="client-zone-sub" x="114" y="290" text-anchor="middle" data-map-id="client:CFAO">zone client · sans géofence guérite dédiée</text>
+
             <!-- camions en route -->
-            <circle class="truck-dot st-rapprochee" cx="300" cy="120" r="7"></circle>
-            <text class="truck-label" x="311" y="118">TR-027 · Traoré</text>
+            <circle class="truck-dot st-rapprochee" cx="300" cy="120" r="7" data-map-id="truck:TR-027"></circle>
+            <text class="truck-label" x="311" y="118" data-map-id="truck:TR-027">TR-027 · Traoré</text>
+            <text class="truck-dwell" x="311" y="131" data-map-id="truck:TR-027" id="dwell-TR-027"></text>
 
             <circle class="pulse-ring" cx="358" cy="222" r="7"></circle>
-            <circle class="truck-dot st-anomalie" cx="358" cy="222" r="7"></circle>
-            <text class="truck-label" x="369" y="220">TR-021 · Cissé</text>
+            <circle class="truck-dot st-anomalie" cx="358" cy="222" r="7" data-map-id="truck:TR-021"></circle>
+            <text class="truck-label" x="369" y="220" data-map-id="truck:TR-021">TR-021 · Cissé ⚠</text>
+            <text class="truck-dwell" x="369" y="233" data-map-id="truck:TR-021" id="dwell-TR-021"></text>
 
-            <circle class="truck-dot st-detectee" cx="278" cy="197" r="7"></circle>
-            <text class="truck-label" x="234" y="212">TR-063 · non confirmé</text>
+            <circle class="truck-dot st-detectee" cx="278" cy="197" r="7" data-map-id="truck:TR-063"></circle>
+            <text class="truck-label" x="234" y="212" data-map-id="truck:TR-063">TR-063 · non confirmé</text>
+
+            <!-- camion en mouvement sans mission ni chauffeur -->
+            <circle class="pulse-ring" cx="390" cy="300" r="7"></circle>
+            <circle class="truck-dot st-anomalie" cx="390" cy="300" r="7" data-map-id="truck:TR-058"></circle>
+            <text class="truck-label" x="337" y="298" data-map-id="truck:TR-058">TR-058 · sans mission/chauffeur</text>
           </svg>
-          <p class="map-note">Représentation schématique des zones (Port, Nord, Sud), pas une carte géolocalisée réelle — l'intégration GPS/télématique arrive avec le jalon 6. 6 des 10 missions en cours sont positionnées ici à titre d'exemple ; la liste complète figure ci-dessous.</p>
+          <p class="map-note">Représentation schématique des zones (Port, Nord, Sud, Client), pas une carte géolocalisée réelle — l'intégration GPS/télématique arrive avec le jalon 6. 7 des 11 missions/activités en cours sont positionnées ici à titre d'exemple ; la liste complète figure ci-dessous. Cliquer un camion, un libellé ou une zone affiche son détail.</p>
+
+          <div class="truck-detail is-empty" id="truck-detail">Cliquez sur un camion ou sur une zone de la carte pour afficher son détail (chauffeur, preuves, géofence, mission).</div>
+
+          <div class="geofence-section">
+            <div class="panel-sub" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
+              <span class="legend-title">Présence en géofence</span>
+              <details class="popover">
+                <summary class="link-trigger">ℹ Règle des 15 minutes</summary>
+                <div class="popover-panel">
+                  <div class="popover-title">Règle des 15 minutes</div>
+                  <p class="popover-note">Une sortie de géofence de moins de 15 minutes ne réinitialise pas le compteur de présence : le temps continue d'être calculé depuis la première entrée. Une sortie de 15 minutes ou plus peut, elle, constituer une nouvelle présence à l'entrée suivante.</p>
+                  <div class="popover-timeline">
+                    <div class="popover-timeline-item"><b>10:00</b> — entrée Proline</div>
+                    <div class="popover-timeline-item is-exit"><b>10:05</b> — sortie (5 min)</div>
+                    <div class="popover-timeline-item"><b>10:10</b> — entrée à nouveau — compteur non réinitialisé</div>
+                  </div>
+                  <p class="popover-note" style="margin-bottom:0;">Calculé pour une référence à 10:30 → <strong id="rule-demo-result">—</strong> <span style="color:var(--ink-faint);">(et non 20 min)</span></p>
+                </div>
+              </details>
+            </div>
+            <div class="geofence-list" id="geofence-list"></div>
+          </div>
         </div>
       </section>
 
@@ -490,7 +630,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">Missions en cours</h2>
-          <span class="panel-sub">10 missions</span>
+          <span class="panel-sub">11 missions</span>
         </div>
         <div class="panel-body">
           <div class="table-scroll">
@@ -527,7 +667,21 @@
                 </tr>
                 <tr>
                   <td class="tt-heure">07:00</td>
-                  <td><div class="tt-name">Moussa Diabaté</div></td>
+                  <td>
+                    <div class="tt-name">Moussa Diabaté</div>
+                    <details class="popover">
+                      <summary class="tag-flag warn">⚠ Passage guérite manquant</summary>
+                      <div class="popover-panel">
+                        <div class="popover-title">Passage guérite manquant</div>
+                        <p class="popover-note">Entrée détectée par GPS dans la géofence Site Sud à 09:40, mais aucun passage n'a été enregistré à la guérite pour ce retour.</p>
+                        <dl class="popover-compare">
+                          <div><dt>Guérite</dt><dd>aucun passage enregistré</dd></div>
+                          <div><dt>Tag / iButton</dt><dd>cohérent</dd></div>
+                          <div><dt>GPS</dt><dd>entrée Site Sud 09:40</dd></div>
+                        </dl>
+                      </div>
+                    </details>
+                  </td>
                   <td><span class="num">TR-055</span> · <span class="num">RQ-116</span></td>
                   <td>Mission client</td>
                   <td>CFAO Motors</td>
@@ -536,7 +690,21 @@
                 </tr>
                 <tr>
                   <td class="tt-heure">07:05</td>
-                  <td><div class="tt-name">Serge Bamba</div></td>
+                  <td>
+                    <div class="tt-name">Serge Bamba</div>
+                    <details class="popover">
+                      <summary class="tag-flag warn">⚠ Tag non remonté</summary>
+                      <div class="popover-panel">
+                        <div class="popover-title">Tag / iButton non remonté</div>
+                        <p class="popover-note">Chauffeur identifié par la guérite (Serge Bamba), mais aucune lecture iButton depuis le début du service (07:05).</p>
+                        <dl class="popover-compare">
+                          <div><dt>Guérite</dt><dd>Serge Bamba</dd></div>
+                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                          <div><dt>GPS</dt><dd>cohérent</dd></div>
+                        </dl>
+                      </div>
+                    </details>
+                  </td>
                   <td><span class="num">TR-041</span> · <span class="num">RQ-149</span></td>
                   <td>Livraison-Récup</td>
                   <td class="tt-dim">« Client non identifié »</td>
@@ -563,7 +731,23 @@
                 </tr>
                 <tr class="row-anomalie">
                   <td class="tt-heure">08:20</td>
-                  <td><div class="tt-name">Fatou Cissé</div><div class="tt-sub">déclarée guérite · iButton : Ibrahim Traoré</div></td>
+                  <td>
+                    <div class="tt-name">Fatou Cissé</div>
+                    <div class="tt-sub">déclarée guérite · iButton : Ibrahim Traoré</div>
+                    <details class="popover">
+                      <summary class="tag-flag critical">⚠ Preuves incohérentes</summary>
+                      <div class="popover-panel">
+                        <div class="popover-title">Preuves incohérentes</div>
+                        <p class="popover-note">La guérite et l'iButton ne désignent pas le même chauffeur pour ce camion — l'agent doit comparer les sources avant validation.</p>
+                        <dl class="popover-compare">
+                          <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
+                          <div><dt>Tag / iButton</dt><dd>Ibrahim Traoré</dd></div>
+                          <div><dt>GPS</dt><dd>cohérent avec Ibrahim Traoré</dd></div>
+                        </dl>
+                        <div class="popover-actions"><button class="btn btn-ghost" type="button">Voir les preuves</button></div>
+                      </div>
+                    </details>
+                  </td>
                   <td><span class="num">TR-021</span> · <span class="num">RQ-162</span></td>
                   <td>Livraison-Récup</td>
                   <td>Groupe Sifca</td>
@@ -572,11 +756,48 @@
                 </tr>
                 <tr>
                   <td class="tt-heure">08:45</td>
-                  <td><div class="tt-name tt-dim">Chauffeur non confirmé</div></td>
+                  <td>
+                    <div class="tt-name tt-dim">Chauffeur non confirmé</div>
+                    <details class="popover">
+                      <summary class="tag-flag critical">⚠ GPS non remonté</summary>
+                      <div class="popover-panel">
+                        <div class="popover-title">GPS non remonté</div>
+                        <p class="popover-note">Aucune émission GPS depuis 2h12 (dernière position connue 08:30). Ni la guérite ni le tag n'ont confirmé de chauffeur pour cette activité.</p>
+                        <dl class="popover-compare">
+                          <div><dt>Guérite</dt><dd>—</dd></div>
+                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                          <div><dt>GPS</dt><dd>silencieux depuis 08:30</dd></div>
+                        </dl>
+                      </div>
+                    </details>
+                  </td>
                   <td><span class="num">TR-063</span> · <span class="num">RQ-190</span></td>
                   <td class="tt-dim">—</td>
                   <td class="tt-dim">Aucune ligne planifiée ne correspond</td>
                   <td>Sud</td>
+                  <td><span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span></td>
+                </tr>
+                <tr class="row-anomalie">
+                  <td class="tt-heure">10:30</td>
+                  <td>
+                    <div class="tt-name tt-dim">Chauffeur non identifié</div>
+                    <details class="popover">
+                      <summary class="tag-flag critical">⚠ En mouvement — sans mission ni chauffeur</summary>
+                      <div class="popover-panel">
+                        <div class="popover-title">Véhicule en mouvement sans mission ni chauffeur</div>
+                        <p class="popover-note">GPS actif : le camion se déplace (Nord) depuis 10:18. Aucune mission planifiée ne correspond et aucun chauffeur n'a été confirmé (ni guérite, ni tag).</p>
+                        <dl class="popover-compare">
+                          <div><dt>Guérite</dt><dd>—</dd></div>
+                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                          <div><dt>GPS</dt><dd>actif, en mouvement</dd></div>
+                        </dl>
+                      </div>
+                    </details>
+                  </td>
+                  <td><span class="num">TR-058</span> · <span class="num">RQ-—</span></td>
+                  <td class="tt-dim">—</td>
+                  <td class="tt-dim">Aucune ligne planifiée ne correspond</td>
+                  <td>Nord</td>
                   <td><span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span></td>
                 </tr>
                 <tr>
@@ -611,57 +832,241 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">Alertes actives</h2>
-          <span class="panel-sub">5 en cours</span>
+          <span class="panel-sub">13 en cours</span>
         </div>
         <div class="panel-body">
+
+          <p class="alert-group-title">🔴 Critique</p>
           <div class="alert-list">
 
             <div class="alert-card sev-critical">
-              <span class="alert-badge">⚠</span>
-              <div>
-                <p class="alert-title">Identité divergente</p>
-                <p class="alert-desc">TR-021 — iButton (Ibrahim Traoré) ≠ déclaration guérite (Fatou Cissé).</p>
-                <div class="alert-meta"><span>détectée 08:16</span><span>·</span><span class="resolve-note">se résout à la résolution de l'anomalie en File de validation</span></div>
-              </div>
+              <details>
+                <summary>
+                  <span class="alert-badge">⚠</span>
+                  <div>
+                    <p class="alert-title">Camion en mouvement sans mission ni chauffeur</p>
+                    <p class="alert-desc">TR-058 — GPS actif, camion en déplacement (Nord) depuis 10:18, aucune mission planifiée ne correspond, aucun chauffeur confirmé.</p>
+                    <div class="alert-meta"><span>détectée 10:18</span><span>·</span><span class="resolve-note">se résout à l'affectation d'une mission et d'un chauffeur confirmé</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>—</dd></div>
+                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                    <div><dt>GPS</dt><dd>actif, en mouvement</dd></div>
+                  </dl>
+                  Cas à examiner en priorité : aucune preuve d'identité, camion non stationnaire.
+                </div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-critical">
+              <details>
+                <summary>
+                  <span class="alert-badge">⚠</span>
+                  <div>
+                    <p class="alert-title">Preuves incohérentes <span class="alert-source-tag">Guérite ≠ Tag</span></p>
+                    <p class="alert-desc">TR-021 — Tag/iButton (Ibrahim Traoré) ≠ déclaration guérite (Fatou Cissé).</p>
+                    <div class="alert-meta"><span>détectée 08:16</span><span>·</span><span class="resolve-note">se résout à la résolution de l'anomalie en File de validation</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
+                    <div><dt>Tag / iButton</dt><dd>Ibrahim Traoré</dd></div>
+                    <div><dt>GPS</dt><dd>cohérent avec Ibrahim Traoré</dd></div>
+                  </dl>
+                  L'agent doit comparer les trois sources avant validation — même logique de comparaison que dans Planning et File de validation.
+                </div>
+              </details>
             </div>
 
             <div class="alert-card sev-attn">
-              <span class="alert-badge">!</span>
-              <div>
-                <p class="alert-title">Camion muet</p>
-                <p class="alert-desc">TR-063 — aucune émission depuis 2h12. Statut déclaré : en mission (Sud).</p>
-                <div class="alert-meta"><span>seuil : > 2h</span><span>·</span><span class="resolve-note">se résout à la reprise d'émission</span></div>
-              </div>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <span class="alert-badge">!</span>
-              <div>
-                <p class="alert-title">Faible rotation</p>
-                <p class="alert-desc">Aya Kouassi — 1 rotation à 10h30 pour un objectif Nord de 5, contrôle au prorata du temps écoulé.</p>
-                <div class="alert-meta"><span>objectif famille × zone</span><span>·</span><span class="resolve-note">se résout au-dessus de l'objectif</span></div>
-              </div>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <span class="alert-badge">!</span>
-              <div>
-                <p class="alert-title">Retard de début de shift</p>
-                <p class="alert-desc">Jean-Baptiste Yao — aucune activité détectée à 9h35, au-delà de 30 min après l'heure de référence (9h Nord).</p>
-                <div class="alert-meta"><span>seuil : > 30 min</span><span>·</span><span class="resolve-note">se résout dès la première preuve d'activité</span></div>
-              </div>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <span class="alert-badge">!</span>
-              <div>
-                <p class="alert-title">6ᵉ jour consécutif</p>
-                <p class="alert-desc">Koffi N'Guessan — aucun jour de repos depuis 6 jours de travail.</p>
-                <div class="alert-meta"><span>suivi automatique</span><span>·</span><span class="resolve-note">se résout au prochain jour de repos</span></div>
-              </div>
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">GPS non remonté <span class="alert-source-tag">Source : GPS</span></p>
+                    <p class="alert-desc">TR-063 — aucune émission depuis 2h12 (dernière position connue 08:30). Statut déclaré : en mission (Sud).</p>
+                    <div class="alert-meta"><span>seuil : > 2h</span><span>·</span><span class="resolve-note">se résout à la reprise d'émission</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>—</dd></div>
+                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                    <div><dt>GPS</dt><dd>silencieux depuis 08:30</dd></div>
+                  </dl>
+                  Camion également signalé en mouvement sans mission/chauffeur confirmé — voir le cas TR-058 ci-dessus.
+                </div>
+              </details>
             </div>
 
           </div>
+
+          <p class="alert-group-title">🟠 Important</p>
+          <div class="alert-list">
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Temps de travail dépassé</p>
+                    <p class="alert-desc">Ibrahim Traoré — 53h30 cumulées sur les 6 derniers jours, seuil hebdomadaire 52h dépassé de 1h30.</p>
+                    <div class="alert-meta"><span>seuil : 52h / semaine</span><span>·</span><span class="resolve-note">se résout au renouvellement de la semaine de suivi</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Cumul glissant sur 6 jours, suivi automatique — indépendant des heures du shift en cours.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Temps de conduite continue dépassé</p>
+                    <p class="alert-desc">Koffi N'Guessan (TR-014) — 2h32 de conduite continue sans pause détectée, seuil 2h15 dépassé de 17 min.</p>
+                    <div class="alert-meta"><span>seuil : 2h15</span><span>·</span><span class="resolve-note">se résout à la première pause détectée</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Conduite continue depuis 08:10 (début de mission TR-014), aucune pause détectée depuis.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Mauvaise conduite</p>
+                    <p class="alert-desc">Paul Kouadio (TR-009, segment 2/2) — freinages brusques et accélérations rapides répétés (4 événements en 20 min).</p>
+                    <div class="alert-meta"><span>seuil : à caler avec le fournisseur télématique</span><span>·</span><span class="resolve-note">se résout si non répété sur la fenêtre suivante</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Fenêtre 10:05 → 10:25, camion TR-009 en route vers SIVAC.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Survitesse</p>
+                    <p class="alert-desc">Ibrahim Traoré (TR-027) — 3 survitesses détectées sur le shift, dernière à 10:15 (92 km/h / limite 70).</p>
+                    <div class="alert-meta"><span>seuil : ≥ 3 événements</span><span>·</span><span class="resolve-note">se résout en fin de shift si non répété</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Événements à 07:48, 09:02 et 10:15. Source : GPS/télématique.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Fin anticipée</p>
+                    <p class="alert-desc">Moussa Diabaté (TR-055) — fin de service détectée à 09:40, alors que la mission prévoit une fin vers 11:15 (écart 1h35).</p>
+                    <div class="alert-meta"><span>écart : 1h35</span><span>·</span><span class="resolve-note">se résout à la confirmation par l'agent</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Retour en geofence Site Sud à 09:40 sans passage guérite associé — voir aussi « Passage guérite manquant ».</div>
+              </details>
+            </div>
+
+          </div>
+
+          <p class="alert-group-title">🟡 À surveiller</p>
+          <div class="alert-list">
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Tag non remonté <span class="alert-source-tag">Source : Tag / iButton</span></p>
+                    <p class="alert-desc">TR-041 — Serge Bamba identifié par la guérite, aucune lecture iButton depuis le début du service (07:05).</p>
+                    <div class="alert-meta"><span>seuil : depuis le début de service</span><span>·</span><span class="resolve-note">se résout à la première lecture iButton</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>Serge Bamba</dd></div>
+                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
+                    <div><dt>GPS</dt><dd>cohérent</dd></div>
+                  </dl>
+                </div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Passage guérite manquant <span class="alert-source-tag">Source : Guérite</span></p>
+                    <p class="alert-desc">TR-055 — entrée détectée par GPS dans Site Sud à 09:40, aucun passage guérite enregistré pour ce retour.</p>
+                    <div class="alert-meta"><span>détectée 09:40</span><span>·</span><span class="resolve-note">se résout à la régularisation du passage guérite</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">
+                  <dl class="popover-compare">
+                    <div><dt>Guérite</dt><dd>aucun passage enregistré</dd></div>
+                    <div><dt>Tag / iButton</dt><dd>cohérent</dd></div>
+                    <div><dt>GPS</dt><dd>entrée Site Sud 09:40</dd></div>
+                  </dl>
+                  Voir aussi « Fin anticipée » ci-dessus : même retour anticipé côté Site Sud.
+                </div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Retard de début de shift</p>
+                    <p class="alert-desc">Jean-Baptiste Yao — aucune activité détectée à 9h35, au-delà de 30 min après l'heure de référence (9h Nord).</p>
+                    <div class="alert-meta"><span>seuil : > 30 min</span><span>·</span><span class="resolve-note">se résout dès la première preuve d'activité</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Référence de shift Nord : 09:00. Aucune sortie de géofence, aucun passage guérite ni émission GPS constatés à 09:35.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">Faible rotation</p>
+                    <p class="alert-desc">Aya Kouassi — 1 rotation à 10h30 pour un objectif Nord de 5, contrôle au prorata du temps écoulé.</p>
+                    <div class="alert-meta"><span>objectif famille × zone</span><span>·</span><span class="resolve-note">se résout au-dessus de l'objectif</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Segments TR-032 (06:30) puis TR-009 (07:35→) : une seule rotation productive comptée à ce stade du shift.</div>
+              </details>
+            </div>
+
+            <div class="alert-card sev-attn">
+              <details>
+                <summary>
+                  <span class="alert-badge">!</span>
+                  <div>
+                    <p class="alert-title">6ᵉ jour consécutif</p>
+                    <p class="alert-desc">Koffi N'Guessan — aucun jour de repos depuis 6 jours de travail.</p>
+                    <div class="alert-meta"><span>suivi automatique</span><span>·</span><span class="resolve-note">se résout au prochain jour de repos</span></div>
+                  </div>
+                </summary>
+                <div class="alert-detail">Dernier jour de repos enregistré il y a 6 jours ouvrés.</div>
+              </details>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -676,6 +1081,20 @@
             <div class="complete-chip info"><span>Clients sans géofence à identifier</span><span class="n">1</span></div>
             <div class="complete-chip"><span>Missions Proposées en attente de validation</span><span class="n">3</span></div>
             <div class="complete-chip warn"><span>Anomalies à résoudre</span><span class="n">1</span></div>
+            <div class="complete-chip info">
+              <details class="popover">
+                <summary><span>QR codes à changer</span><span class="n">1</span></summary>
+                <div class="popover-panel">
+                  <div class="popover-title">QR code à renouveler</div>
+                  <p class="popover-note">TR-055 — QR conteneur MSCU 778812-4 signalé à changer. Information renseignée dans le formulaire guérite le 25/08 à 07:02.</p>
+                  <dl class="popover-compare">
+                    <div><dt>Camion</dt><dd>TR-055</dd></div>
+                    <div><dt>Conteneur</dt><dd>MSCU 778812-4</dd></div>
+                    <div><dt>Renseigné par</dt><dd>formulaire guérite</dd></div>
+                  </dl>
+                </div>
+              </details>
+            </div>
           </div>
         </div>
       </section>
@@ -702,20 +1121,38 @@
       <div class="legend-row">
         <span class="map-legend-item"><svg width="18" height="18" aria-hidden="true"><rect x="1" y="1" width="16" height="16" rx="4" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="2 3"></rect></svg>géofence connue</span>
         <span class="map-legend-item"><svg width="18" height="18" aria-hidden="true"><rect x="1" y="4" width="16" height="10" rx="3" fill="var(--st-proposee-bg)" stroke="var(--st-proposee)" stroke-width="1" stroke-dasharray="2 2"></rect></svg>zone sans géofence</span>
-        <span class="map-legend-item"><svg width="18" height="18" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="var(--st-anomalie)"></circle></svg>anomalie (pastille pulsée)</span>
+        <span class="map-legend-item"><svg width="18" height="18" aria-hidden="true"><rect x="1" y="4" width="16" height="10" rx="3" fill="var(--st-detectee-bg)" stroke="var(--st-detectee)" stroke-width="1" stroke-dasharray="2 2"></rect></svg>zone Client identifiée</span>
+        <span class="map-legend-item"><svg width="18" height="18" aria-hidden="true"><circle cx="9" cy="9" r="6" fill="var(--st-anomalie)"></circle></svg>anomalie / à risque (pastille pulsée)</span>
       </div>
     </div>
     <div class="v-divider" style="height:auto; align-self:stretch;"></div>
     <div class="legend-group">
-      <span class="legend-title">Les 7 alertes (seuils de départ, paramétrables)</span>
+      <span class="legend-title">Sources de preuve</span>
+      <div class="legend-row">
+        <span class="map-legend-item"><span class="proof-badge ok" style="width:auto;padding:3px 7px;">G</span>Guérite</span>
+        <span class="map-legend-item"><span class="proof-badge ok" style="width:auto;padding:3px 7px;">GPS</span>GPS</span>
+        <span class="map-legend-item"><span class="proof-badge ok" style="width:auto;padding:3px 7px;">TAG</span>Tag / iButton</span>
+        <span class="map-legend-item"><span class="proof-badge missing" style="width:auto;padding:3px 7px;">—</span>non remonté</span>
+        <span class="map-legend-item"><span class="proof-badge mismatch" style="width:auto;padding:3px 7px;">≠</span>incohérent</span>
+      </div>
+    </div>
+    <div class="v-divider" style="height:auto; align-self:stretch;"></div>
+    <div class="legend-group">
+      <span class="legend-title">Les alertes suivies (seuils de départ, paramétrables)</span>
       <ul class="alert-ref-list">
+        <li><b>GPS non remonté</b> — > 2h sans émission</li>
+        <li><b>Passage guérite manquant</b> — entrée/sortie GPS sans passage guérite associé</li>
+        <li><b>Tag non remonté</b> — aucune lecture iButton depuis le début de service</li>
+        <li><b>Preuves incohérentes</b> — guérite ≠ tag ≠ GPS</li>
         <li><b>Retard début de shift</b> — > 30 min après l'heure de référence</li>
         <li><b>Faible rotation</b> — sous l'objectif famille × zone, au prorata du temps écoulé</li>
-        <li><b>Survitesses</b> — ≥ 3 événements sur le shift</li>
-        <li><b>Accélérations / freinages</b> — seuils à caler avec le fournisseur télématique</li>
-        <li><b>Camion muet</b> — > 2h sans émission</li>
+        <li><b>Survitesse</b> — ≥ 3 événements sur le shift</li>
+        <li><b>Mauvaise conduite</b> — freinages/accélérations répétés, seuils à caler avec le fournisseur télématique</li>
+        <li><b>Fin anticipée</b> — fin de service détectée avant l'heure prévue</li>
+        <li><b>Temps de conduite continue dépassé</b> — seuil réglementaire de conduite sans pause</li>
+        <li><b>Temps de travail dépassé</b> — cumul hebdomadaire au-delà du seuil</li>
         <li><b>6ᵉ jour consécutif</b> — suivi automatique des jours travaillés</li>
-        <li><b>Identité divergente</b> — iButton ≠ guérite ≠ tracking</li>
+        <li><b>Véhicule sans mission / sans chauffeur</b> — camion en mouvement non rattaché</li>
       </ul>
     </div>
   </div>
@@ -725,6 +1162,222 @@
     <div>
       <p><b>Notes de conception (jalon 0)</b> — Écran couche 4 : une vue, pas une couche (cahier des charges Missions/Chauffeurs/Live §7.1). Il ne recalcule rien — carte, missions, alertes et compteurs sont ceux déjà produits par le traitement. Toute action (valider une mission, identifier un client, résoudre une anomalie) reste dans File de validation ; cet écran n'écrit rien.</p>
       <p>Toutes les alertes sont <b>auto-résolubles</b> quand leur condition cesse et restent <b>tracées</b> ; aucun seuil n'est en dur, tous sont des paramètres éditables dans l'écran Paramètres (à venir). La carte est une représentation schématique des zones — aucune géolocalisation réelle n'est branchée à ce stade.</p>
+      <p>Le temps de présence en géofence applique la <b>règle des 15 minutes</b> : une sortie de moins de 15 min ne réinitialise pas le compteur, qui continue depuis la première entrée (voir « ℹ Règle des 15 minutes » sous la carte). L'état des <b>QR codes à changer</b> est renseigné dans le formulaire guérite et simplement repris ici, en lecture seule, comme le reste de cet écran.</p>
     </div>
   </div>
 </main>
+
+<script>
+  (function(){
+
+    // ---------- horloge de référence de la maquette ----------
+    var NOW = '10:42';
+
+    function toMin(hhmm){
+      var p = hhmm.split(':');
+      return (+p[0]) * 60 + (+p[1]);
+    }
+
+    // Règle des 15 minutes : une sortie de géofence de moins de `graceMin`
+    // ne réinitialise pas le compteur de présence continue.
+    function computeDwell(events, nowStr, graceMin){
+      graceMin = graceMin || 15;
+      var evs = events.map(function(e){ return { type:e.type, m:toMin(e.time) }; })
+                       .sort(function(a,b){ return a.m - b.m; });
+      var anchor = null, lastExit = null;
+      evs.forEach(function(e){
+        if (e.type === 'enter'){
+          if (anchor === null) anchor = e.m;
+          else if (lastExit !== null && (e.m - lastExit) >= graceMin) anchor = e.m;
+          lastExit = null;
+        } else if (e.type === 'exit'){
+          lastExit = e.m;
+        }
+      });
+      var now = toMin(nowStr);
+      return { anchorMin: anchor, elapsedMin: (anchor === null ? null : now - anchor) };
+    }
+
+    function formatDwell(min){
+      if (min === null || min < 0) return '—';
+      min = Math.round(min);
+      if (min < 60) return min + ' min';
+      var h = Math.floor(min / 60), m = min % 60;
+      return h + ' h ' + (m < 10 ? '0' : '') + m;
+    }
+
+    // ---------- données fictives : présence en géofence ----------
+    var GEOFENCE_PRESENCE = [
+      { truck:'TR-021', zone:"Groupe Sifca (client)", events:[ { type:'enter', time:'10:00' } ] },
+      { truck:'TR-027', zone:'Site Nord', events:[ { type:'enter', time:'09:30' } ] },
+      { truck:'TR-009', zone:'SIVAC (client · Nord)', events:[ { type:'enter', time:'10:24' } ] },
+      { truck:'TR-014', zone:'Site Nord', events:[ { type:'enter', time:'09:44' } ] },
+      { truck:'TR-041', zone:'Site Sud', events:[
+          { type:'enter', time:'09:48' },
+          { type:'exit',  time:'09:53' },
+          { type:'enter', time:'09:58' }
+        ], graceDemo:true },
+      { truck:'TR-055', zone:'Site Sud', events:[ { type:'enter', time:'09:40' } ] }
+    ];
+
+    function renderGeofenceList(){
+      var list = document.getElementById('geofence-list');
+      if (!list) return;
+      list.innerHTML = '';
+      GEOFENCE_PRESENCE.forEach(function(g){
+        var d = computeDwell(g.events, NOW, 15);
+        var det = document.createElement('details');
+        det.className = 'geofence-item' + (g.graceDemo ? ' has-grace' : '');
+        var timelineHtml = g.events.map(function(e){
+          return '<div class="popover-timeline-item' + (e.type === 'exit' ? ' is-exit' : '') + '"><b>' + e.time + '</b> — ' + (e.type === 'enter' ? 'entrée' : 'sortie') + '</div>';
+        }).join('');
+        var graceNote = g.graceDemo
+          ? '<p class="popover-note">La sortie de 09:53 à 09:58 dure moins de 15 minutes : elle ne réinitialise pas le compteur, qui continue depuis la première entrée (09:48) — règle des 15 minutes.</p>'
+          : '';
+        det.innerHTML =
+          '<summary>' +
+            '<div><div class="geofence-truck">' + g.truck + '</div><div class="geofence-zone">' + g.zone + '</div></div>' +
+            '<span class="geofence-dwell">Entrée il y a ' + formatDwell(d.elapsedMin) + '</span>' +
+          '</summary>' +
+          '<div class="geofence-detail">' +
+            '<div class="popover-timeline">' + timelineHtml + '</div>' +
+            graceNote +
+            'Première entrée retenue : <b class="num">' + minToClock(d.anchorMin) + '</b> · référence ' + NOW +
+          '</div>';
+        list.appendChild(det);
+      });
+
+      // reprise des temps de présence directement à côté des camions positionnés sur la carte
+      GEOFENCE_PRESENCE.forEach(function(g){
+        var el = document.getElementById('dwell-' + g.truck);
+        if (!el) return;
+        var d = computeDwell(g.events, NOW, 15);
+        el.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
+      });
+    }
+
+    function minToClock(min){
+      if (min === null) return '—';
+      var h = Math.floor(min / 60) % 24, m = min % 60;
+      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    // ---------- exemple pédagogique : règle des 15 minutes (patron) ----------
+    function renderRuleDemo(){
+      var el = document.getElementById('rule-demo-result');
+      if (!el) return;
+      var d = computeDwell([
+        { type:'enter', time:'10:00' },
+        { type:'exit',  time:'10:05' },
+        { type:'enter', time:'10:10' }
+      ], '10:30', 15);
+      el.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
+    }
+
+    // ---------- détail camion / zone (clic sur la carte) ----------
+    var TRUCK_INFO = {
+      'TR-014': { driver:"Koffi N'Guessan", statut:'st-proposee', statutLabel:'Proposée',
+        mission:'Livraison-Récup · Nestlé CI · Nord',
+        sources:{ guerite:'ok', tag:'ok', gps:'ok' },
+        geofence:{ zone:'Site Nord', events:[ { type:'enter', time:'09:44' } ] },
+        note:'Temps de conduite continue dépassé (2h32, seuil 2h15) — voir les alertes.' },
+      'TR-041': { driver:'Serge Bamba', statut:'st-proposee', statutLabel:'Proposée',
+        mission:"Livraison-Récup · « Client non identifié » · Sud",
+        sources:{ guerite:'ok', tag:'missing', gps:'ok' },
+        geofence:{ zone:'Site Sud', events:[ { type:'enter', time:'09:48' }, { type:'exit', time:'09:53' }, { type:'enter', time:'09:58' } ] },
+        note:'Tag iButton non remonté depuis le début du service (07:05). Courte sortie 09:53→09:58 sans effet sur le compteur (règle des 15 min).' },
+      'TR-055': { driver:'Moussa Diabaté', statut:'st-validee', statutLabel:'Validée',
+        mission:'Mission client · CFAO Motors · Sud',
+        sources:{ guerite:'attn', tag:'ok', gps:'ok' },
+        geofence:{ zone:'Site Sud', events:[ { type:'enter', time:'09:40' } ] },
+        note:'Passage guérite manquant en entrée (09:40) et fin de service anticipée (prévue ≈ 11:15).' },
+      'TR-027': { driver:'Ibrahim Traoré', statut:'st-rapprochee', statutLabel:'Rapprochée',
+        mission:'Transfert · Port → Site (plein) · Nord',
+        sources:{ guerite:'ok', tag:'ok', gps:'ok' },
+        geofence:{ zone:'Site Nord', events:[ { type:'enter', time:'09:30' } ] },
+        note:'Survitesse : 3 événements sur le shift (dernier 10:15, 92 km/h / limite 70).' },
+      'TR-021': { driver:'Fatou Cissé (déclarée guérite) / Ibrahim Traoré (tag)', statut:'st-anomalie', statutLabel:'Anomalie',
+        mission:'Livraison-Récup · Groupe Sifca · Sud',
+        sources:{ guerite:'mismatch', tag:'mismatch', gps:'ok' },
+        geofence:{ zone:'Groupe Sifca (client)', events:[ { type:'enter', time:'10:00' } ] },
+        note:'⚠ Preuves incohérentes — la guérite et le tag ne désignent pas le même chauffeur.' },
+      'TR-063': { driver:'Non confirmé', statut:'st-detectee', statutLabel:'Détectée',
+        mission:'Aucune ligne planifiée ne correspond · Sud',
+        sources:{ guerite:'missing', tag:'missing', gps:'missing' },
+        geofence:null,
+        note:'GPS non remonté depuis 2h12 (dernière émission 08:30). Chauffeur non confirmé.' },
+      'TR-058': { driver:'Non identifié', statut:'st-detectee', statutLabel:'Détectée',
+        mission:'Aucune ligne planifiée ne correspond · Nord',
+        sources:{ guerite:'missing', tag:'missing', gps:'ok' },
+        geofence:null,
+        note:'⚠ Camion en mouvement (GPS actif depuis 10:18) sans mission planifiée ni chauffeur confirmé.' }
+    };
+
+    var CLIENT_INFO = {
+      'CFAO': { name:'CFAO Motors', note:"Zone client identifiée, sans géofence guérite dédiée ; la présence d'un camion y est estimée uniquement via le GPS. TR-055 y a réalisé sa mission du shift." }
+    };
+
+    function srcLabel(v){
+      return v === 'ok' ? 'cohérent' : v === 'attn' ? 'à vérifier' : v === 'mismatch' ? 'incohérent' : 'non remonté';
+    }
+    function srcClass(v){
+      return v === 'ok' ? 'ok' : v === 'attn' ? 'attn' : v === 'mismatch' ? 'mismatch' : 'missing';
+    }
+
+    function renderTruckDetail(code){
+      var info = TRUCK_INFO[code];
+      var panel = document.getElementById('truck-detail');
+      if (!panel || !info) return;
+      panel.classList.remove('is-empty');
+      var geo;
+      if (info.geofence){
+        var d = computeDwell(info.geofence.events, NOW, 15);
+        geo = info.geofence.zone + ' · entrée il y a ' + formatDwell(d.elapsedMin);
+      } else {
+        geo = 'Hors géofence connue (en transit ou non rattaché)';
+      }
+      panel.innerHTML =
+        '<div class="td-head"><span class="td-title">' + code + '</span>' +
+          '<span class="statut-chip ' + info.statut + '"><span class="dot"></span>' + info.statutLabel + '</span></div>' +
+        '<div class="td-grid">' +
+          '<div class="td-row"><dt>Chauffeur</dt><dd>' + info.driver + '</dd></div>' +
+          '<div class="td-row"><dt>Mission</dt><dd>' + info.mission + '</dd></div>' +
+          '<div class="td-row"><dt>Géofence</dt><dd>' + geo + '</dd></div>' +
+          '<div class="td-row"><dt>Preuves</dt><dd><span class="proof-row">' +
+            '<span class="proof-badge ' + srcClass(info.sources.guerite) + '" title="Guérite : ' + srcLabel(info.sources.guerite) + '">G</span>' +
+            '<span class="proof-badge ' + srcClass(info.sources.tag) + '" title="Tag / iButton : ' + srcLabel(info.sources.tag) + '">TAG</span>' +
+            '<span class="proof-badge ' + srcClass(info.sources.gps) + '" title="GPS : ' + srcLabel(info.sources.gps) + '">GPS</span>' +
+          '</span></dd></div>' +
+        '</div>' +
+        '<p class="popover-note" style="margin-top:8px; margin-bottom:0;">' + info.note + '</p>';
+    }
+
+    function renderClientDetail(id){
+      var info = CLIENT_INFO[id];
+      var panel = document.getElementById('truck-detail');
+      if (!panel || !info) return;
+      panel.classList.remove('is-empty');
+      panel.innerHTML =
+        '<div class="td-head"><span class="td-title">Client — ' + info.name + '</span>' +
+          '<span class="tag-flag info">zone client</span></div>' +
+        '<p class="popover-note" style="margin-bottom:0;">' + info.note + '</p>';
+    }
+
+    function initMapClicks(){
+      var svg = document.querySelector('.map-svg');
+      if (!svg) return;
+      svg.addEventListener('click', function(ev){
+        var el = ev.target.closest('[data-map-id]');
+        if (!el) return;
+        var parts = el.getAttribute('data-map-id').split(':');
+        if (parts[0] === 'truck') renderTruckDetail(parts[1]);
+        else if (parts[0] === 'client') renderClientDetail(parts[1]);
+      });
+    }
+
+    renderGeofenceList();
+    renderRuleDemo();
+    initMapClicks();
+
+  })();
+</script>
