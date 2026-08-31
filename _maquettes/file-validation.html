@@ -1,118 +1,87 @@
 <title>Demo Logistics — Maquettes V0</title>
-<meta name="description" content="Jalon 0 — maquette File de validation, écran de l'agent tracking : missions proposées et anomalies.">
+<meta name="description" content="Jalon 0 — maquette File de validation, écran de l'agent tracking : missions à traiter et anomalies, données du référentiel central partagé avec Live Tracking, Remorques et Dashboard.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+  /* Identité visuelle strictement identique à Live Tracking / Remorques /
+     Dashboard (mêmes tokens, mêmes classes partagées, thème sombre par
+     défaut) — voir live-tracking.html pour le contexte de ce choix. */
   :root{
-    --bg:#eef1ef;
-    --surface:#ffffff;
-    --surface-2:#e3e8e5;
-    --surface-3:#d8ded9;
-    --ink:#1a211f;
-    --ink-dim:#59635f;
-    --ink-faint:#8a938e;
-    --border:#c7cfca;
-    --border-strong:#aab3ad;
-    --accent:#b97a17;
-    --accent-ink:#5a3c0a;
-    --accent-soft:#f3e2c2;
-
-    --st-planifiee:#6b746f;
-    --st-planifiee-bg:#e4e7e5;
-    --st-detectee:#3a6ea8;
-    --st-detectee-bg:#dde8f3;
-    --st-rapprochee:#2f8f7a;
-    --st-rapprochee-bg:#dcefea;
-    --st-proposee:#7a5cb0;
-    --st-proposee-bg:#e9e2f5;
-    --st-validee:#3f8b52;
-    --st-validee-bg:#e0f0e3;
-    --st-anomalie:#c23b3b;
-    --st-anomalie-bg:#f8dede;
-
-    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
-    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
-    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
-
-    --radius-sm:7px;
-    --radius-md:10px;
-    --radius-lg:14px;
-  }
-
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#121613;
-      --surface:#181e1a;
-      --surface-2:#202722;
-      --surface-3:#2a322b;
-      --ink:#e8ece9;
-      --ink-dim:#a3aca6;
-      --ink-faint:#707972;
-      --border:#323b34;
-      --border-strong:#454f47;
-      --accent:#e0a13c;
-      --accent-ink:#1c1305;
-      --accent-soft:#3a2c11;
-
-      --st-planifiee:#a3aca6;
-      --st-planifiee-bg:#242b26;
-      --st-detectee:#7ba7d8;
-      --st-detectee-bg:#1c2a38;
-      --st-rapprochee:#6fc4ac;
-      --st-rapprochee-bg:#16302a;
-      --st-proposee:#b39cdd;
-      --st-proposee-bg:#291f3a;
-      --st-validee:#7bc492;
-      --st-validee-bg:#17301e;
-      --st-anomalie:#e58080;
-      --st-anomalie-bg:#3a1a1a;
-
-      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
-      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#121613;
-    --surface:#181e1a;
-    --surface-2:#202722;
-    --surface-3:#2a322b;
-    --ink:#e8ece9;
-    --ink-dim:#a3aca6;
-    --ink-faint:#707972;
-    --border:#323b34;
-    --border-strong:#454f47;
+    --bg:#0a0e17;
+    --surface:#121826;
+    --surface-2:#1a2233;
+    --surface-3:#232c40;
+    --ink:#eef1f7;
+    --ink-dim:#9aa5bc;
+    --ink-faint:#67718c;
+    --border:#232c40;
+    --border-strong:#354061;
     --accent:#e0a13c;
     --accent-ink:#1c1305;
     --accent-soft:#3a2c11;
 
-    --st-planifiee:#a3aca6;
-    --st-planifiee-bg:#242b26;
-    --st-detectee:#7ba7d8;
-    --st-detectee-bg:#1c2a38;
-    --st-rapprochee:#6fc4ac;
-    --st-rapprochee-bg:#16302a;
-    --st-proposee:#b39cdd;
-    --st-proposee-bg:#291f3a;
-    --st-validee:#7bc492;
-    --st-validee-bg:#17301e;
-    --st-anomalie:#e58080;
-    --st-anomalie-bg:#3a1a1a;
+    --st-planifiee:#93a0ba;
+    --st-planifiee-bg:#1b2233;
+    --st-detectee:#b09aef;
+    --st-detectee-bg:#241d3d;
+    --st-rapprochee:#5fa8f5;
+    --st-rapprochee-bg:#16233d;
+    --st-proposee:#f2bf4c;
+    --st-proposee-bg:#332711;
+    --st-validee:#52d489;
+    --st-validee-bg:#123423;
+    --st-anomalie:#f37272;
+    --st-anomalie-bg:#3a1717;
+
+    --zone-nord:#4ade80;
+    --zone-nord-bg:rgba(74,222,128,0.12);
+    --zone-sud:#5fa8f5;
+    --zone-sud-bg:rgba(95,168,245,0.12);
+    --zone-port:#f2a13c;
+    --zone-port-bg:rgba(242,161,60,0.08);
 
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
     --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
     --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+
+    --radius-sm:7px;
+    --radius-md:10px;
+    --radius-lg:14px;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ef; --surface:#ffffff; --surface-2:#e3e8e5; --surface-3:#d8ded9;
+    --ink:#1a211f; --ink-dim:#59635f; --ink-faint:#8a938e;
+    --border:#c7cfca; --border-strong:#aab3ad;
+    --accent:#b97a17; --accent-ink:#5a3c0a; --accent-soft:#f3e2c2;
+
+    --st-planifiee:#6b746f; --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#7a5cb0; --st-detectee-bg:#e9e2f5;
+    --st-rapprochee:#3a6ea8; --st-rapprochee-bg:#dde8f3;
+    --st-proposee:#a8791b; --st-proposee-bg:#f3e6c8;
+    --st-validee:#3f8b52; --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b; --st-anomalie-bg:#f8dede;
+
+    --zone-nord:#3f8b52; --zone-nord-bg:#e0f0e3;
+    --zone-sud:#3a6ea8; --zone-sud-bg:#dde8f3;
+    --zone-port:#b97a17; --zone-port-bg:#f3e2c2;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
   }
 
   *{ box-sizing:border-box; }
+  /* Sans cette règle, [hidden] posé en JS n'a aucun effet visuel dès
+     qu'un élément fixe déjà son propre display (ex. .footnote en
+     display:flex) : une règle auteur de même spécificité l'emporte sur
+     la règle navigateur [hidden]{display:none}. */
+  [hidden]{ display:none !important; }
   html,body{ margin:0; padding:0; }
   body{
     background:
@@ -120,16 +89,14 @@
       var(--bg);
     color:var(--ink);
     font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size:14px;
-    line-height:1.45;
-    -webkit-font-smoothing:antialiased;
+    font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased;
   }
   ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
   .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
+  .tt-dim{ color:var(--ink-faint); font-style:italic; }
   a{ color:inherit; }
   button{ font:inherit; }
 
-  /* ---------- maquette banner ---------- */
   .maquette-banner{
     display:flex; align-items:center; justify-content:center; gap:9px;
     background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
@@ -137,17 +104,12 @@
   }
   .mb-tag{
     font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--accent-ink); background:var(--accent-soft);
+    letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft);
     border-radius:999px; padding:3px 9px;
   }
 
-  /* ---------- shell header / tabs ---------- */
   .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
-  .brand-row{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto;
-  }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto; }
   .brand{ display:flex; align-items:center; gap:12px; }
   .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
   .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
@@ -157,49 +119,37 @@
   .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
   .brand-sub{ color:var(--ink-faint); font-size:12px; }
   .jalon-tag{
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:4px 11px;
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:4px 11px;
   }
-
   .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
   .tab{
-    display:flex; align-items:center; gap:8px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
+    display:flex; align-items:center; gap:8px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
     padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none;
   }
   a.tab:hover{ background:var(--surface-2); }
   .tab.done{ color:var(--ink-dim); }
   .tab.active{ color:var(--accent-ink); background:var(--accent-soft); cursor:default; }
-  .badge-soon{
-    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
-    letter-spacing:.04em; text-transform:uppercase;
-    color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:2px 7px;
-  }
 
-  /* ---------- screen header ---------- */
   .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
   .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
   .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
-  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:70ch; margin-top:6px; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:80ch; margin-top:6px; }
 
   .controls-bar{
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    margin:20px 0 14px 0; padding:14px 16px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:20px 0 20px 0; padding:14px 16px;
     background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
   }
-  .field{ display:flex; flex-direction:column; gap:4px; }
+  .field{ display:flex; flex-direction:column; gap:4px; min-width:0; }
   .field label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
   .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
-  input[type="date"]{
+  input[type="date"], input[type="search"], select.ctl-select{
     font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
     background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
     padding:7px 10px; min-height:34px; transition:border-color .12s ease, box-shadow .12s ease;
   }
-  input[type="date"]:hover{ border-color:var(--ink-faint); }
-  input[type="date"]:focus-visible, select:focus-visible, button:focus-visible, textarea:focus-visible{
+  input[type="date"]:hover, input[type="search"]:hover, select.ctl-select:hover{ border-color:var(--ink-faint); }
+  input:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);
   }
   .segmented{ display:flex; gap:2px; padding:3px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); }
@@ -211,131 +161,140 @@
   .segmented button.on{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
   .spacer{ flex:1 1 auto; }
 
-  .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
-  .chip{ display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 13px 6px 11px; }
-  .chip .n{ font-family:"IBM Plex Mono", monospace; font-weight:500; font-size:13.5px; }
-  .chip .lbl{ font-size:11.5px; color:var(--ink-dim); }
-  .chip.warn{ background:var(--st-anomalie-bg); border-color:transparent; }
-  .chip.warn .n, .chip.warn .lbl{ color:var(--st-anomalie); }
-  .chip.info{ background:var(--st-proposee-bg); border-color:transparent; }
-  .chip.info .n, .chip.info .lbl{ color:var(--st-proposee); }
+  .search-field{ position:relative; flex:1 1 220px; max-width:300px; }
+  .search-field input{ width:100%; padding-right:30px; }
+  .search-field .sf-icon{ position:absolute; right:9px; top:50%; transform:translateY(-50%); color:var(--ink-faint); font-size:13px; pointer-events:none; }
+
+  .sim-live-badge{
+    display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--ink-dim);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px;
+  }
+  .sim-live-dot{ width:7px; height:7px; border-radius:50%; background:var(--st-validee); flex:none; animation:sim-live-pulse 2s ease-in-out infinite; }
+  @keyframes sim-live-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+  @media (prefers-reduced-motion: reduce){ .sim-live-dot{ animation:none; } }
+
+  /* ---------- KPI (identiques à Dashboard) ---------- */
+  .kpi-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:12px; margin:0 0 18px 0; }
+  .kpi-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:13px 15px; }
+  .kpi-n{ font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:600; line-height:1; }
+  .kpi-lbl{ font-size:11px; color:var(--ink-dim); margin-top:5px; }
+  .kpi-sub{ font-size:10px; color:var(--ink-faint); margin-top:2px; }
+  .kpi-card.warn .kpi-n{ color:var(--st-anomalie); }
+  .kpi-card.ok .kpi-n{ color:var(--st-validee); }
+  .kpi-card.info .kpi-n{ color:var(--st-proposee); }
 
   /* ---------- filter pills ---------- */
   .filter-pills{ display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px 0; }
   .filter-pill{
-    display:flex; align-items:center; gap:8px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
-    padding:7px 14px 7px 15px; border-radius:999px; border:1px solid var(--border); background:var(--surface); color:var(--ink-dim);
+    display:flex; align-items:center; gap:8px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    padding:7px 14px 7px 15px; border-radius:999px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-dim);
+    cursor:pointer; transition:background .12s ease, color .12s ease, border-color .12s ease;
   }
+  .filter-pill:hover{ background:var(--surface-2); }
   .filter-pill .n{ font-family:"IBM Plex Mono", monospace; font-size:11px; background:var(--surface-2); color:var(--ink-dim); padding:1px 7px; border-radius:999px; }
   .filter-pill.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
   .filter-pill.on .n{ background:var(--surface); color:var(--accent-ink); }
 
-  /* ---------- queue ----------
-     .queue-scroll-wrap > .queue-scroll > .queue-table > (.queue-head, .queue)
-     .queue-table is a column flex box sized with width:fit-content: its used
-     width is derived from the real content of its widest child (never a
-     hardcoded guess), and align-items:stretch (flex default) then forces
-     .queue-head and .queue — and therefore every .queue-card, since it is
-     stretched in turn — to that exact same width. Header, rows and the
-     scrollable area's own edge are thus always pixel-identical. */
-  .queue-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
-  .queue-table{ display:flex; flex-direction:column; width:fit-content; min-width:100%; }
-  .queue-head{
-    display:grid; grid-template-columns: 68px 148px 168px 148px 190px 150px minmax(220px,1fr) 142px 158px 196px;
-    gap:14px; padding:0 18px 8px 18px; border:1px solid transparent;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px;
-    letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint);
+  /* ---------- résumé compact en cartes ----------
+     PAGE = grille de cartes compactes (remorque avant camion). CLIC =
+     modal avec les informations complètes (résolution d'anomalie,
+     identification client, validation, preuves, historique). Même
+     principe que le planning intégré de Live Tracking. */
+  .queue-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(248px,1fr)); gap:12px; }
+  .qcard{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);
+    padding:13px 14px; cursor:pointer; transition:box-shadow .12s ease, border-color .12s ease;
+    display:flex; flex-direction:column; gap:7px; text-align:left; width:100%; color:inherit; font:inherit;
   }
-  .queue{ display:flex; flex-direction:column; gap:14px; }
+  .qcard:hover{ box-shadow:var(--shadow-md); border-color:var(--border-strong); }
+  .qcard:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .qcard.anomalie{ border-left:4px solid var(--st-anomalie); }
+  .qcard.needs-id{ border-left:4px solid var(--st-proposee); }
+  .qcard.is-treated{ opacity:.66; }
+  .qcard-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .qcard-mat{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:14.5px; }
+  .qcard-mat .num{ font-family:"IBM Plex Mono", monospace; font-weight:500; font-size:13px; }
+  .qcard-meta{ font-size:11.5px; color:var(--ink-dim); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .qcard-mission{ font-size:12.5px; color:var(--ink); line-height:1.35; }
+  .qcard-mission .tt-dim{ color:var(--ink-faint); font-style:italic; }
+  .qcard-tags{ display:flex; flex-wrap:wrap; gap:5px; }
+  .qcard-bottom{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto; padding-top:6px; }
+  .qcard-proofs{ display:flex; gap:4px; }
+  .qcard-cta{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--accent); white-space:nowrap;
+  }
+  .qcard.is-treated .qcard-cta{ color:var(--ink-faint); }
 
-  /* affordance for the horizontal scroll below: sits above the table, fades out once fully scrolled right */
-  .scroll-hint{
-    display:flex; align-items:center; justify-content:flex-end; gap:5px;
-    margin:0 0 8px 0; padding:0 2px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.04em; text-transform:uppercase;
-    color:var(--ink-faint);
-    opacity:1; transition:opacity .2s ease;
-  }
-  .scroll-hint .arrow{ display:inline-block; animation:scroll-hint-nudge 1.4s ease-in-out infinite; }
-  .scroll-hint.is-hidden{ opacity:0; }
-  @keyframes scroll-hint-nudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(3px); } }
-  @media (prefers-reduced-motion: reduce){ .scroll-hint .arrow{ animation:none; } }
-
-  .queue-card{
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
-    box-shadow:var(--shadow-sm); transition:box-shadow .12s ease;
-  }
-  .queue-card:hover{ box-shadow:var(--shadow-md); }
-  .queue-card.is-open{ box-shadow:var(--shadow-md); }
-  .queue-card.anomalie{ border-left:4px solid var(--st-anomalie); }
-  .queue-card.needs-id{ border-left:4px solid var(--st-proposee); }
-
-  .qc-summary{
-    display:grid; grid-template-columns: 68px 148px 168px 148px 190px 150px minmax(220px,1fr) 142px 158px 196px;
-    gap:14px; align-items:center; padding:16px 18px;
-  }
-  .qc-cell{ min-width:0; }
-  .qc-heure{ font-family:"IBM Plex Mono", monospace; color:var(--ink-dim); font-size:13px; }
-  .qc-name{ font-weight:600; font-size:13.5px; }
-  .qc-sub{ font-size:11.5px; color:var(--ink-faint); margin-top:2px; }
-  .qc-material .num{ font-size:12.5px; color:var(--ink-dim); }
-  .qc-material .num + .num{ margin-left:2px; }
-  .qc-route{ display:flex; align-items:center; gap:7px; font-size:13px; }
-  .qc-route .arrow{ color:var(--ink-faint); flex:none; }
-  .qc-route .dest.unresolved{ color:var(--st-proposee); font-style:italic; }
-  .qc-tag-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+  .guerite-badge{ display:inline-flex; align-items:center; gap:5px; font-size:11.5px; }
+  .guerite-badge .dot{ width:7px; height:7px; border-radius:50%; flex:none; }
+  .guerite-badge.nord .dot{ background:var(--zone-nord); }
+  .guerite-badge.sud .dot{ background:var(--zone-sud); }
 
   .tag-flag{
-    display:inline-flex; align-items:center; gap:4px;
-    font-size:10.5px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
-    letter-spacing:.03em; text-transform:uppercase;
-    border-radius:5px; padding:3px 7px; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    letter-spacing:.03em; text-transform:uppercase; border-radius:5px; padding:3px 7px; white-space:nowrap;
   }
   .tag-flag.warn{ color:var(--st-proposee); background:var(--st-proposee-bg); }
   .tag-flag.info{ color:var(--st-detectee); background:var(--st-detectee-bg); }
+  .tag-flag.critical{ color:var(--st-anomalie); background:var(--st-anomalie-bg); }
+  .tag-flag.ok{ color:var(--st-validee); background:var(--st-validee-bg); }
 
   .container-code{
-    display:inline-block; font-family:"IBM Plex Mono", monospace; font-size:12.5px; letter-spacing:.01em;
+    display:inline-block; font-family:"IBM Plex Mono", monospace; font-size:12px; letter-spacing:.01em;
     background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:4px 8px; white-space:nowrap;
   }
   .container-code.pending{ color:var(--ink-faint); font-style:italic; border-style:dashed; background:transparent; }
+  .container-code.warn{ border-color:color-mix(in srgb, var(--st-proposee) 50%, var(--border)); color:var(--st-proposee); }
 
   .statut-chip{
-    display:inline-flex; align-items:center; gap:6px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:12px;
-    letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:5px 11px; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:6px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px;
+    letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:4px 10px; white-space:nowrap;
   }
   .statut-chip .dot{ width:6px; height:6px; border-radius:50%; flex:none; }
+  .statut-chip.st-planifiee{ background:var(--st-planifiee-bg); color:var(--st-planifiee); }
+  .statut-chip.st-planifiee .dot{ background:var(--st-planifiee); }
+  .statut-chip.st-detectee{ background:var(--st-detectee-bg); color:var(--st-detectee); }
+  .statut-chip.st-detectee .dot{ background:var(--st-detectee); }
+  .statut-chip.st-rapprochee{ background:var(--st-rapprochee-bg); color:var(--st-rapprochee); }
+  .statut-chip.st-rapprochee .dot{ background:var(--st-rapprochee); }
   .statut-chip.st-proposee{ background:var(--st-proposee-bg); color:var(--st-proposee); }
   .statut-chip.st-proposee .dot{ background:var(--st-proposee); }
+  .statut-chip.st-validee{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .statut-chip.st-validee .dot{ background:var(--st-validee); }
   .statut-chip.st-anomalie{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
   .statut-chip.st-anomalie .dot{ background:var(--st-anomalie); }
 
-  .qc-proofs{ display:flex; gap:5px; }
   .proof-badge{
-    width:34px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center;
-    font-family:"IBM Plex Mono", monospace; font-size:10px; font-weight:700; letter-spacing:.01em;
+    width:28px; height:20px; border-radius:6px; display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:9px; font-weight:700; letter-spacing:.01em;
   }
   .proof-badge.ok{ background:var(--st-validee-bg); color:var(--st-validee); }
   .proof-badge.attn{ background:var(--st-proposee-bg); color:var(--st-proposee); }
   .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .proof-badge.missing{ background:var(--surface-3); color:var(--ink-faint); border:1px dashed var(--border-strong); }
 
-  .qc-actions{ display:flex; flex-direction:column; gap:5px; align-items:flex-start; }
   .btn{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.02em; padding:7px 13px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; }
-  .btn-row{ display:flex; gap:6px; }
+  .btn-row{ display:flex; gap:6px; flex-wrap:wrap; }
   .btn-primary{ background:var(--accent); color:var(--accent-ink); }
   .btn-primary:hover{ filter:brightness(1.06); }
   .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
   .btn-ghost:hover{ background:var(--surface-2); color:var(--ink); }
   .btn-disabled{ background:var(--surface-2); color:var(--ink-faint); border-color:var(--border); cursor:not-allowed; }
   .btn-disabled:hover{ filter:none; }
-  .qc-hint{ font-size:10.5px; color:var(--ink-faint); max-width:180px; }
+  .btn-lg{ padding:9px 18px; font-size:13.5px; }
 
-  /* ---------- detail panel ---------- */
-  .qc-detail{ border-top:1px solid var(--border); padding:20px 22px 22px 22px; background:var(--surface-2); border-radius:0 0 var(--radius-lg) var(--radius-lg); }
-  .qc-section{ margin-bottom:20px; }
-  .qc-section:last-child{ margin-bottom:0; }
+  /* ---------- modal (détail complet — CLIC sur une carte) ---------- */
+  dialog.detail-modal{ width:min(640px,94vw); max-height:88vh; border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:0; background:var(--surface); color:var(--ink); box-shadow:var(--shadow-lg); }
+  dialog.detail-modal::backdrop{ background:rgba(10,14,12,.55); }
+  .cm-head{ padding:16px 18px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .cm-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:17px; margin:0; }
+  .cm-sub{ font-size:11.5px; color:var(--ink-dim); margin-top:3px; }
+  .cm-head-status{ flex:none; }
+  .cm-body{ padding:16px 18px; display:flex; flex-direction:column; gap:12px; max-height:66vh; overflow:auto; }
+  .cm-foot{ padding:12px 18px 16px 18px; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; border-top:1px solid var(--border); }
+
+  .qc-section{ margin-bottom:4px; }
   .qc-section h3{
     font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:13px;
     letter-spacing:.04em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 10px 0;
@@ -347,13 +306,13 @@
   .info-item dd{ margin:0; font-size:13.5px; color:var(--ink); }
 
   .proof-list{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
-  .proof-item{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:13px 14px; }
+  .proof-item{ background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:13px 14px; }
   .proof-item .src{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
   .proof-item .val{ font-size:13.5px; font-weight:600; margin:5px 0 4px 0; }
   .proof-item .meta{ font-size:11.5px; color:var(--ink-dim); }
 
   .id-compare{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; }
-  .id-card{ border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; background:var(--surface); }
+  .id-card{ border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; background:var(--surface-2); }
   .id-card.mismatch{ border-color:color-mix(in srgb, var(--st-anomalie) 45%, var(--border)); background:var(--st-anomalie-bg); }
   .id-card.corrobore{ border-color:color-mix(in srgb, var(--st-validee) 45%, var(--border)); background:var(--st-validee-bg); }
   .id-card .src{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
@@ -364,9 +323,8 @@
     font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
     border-radius:999px; padding:3px 9px;
   }
-  .id-state.bad{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
-  .id-state.good{ background:var(--st-validee-bg); color:var(--st-validee); }
-  .id-card.mismatch .id-state.bad, .id-card.corrobore .id-state.good{ background:var(--surface); }
+  .id-state.bad{ background:var(--surface); color:var(--st-anomalie); }
+  .id-state.good{ background:var(--surface); color:var(--st-validee); }
 
   .resolve-panel{ margin-top:4px; }
   .choice-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
@@ -385,12 +343,15 @@
   select.field-select:hover{ border-color:var(--ink-faint); }
 
   textarea.qc-comment{
-    width:100%; max-width:560px; min-height:60px; border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    width:100%; min-height:60px; border:1px solid var(--border-strong); border-radius:var(--radius-sm);
     padding:9px 11px; font-family:"IBM Plex Sans", sans-serif; font-size:13px; color:var(--ink); background:var(--surface); resize:vertical;
   }
   .field-note{ font-size:11.5px; color:var(--ink-faint); margin-top:5px; max-width:60ch; }
   .resolve-footer{ display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
-  .btn-lg{ padding:9px 18px; font-size:13.5px; }
+
+  .session-log{ margin-top:12px; display:flex; flex-direction:column; gap:6px; }
+  .session-log-item{ font-size:11.5px; color:var(--ink-dim); border-left:2px solid var(--st-validee); padding-left:9px; }
+  .session-log-item .num{ color:var(--ink-faint); margin-right:6px; }
 
   /* ---------- legend & footnote ---------- */
   .legend{
@@ -403,7 +364,7 @@
 
   .footnote{
     margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
-    color:var(--ink-dim); font-size:12.5px; max-width:88ch;
+    color:var(--ink-dim); font-size:12.5px; max-width:96ch;
   }
   .footnote .fn-badge{
     flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -413,10 +374,23 @@
   .footnote p{ margin:0 0 8px 0; }
   .footnote p:last-child{ margin-bottom:0; }
 
+  .legend-toggle{
+    display:inline-flex; align-items:center; gap:7px; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:13px;
+    padding:9px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-dim);
+    cursor:pointer; margin-top:20px; width:fit-content;
+  }
+  .legend-toggle:hover{ background:var(--surface-2); color:var(--ink); }
+  .legend-toggle .chevron{ font-size:10px; transition:transform .15s ease; }
+  .legend-toggle[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+
+  @media (max-width:640px){
+    .kpi-grid{ grid-template-columns:repeat(2,1fr); }
+    .queue-grid{ grid-template-columns:1fr; }
+  }
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
-<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — données fictives, wireframe à valider avant tout développement.</div>
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — prototype de démonstration, simulateur local d'API Trace In (données fictives, aucune connexion réelle).</div>
 
 <header class="shell-header">
   <div class="brand-row">
@@ -433,10 +407,10 @@
     <a class="tab done" href="dashboard.html">Dashboard</a>
     <a class="tab done" href="remorques.html">Remorques</a>
     <div class="tab active" aria-current="page">File de validation</div>
-    <a class="tab" href="live-tracking.html">Live tracking</a>
-    <a class="tab" href="fiche-conteneur.html">Fiche conteneur</a>
-    <a class="tab" href="rapport-shift.html">Rapport de shift</a>
-    <a class="tab" href="parametres.html">Paramètres</a>
+    <a class="tab done" href="live-tracking.html">Live tracking</a>
+    <a class="tab done" href="fiche-conteneur.html">Fiche conteneur</a>
+    <a class="tab done" href="rapport-shift.html">Rapport de shift</a>
+    <a class="tab done" href="parametres.html">Paramètres</a>
   </nav>
 </header>
 
@@ -444,7 +418,7 @@
   <div class="screen-title-row">
     <div>
       <h1 class="screen-title">File de validation</h1>
-      <p class="screen-caption">L'agent tracking examine ici les missions <strong>Proposées</strong> par le moteur de rapprochement et traite les missions en <strong>Anomalie</strong>. L'automate propose, l'humain valide : rien n'est confirmé sans son action explicite.</p>
+      <p class="screen-caption">L'agent tracking examine ici les missions <strong>à traiter</strong> (proposées, détectées) et les missions en <strong>Anomalie</strong> du <strong>même référentiel central</strong> que Live Tracking, Remorques et Dashboard (<code>_shared/sim-data.js</code>). Chaque carte résume l'essentiel — cliquez pour ouvrir le détail complet et traiter la mission. L'automate propose, l'humain valide : rien n'est confirmé sans son action explicite, et aucune donnée n'est supprimée.</p>
     </div>
   </div>
 
@@ -463,351 +437,445 @@
     </div>
     <div class="v-divider"></div>
     <div class="field">
-      <label>Site</label>
-      <div class="segmented" role="group" aria-label="Site">
-        <button type="button" class="on">Tous</button>
-        <button type="button">Nord</button>
-        <button type="button">Sud</button>
+      <label>Guérite</label>
+      <div class="segmented" role="group" aria-label="Site" id="f-site">
+        <button type="button" class="on" data-site="all">Toutes</button>
+        <button type="button" data-site="Nord">Nord</button>
+        <button type="button" data-site="Sud">Sud</button>
       </div>
     </div>
+    <div class="v-divider"></div>
+    <div class="field search-field">
+      <label for="f-search">Recherche</label>
+      <input type="search" id="f-search" placeholder="Chauffeur, camion, remorque, conteneur…" autocomplete="off">
+      <span class="sf-icon" aria-hidden="true">⌕</span>
+    </div>
     <div class="spacer"></div>
-    <div class="stat-chips">
-      <div class="chip"><span class="n num">5</span><span class="lbl">missions à traiter</span></div>
-      <div class="chip info"><span class="n num">1</span><span class="lbl">client à identifier</span></div>
-      <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie</span></div>
-    </div>
+    <span class="sim-live-badge" title="Aperçu figé du simulateur local, pas un flux temps réel"><span class="sim-live-dot"></span>Simulateur local · aperçu 10:42</span>
   </div>
 
-  <div class="filter-pills">
-    <span class="filter-pill on">Toutes <span class="n num">5</span></span>
-    <span class="filter-pill">Propositions <span class="n num">4</span></span>
-    <span class="filter-pill">Anomalies <span class="n num">1</span></span>
-    <span class="filter-pill">Client à identifier <span class="n num">1</span></span>
-  </div>
+  <div class="kpi-grid" id="kpi-grid"></div>
 
-  <div class="queue-scroll-wrap">
-   <div class="scroll-hint" aria-hidden="true"><span>Défiler</span><span class="arrow">→</span></div>
-   <div class="queue-scroll">
-    <div class="queue-table">
-    <div class="queue-head" aria-hidden="true">
-      <span>Heure</span>
-      <span>Chauffeur</span>
-      <span>Camion · remorque</span>
-      <span>Type</span>
-      <span>Client</span>
-      <span>Conteneur</span>
-      <span>Trajet</span>
-      <span>Statut</span>
-      <span>Preuves</span>
-      <span>Actions</span>
-    </div>
+  <div class="filter-pills" id="filter-pills"></div>
 
-    <div class="queue">
-
-      <!-- 1 — simple, valide directement -->
-      <article class="queue-card">
-        <div class="qc-summary">
-          <div class="qc-cell qc-heure">06:05</div>
-          <div class="qc-cell"><div class="qc-name">Ibrahim Traoré</div></div>
-          <div class="qc-cell qc-material"><span class="num">TR-027</span> · <span class="num">RQ-133</span><div class="qc-sub">Remorque 40'</div></div>
-          <div class="qc-cell">Transfert</div>
-          <div class="qc-cell"><div class="qc-name">— Port → Site (plein)</div></div>
-          <div class="qc-cell"><span class="container-code">CMAU 987654-3</span></div>
-          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span>Site Nord</span></div>
-          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
-          <div class="qc-cell qc-proofs">
-            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
-            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
-            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
-          </div>
-          <div class="qc-cell qc-actions">
-            <div class="btn-row">
-              <button class="btn btn-ghost" type="button">Examiner</button>
-              <button class="btn btn-primary" type="button">Valider</button>
-            </div>
-            <span class="qc-hint">Deux géofences connues — validation directe possible.</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- 2 — sans géofence, ouverte -->
-      <article class="queue-card needs-id is-open">
-        <div class="qc-summary">
-          <div class="qc-cell qc-heure">07:05</div>
-          <div class="qc-cell"><div class="qc-name">Serge Bamba</div></div>
-          <div class="qc-cell qc-material"><span class="num">TR-041</span> · <span class="num">RQ-149</span><div class="qc-sub">Remorque 20'</div></div>
-          <div class="qc-cell">Livraison-Récup</div>
-          <div class="qc-cell">
-            <div class="qc-name" style="color:var(--st-proposee);">À identifier</div>
-            <div class="qc-tag-row"><span class="tag-flag warn">Sans géofence</span></div>
-          </div>
-          <div class="qc-cell"><span class="container-code">MAEU 456789-0</span></div>
-          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span class="dest unresolved">« Client non identifié — Zone Sud »</span></div>
-          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
-          <div class="qc-cell qc-proofs">
-            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
-            <span class="proof-badge attn" title="GPS : arrivée hors géofence connue">GPS</span>
-            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
-          </div>
-          <div class="qc-cell qc-actions">
-            <div class="btn-row">
-              <button class="btn btn-ghost" type="button">Replier</button>
-              <button class="btn btn-disabled" type="button" disabled>Valider</button>
-            </div>
-            <span class="qc-hint">Identification du client requise avant validation.</span>
-          </div>
-        </div>
-
-        <div class="qc-detail">
-          <div class="qc-section">
-            <h3>Informations de la mission</h3>
-            <dl class="info-grid">
-              <div class="info-item"><dt>Chauffeur</dt><dd>Serge Bamba</dd></div>
-              <div class="info-item"><dt>Camion</dt><dd>TR-041</dd></div>
-              <div class="info-item"><dt>Remorque</dt><dd>RQ-149 · 20'</dd></div>
-              <div class="info-item"><dt>Type de mission</dt><dd>Livraison-Récup</dd></div>
-              <div class="info-item"><dt>Conteneur</dt><dd>MAEU 456789-0</dd></div>
-              <div class="info-item"><dt>Site / zone</dt><dd>Sud</dd></div>
-              <div class="info-item"><dt>Départ</dt><dd>Port d'Abidjan</dd></div>
-              <div class="info-item"><dt>Destination déclarée</dt><dd>« Client non identifié — Zone Sud »</dd></div>
-            </dl>
-          </div>
-
-          <div class="qc-section">
-            <h3>Preuves datées et sourcées</h3>
-            <p class="qc-lede">Règle de double preuve : la dernière trace guérite et la dernière trace mission/GPS sont toujours affichées ensemble, jamais l'une sans l'autre.</p>
-            <div class="proof-list">
-              <div class="proof-item">
-                <div class="src">Dernière trace guérite</div>
-                <div class="val">Sortie Port — destination déclarée : « Zone Sud »</div>
-                <div class="meta">25/08/2026 · 07:03 — Sheet guérite Port, ligne #1147</div>
-              </div>
-              <div class="proof-item">
-                <div class="src">Dernière trace mission / GPS</div>
-                <div class="val">Arrivée hors géofence connue (zone Sud)</div>
-                <div class="meta">25/08/2026 · 07:41 — télématique camion TR-041</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="qc-section resolve-panel">
-            <h3>Identification du client requise</h3>
-            <p class="qc-lede">Le nom affiché par défaut vient de la déclaration guérite. Confirmez le client réel pour que le point de livraison soit géofencé à l'avenir.</p>
-            <div class="field">
-              <label for="client-reel-2">Client réel</label>
-              <select class="field-select" id="client-reel-2">
-                <option selected disabled>— à identifier —</option>
-                <option>SOCACI</option>
-                <option>Nestlé CI</option>
-                <option>CFAO Motors</option>
-                <option>Groupe Sifca</option>
-                <option>SIVAC</option>
-                <option>Unilever CI</option>
-                <option>+ Créer un nouveau client</option>
-              </select>
-            </div>
-            <div class="field" style="margin-top:12px;">
-              <label for="comment-2">Commentaire agent (tracé)</label>
-              <textarea class="qc-comment" id="comment-2" placeholder="Ex. : client confirmé par téléphone avec le chauffeur."></textarea>
-            </div>
-            <div class="resolve-footer">
-              <button class="btn btn-primary btn-lg" type="button">Confirmer le client et valider la mission</button>
-              <button class="btn btn-ghost btn-lg" type="button">Replier sans confirmer</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 3 — simple -->
-      <article class="queue-card">
-        <div class="qc-summary">
-          <div class="qc-cell qc-heure">07:35</div>
-          <div class="qc-cell"><div class="qc-name">Aya Kouassi</div></div>
-          <div class="qc-cell qc-material"><span class="num">TR-009</span> · <span class="num">RQ-175</span><div class="qc-sub">Remorque 20'</div></div>
-          <div class="qc-cell">Mission client</div>
-          <div class="qc-cell"><div class="qc-name">Unilever CI</div></div>
-          <div class="qc-cell"><span class="container-code pending">—</span></div>
-          <div class="qc-cell qc-route"><span>Site Nord</span><span class="arrow">→</span><span>Unilever CI</span></div>
-          <div class="qc-cell"><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></div>
-          <div class="qc-cell qc-proofs">
-            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
-            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
-            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
-          </div>
-          <div class="qc-cell qc-actions">
-            <div class="btn-row">
-              <button class="btn btn-ghost" type="button">Examiner</button>
-              <button class="btn btn-primary" type="button">Valider</button>
-            </div>
-            <span class="qc-hint">Camion TR-009 réutilisé par un second chauffeur ce shift (segment).</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- 4 — hors planning -->
-      <article class="queue-card">
-        <div class="qc-summary">
-          <div class="qc-cell qc-heure">08:10</div>
-          <div class="qc-cell"><div class="qc-name">Koffi N'Guessan</div></div>
-          <div class="qc-cell qc-material"><span class="num">TR-014</span> · <span class="num">RQ-108</span><div class="qc-sub">Remorque 20'</div></div>
-          <div class="qc-cell">Livraison-Récup</div>
-          <div class="qc-cell"><div class="qc-name">Nestlé CI</div></div>
-          <div class="qc-cell"><span class="container-code">MSCU 778899-0</span></div>
-          <div class="qc-cell qc-route"><span>Site Nord</span><span class="arrow">→</span><span>Nestlé CI</span></div>
-          <div class="qc-cell">
-            <span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span>
-            <div class="qc-tag-row"><span class="tag-flag info">Détectée hors planning</span></div>
-          </div>
-          <div class="qc-cell qc-proofs">
-            <span class="proof-badge ok" title="Guérite : cohérente">G</span>
-            <span class="proof-badge ok" title="GPS / géofences : cohérent">GPS</span>
-            <span class="proof-badge ok" title="iButton : cohérent">iB</span>
-          </div>
-          <div class="qc-cell qc-actions">
-            <div class="btn-row">
-              <button class="btn btn-ghost" type="button">Examiner</button>
-              <button class="btn btn-primary" type="button">Valider</button>
-            </div>
-            <span class="qc-hint">Aucune ligne planifiée ne correspond — signalé au planning.</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- 5 — anomalie, ouverte -->
-      <article class="queue-card anomalie is-open">
-        <div class="qc-summary">
-          <div class="qc-cell qc-heure">08:20</div>
-          <div class="qc-cell"><div class="qc-name">Fatou Cissé</div><div class="qc-sub">déclarée en guérite</div></div>
-          <div class="qc-cell qc-material"><span class="num">TR-021</span> · <span class="num">RQ-162</span><div class="qc-sub">Remorque 40'</div></div>
-          <div class="qc-cell">Livraison-Récup</div>
-          <div class="qc-cell"><div class="qc-name">Groupe Sifca</div></div>
-          <div class="qc-cell"><span class="container-code">CMAU 112233-4</span></div>
-          <div class="qc-cell qc-route"><span>Port d'Abidjan</span><span class="arrow">→</span><span>Groupe Sifca (Sud)</span></div>
-          <div class="qc-cell"><span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span></div>
-          <div class="qc-cell qc-proofs">
-            <span class="proof-badge mismatch" title="Guérite : contestée">G</span>
-            <span class="proof-badge ok" title="GPS : cohérent avec l'iButton">GPS</span>
-            <span class="proof-badge mismatch" title="iButton : diverge de la guérite">iB</span>
-          </div>
-          <div class="qc-cell qc-actions">
-            <div class="btn-row">
-              <button class="btn btn-ghost" type="button">Replier</button>
-              <button class="btn btn-disabled" type="button" disabled>Valider</button>
-            </div>
-            <span class="qc-hint">Identité divergente — à résoudre avant validation.</span>
-          </div>
-        </div>
-
-        <div class="qc-detail">
-          <div class="qc-section">
-            <h3>Comparaison d'identité — triple croisement</h3>
-            <p class="qc-lede">Principe du socle : aucun fait n'est établi par une source unique. Le chauffeur déclaré en guérite doit être confirmé par l'iButton du camion et par la cohérence du tracking.</p>
-            <div class="id-compare">
-              <div class="id-card mismatch">
-                <div class="src">Guérite (déclaré à l'entrée)</div>
-                <div class="val">Fatou Cissé</div>
-                <div class="meta">25/08/2026 · 08:15<br>Sheet guérite Sud, ligne #482</div>
-                <span class="id-state bad">Divergent</span>
-              </div>
-              <div class="id-card mismatch">
-                <div class="src">iButton (camion TR-021)</div>
-                <div class="val">Ibrahim Traoré</div>
-                <div class="meta">25/08/2026 · 08:16<br>Lecteur iButton, télématique camion</div>
-                <span class="id-state bad">Divergent</span>
-              </div>
-              <div class="id-card corrobore">
-                <div class="src">Tracking (cohérence position)</div>
-                <div class="val">Cohérent avec Ibrahim Traoré</div>
-                <div class="meta">Mouvements de TR-021 depuis 07:40 alignés sur son historique de conduite<br>Source : GPS camion TR-021</div>
-                <span class="id-state good">Corrobore l'iButton</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="qc-section">
-            <h3>Informations de la mission</h3>
-            <dl class="info-grid">
-              <div class="info-item"><dt>Type de mission</dt><dd>Livraison-Récup</dd></div>
-              <div class="info-item"><dt>Client</dt><dd>Groupe Sifca</dd></div>
-              <div class="info-item"><dt>Conteneur</dt><dd>CMAU 112233-4</dd></div>
-              <div class="info-item"><dt>Camion</dt><dd>TR-021</dd></div>
-              <div class="info-item"><dt>Remorque</dt><dd>RQ-162 · 40'</dd></div>
-              <div class="info-item"><dt>Site / zone</dt><dd>Sud</dd></div>
-              <div class="info-item"><dt>Départ</dt><dd>Port d'Abidjan</dd></div>
-              <div class="info-item"><dt>Destination</dt><dd>Groupe Sifca</dd></div>
-            </dl>
-          </div>
-
-          <div class="qc-section resolve-panel">
-            <h3>Résolution de l'anomalie</h3>
-            <p class="qc-lede">La mission reste en Anomalie jusqu'à ce que l'agent confirme l'identité réelle du conducteur. Aucune donnée n'est supprimée : la déclaration guérite reste conservée telle quelle, la résolution s'ajoute en référence.</p>
-            <div class="choice-row" role="group" aria-label="Confirmer l'identité du chauffeur">
-              <button class="choice-chip" type="button">Confirmer : Fatou Cissé (déclaration guérite)</button>
-              <button class="choice-chip selected" type="button">Confirmer : Ibrahim Traoré (iButton + tracking)</button>
-              <button class="choice-chip" type="button">Autre chauffeur — préciser en commentaire</button>
-            </div>
-            <div class="field">
-              <label for="comment-5">Commentaire agent (tracé)</label>
-              <textarea class="qc-comment" id="comment-5" placeholder="Ex. : Ibrahim confirme avoir pris le camion de Fatou, badge non échangé au dépôt.">L'iButton et le tracking concordent sur Ibrahim Traoré ; la guérite a probablement noté le nom du chauffeur habituel du camion par erreur. Appel passé au chauffeur pour confirmation.</textarea>
-            </div>
-            <div class="resolve-footer">
-              <button class="btn btn-primary btn-lg" type="button">Enregistrer la résolution et valider</button>
-              <button class="btn btn-ghost btn-lg" type="button">Replier sans résoudre</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-    </div>
-    </div>
-   </div>
-  </div>
+  <div class="queue-grid" id="queue-list"></div>
 
   <div class="legend">
     <div class="legend-group">
       <span class="legend-title">Statuts de cette file</span>
+      <span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span>
       <span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span>
+      <span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span>
+      <span class="statut-chip st-validee"><span class="dot"></span>Validée</span>
       <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
     </div>
     <div class="v-divider" style="height:20px;"></div>
     <div class="legend-group">
       <span class="legend-title">Preuves</span>
-      <span class="proof-badge ok" style="width:auto;padding:4px 8px;">G / GPS / iB</span>
+      <span class="proof-badge ok" style="width:auto;padding:4px 8px;">G / TAG / GPS</span>
       <span style="color:var(--ink-dim);">cohérente</span>
       <span class="proof-badge attn" style="width:auto;padding:4px 8px;">…</span>
       <span style="color:var(--ink-dim);">à vérifier</span>
       <span class="proof-badge mismatch" style="width:auto;padding:4px 8px;">…</span>
       <span style="color:var(--ink-dim);">divergente</span>
-    </div>
-    <div class="v-divider" style="height:20px;"></div>
-    <div class="legend-group">
-      <span class="legend-title">Bordure de carte</span>
-      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:4px;height:14px;background:var(--st-proposee);border-radius:2px;"></span>identification requise</span>
-      <span style="display:inline-flex;align-items:center;gap:6px;"><span style="width:4px;height:14px;background:var(--st-anomalie);border-radius:2px;"></span>anomalie</span>
+      <span class="proof-badge missing" style="width:auto;padding:4px 8px;">…</span>
+      <span style="color:var(--ink-dim);">non remontée</span>
     </div>
   </div>
 
-  <div class="footnote">
+  <button type="button" class="legend-toggle" id="footnote-toggle" aria-expanded="false" aria-controls="footnote-panel">Notes de conception <span class="chevron">▾</span></button>
+  <div class="footnote" id="footnote-panel" hidden>
     <span class="fn-badge">i</span>
     <div>
-      <p><b>Notes de conception (jalon 0)</b> — Cette file n'affiche que les missions <b>Proposées</b> et <b>Anomalies</b> (cycle de vie de la spec Missions §2.2) ; les autres statuts vivent dans le Planning des opérations. « Valider » exécute la même règle partout dans le produit : l'automate propose, l'humain valide — jamais l'inverse.</p>
-      <p>Aucune donnée n'est supprimée : une résolution d'anomalie ou une identification de client s'ajoute en référence, elle ne réécrit ni n'efface la déclaration d'origine. Cet écran ne calcule aucun KPI, aucune rotation et aucune notation — ces éléments appartiennent aux écrans Rapport de shift et Notation, à venir.</p>
+      <p><b>Notes de conception (jalon 0)</b> — Cet écran ne définit aucune donnée propre : chaque carte est un véhicule de <code>SIM.vehicles</code> (<code>_shared/sim-data.js</code>), le même référentiel que Live Tracking, Remorques et Dashboard — 7 missions actives, jamais une seconde liste. La carte commence par la <b>remorque</b> (RQ-xxx), conformément à la consigne d'harmonisation ; les camions restent en <code>TR-xxx</code> en attendant la confirmation de la convention <code>Cxxx</code> (<code>displayId()</code>). Le résumé tient sur la carte ; le détail complet (comparaison d'identité, preuves, résolution) s'ouvre dans un modal au clic — rien n'a été retiré, seulement déplacé.</p>
+      <p><b>« Valider » / « Confirmer et résoudre »</b> — ce jalon 0 n'a pas de backend : ces actions posent une marque <b>locale à la session</b> (rechargez la page pour revenir à l'état d'origine), affichée à côté du statut réel du référentiel, jamais à sa place. Rien n'est supprimé ni réécrit : la déclaration d'origine (guérite, iButton, GPS) reste visible telle quelle dans le détail de chaque mission.</p>
+      <p><b>Cette file n'invente aucun statut</b> — « Rejetée » n'existe pas dans le cycle de vie de la mission (cahier des charges Missions §2.2 : Planifiée → Détectée → Rapprochée → Proposée → Validée → Clôturée, + Anomalie à tout stade) ; ce filtre n'est donc pas proposé ici.</p>
     </div>
   </div>
 </main>
 
+<dialog class="detail-modal" id="modal-queue">
+  <div class="cm-head">
+    <div>
+      <h3 class="cm-title" id="qm-title">Mission</h3>
+      <p class="cm-sub" id="qm-sub"></p>
+    </div>
+    <span class="cm-head-status" id="qm-status"></span>
+  </div>
+  <div class="cm-body" id="qm-body"></div>
+  <div class="cm-foot">
+    <a class="btn btn-ghost" id="qm-goto-live" href="#">Voir sur la carte (Live Tracking)</a>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-primary" id="qm-close">Fermer</button>
+  </div>
+</dialog>
+
+<script src="_shared/sim-data.js"></script>
 <script>
-  (function(){
-    var scrollEl = document.querySelector('.queue-scroll');
-    var hint = document.querySelector('.scroll-hint');
-    if (!scrollEl || !hint) return;
-    function update(){
-      var hasOverflow = scrollEl.scrollWidth - scrollEl.clientWidth > 4;
-      var atEnd = scrollEl.scrollLeft + scrollEl.clientWidth >= scrollEl.scrollWidth - 4;
-      hint.classList.toggle('is-hidden', !hasOverflow || atEnd);
+(function(){
+
+  // ============================================================
+  // File de validation — AUCUNE donnée propre. Chaque carte vient de
+  // SIM.vehicles (_shared/sim-data.js), le référentiel déjà utilisé par
+  // Live Tracking, Remorques et Dashboard. PAGE = résumé compact en
+  // cartes ; CLIC = modal avec le détail complet (même principe que le
+  // planning intégré de Live Tracking).
+  // ============================================================
+
+  var STATE = { site:'all', search:'', filter:'all', modalId:null, session:{} };
+  // STATE.session[vehicleId] = { validated:bool, resolvedAnomaly:string|null,
+  // clientConfirmed:string|null, log:[{time,text}] } — marque LOCALE À LA
+  // SESSION uniquement (voir footnote) : ne modifie jamais SIM.vehicles.
+
+  function sess(id){
+    if (!STATE.session[id]) STATE.session[id] = { validated:false, resolvedAnomaly:null, clientConfirmed:null, log:[] };
+    return STATE.session[id];
+  }
+
+  // ---------- classification (locale à cet écran, comme buildTrailers() sur Remorques) ----------
+  function needsAction(v){ return v.statut === 'proposee' || v.statut === 'detectee' || v.statut === 'anomalie'; }
+  function needsClientId(v){ return !!(v.mission && v.mission.to && /client non identifi/i.test(v.mission.to)); }
+  function offPlanning(v){ return !!(v.mission && v.mission.to === 'Aucune ligne planifiée ne correspond'); }
+  function isAnomalie(v){ return v.statut === 'anomalie'; }
+  function isBlocked(v){ var s = sess(v.id); return (isAnomalie(v) && !s.resolvedAnomaly) || (needsClientId(v) && !s.clientConfirmed); }
+
+  function rows(){
+    return SIM.vehicles.slice().sort(function(a,b){ return String(a.mission.heure).localeCompare(String(b.mission.heure)); });
+  }
+
+  function filteredRows(){
+    var list = rows();
+    if (STATE.site !== 'all') list = list.filter(function(v){ return v.site === STATE.site; });
+    if (STATE.search){
+      var q = STATE.search.trim().toUpperCase();
+      list = list.filter(function(v){
+        var hay = [displayId(v), v.trailer_id, v.driver.name, v.mission.client, v.mission.type, v.container && v.container.code].filter(Boolean).join(' ').toUpperCase();
+        return hay.indexOf(q) !== -1;
+      });
     }
-    scrollEl.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  })();
+    if (STATE.filter === 'traiter') list = list.filter(needsAction);
+    else if (STATE.filter === 'anomalie') list = list.filter(isAnomalie);
+    else if (STATE.filter === 'client') list = list.filter(needsClientId);
+    else if (STATE.filter === 'hors_planning') list = list.filter(offPlanning);
+    else if (STATE.filter === 'traitees') list = list.filter(function(v){ return !needsAction(v); });
+    return list;
+  }
+
+  // ============================================================
+  // KPI — comptés depuis SIM.vehicles, jamais un chiffre écrit en dur
+  // ============================================================
+  function renderKPIs(){
+    var all = rows();
+    var traiter = all.filter(needsAction).length;
+    var anomalies = all.filter(isAnomalie).length;
+    var clientId = all.filter(needsClientId).length;
+    var horsPlanning = all.filter(offPlanning).length;
+    var traitees = all.length - traiter;
+    var cards = [
+      { n: all.length, lbl: 'Missions du référentiel', sub: 'aperçu figé 10:42' },
+      { n: traiter, lbl: 'À traiter', sub: 'proposées, détectées ou en anomalie', cls: traiter ? 'info' : '' },
+      { n: anomalies, lbl: 'Anomalies', sub: 'preuves divergentes', cls: anomalies ? 'warn' : '' },
+      { n: clientId, lbl: 'Client à identifier', sub: 'destination sans géofence' },
+      { n: horsPlanning, lbl: 'Sans ligne planifiée', sub: 'aucune correspondance planning' },
+      { n: traitees, lbl: 'Rapprochées / validées', sub: 'aucune action requise', cls: 'ok' }
+    ];
+    document.getElementById('kpi-grid').innerHTML = cards.map(function(c){
+      return '<div class="kpi-card' + (c.cls ? ' ' + c.cls : '') + '">' +
+        '<div class="kpi-n num">' + c.n + '</div>' +
+        '<div class="kpi-lbl">' + c.lbl + '</div>' +
+        '<div class="kpi-sub">' + c.sub + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ============================================================
+  // Filtres
+  // ============================================================
+  function renderFilterPills(){
+    var all = rows();
+    var defs = [
+      { key:'all', label:'Toutes', count: all.length },
+      { key:'traiter', label:'À traiter', count: all.filter(needsAction).length },
+      { key:'anomalie', label:'Anomalies', count: all.filter(isAnomalie).length },
+      { key:'client', label:'Client à identifier', count: all.filter(needsClientId).length },
+      { key:'hors_planning', label:'Sans ligne planifiée', count: all.filter(offPlanning).length },
+      { key:'traitees', label:'Rapprochées / validées', count: all.filter(function(v){ return !needsAction(v); }).length }
+    ];
+    document.getElementById('filter-pills').innerHTML = defs.map(function(d){
+      return '<button type="button" class="filter-pill' + (STATE.filter === d.key ? ' on' : '') + '" data-filter="' + d.key + '">' + d.label + ' <span class="n num">' + d.count + '</span></button>';
+    }).join('');
+    document.querySelectorAll('[data-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){ STATE.filter = btn.getAttribute('data-filter'); renderAll(); });
+    });
+  }
+
+  // ============================================================
+  // Carte compacte — résumé (statut, remorque · camion, guérite, heure,
+  // mission, anomalie/problème, preuves, CTA). Le détail complet vit
+  // dans le modal (mêmes fonctions de rendu, rien retiré).
+  // ============================================================
+  function gueriteBadge(v){
+    var cls = v.site === 'Nord' ? 'nord' : v.site === 'Sud' ? 'sud' : '';
+    return '<span class="guerite-badge ' + cls + '"><span class="dot"></span>' + esc(v.site || '—') + '</span>';
+  }
+
+  function trajetHtml(v){
+    var m = v.mission;
+    if (offPlanning(v)) return '<span class="tt-dim">' + esc(m.to) + '</span>';
+    if (needsClientId(v)) return (m.from ? esc(m.from) : '—') + ' → <span style="color:var(--st-proposee);font-style:italic;">' + esc(m.to) + '</span>';
+    if (!m.from && !m.to) return '<span class="tt-dim">—</span>';
+    return (m.from ? esc(m.from) : '—') + ' → ' + (m.to ? esc(m.to) : '—');
+  }
+
+  function proofsHtml(v){
+    return '<span class="proof-badge ' + srcClass(v.sources.guerite) + '" title="Guérite : ' + srcLabel(v.sources.guerite) + '">G</span>' +
+      '<span class="proof-badge ' + srcClass(v.sources.tag) + '" title="Tag / iButton : ' + srcLabel(v.sources.tag) + '">TAG</span>' +
+      '<span class="proof-badge ' + srcClass(v.sources.gps) + '" title="GPS : ' + srcLabel(v.sources.gps) + '">GPS</span>';
+  }
+
+  function cardProblemTag(v){
+    var s = sess(v.id);
+    if (isAnomalie(v) && !s.resolvedAnomaly) return '<span class="tag-flag critical">Identité contestée</span>';
+    if (needsClientId(v) && !s.clientConfirmed) return '<span class="tag-flag warn">Sans géofence</span>';
+    if (offPlanning(v)) return '<span class="tag-flag info">Hors planning</span>';
+    if (!v.driver.confirmed && !v.driver.contested) return '<span class="tag-flag warn">Chauffeur non confirmé</span>';
+    if (s.validated) return '<span class="tag-flag ok">Validée (session)</span>';
+    if (s.resolvedAnomaly) return '<span class="tag-flag ok">Résolue (session)</span>';
+    return '';
+  }
+
+  function renderQueue(){
+    var list = filteredRows();
+    var container = document.getElementById('queue-list');
+    if (!list.length){
+      container.innerHTML = '<p style="padding:20px;color:var(--ink-faint);font-style:italic;">Aucune mission ne correspond à ce filtre dans le référentiel simulé.</p>';
+      return;
+    }
+    container.innerHTML = list.map(function(v){
+      var s = sess(v.id);
+      var cls = 'qcard' + (isAnomalie(v) && !s.resolvedAnomaly ? ' anomalie' : '') + (needsClientId(v) && !s.clientConfirmed ? ' needs-id' : '') + (s.validated || s.resolvedAnomaly ? ' is-treated' : '');
+      var mission = v.mission.type ? esc(v.mission.type) : '<span class="tt-dim">Type non défini</span>';
+      var dest = v.mission.client ? esc(v.mission.client) : (needsClientId(v) ? '<span style="color:var(--st-proposee);font-style:italic;">à identifier</span>' : (v.mission.to ? esc(v.mission.to) : ''));
+      var problem = cardProblemTag(v);
+      var cta = needsAction(v) && !s.validated ? 'Traiter →' : 'Voir le détail →';
+      return '<button type="button" class="' + cls + '" data-card="' + v.id + '" aria-haspopup="dialog" aria-label="Traiter la mission ' + esc(displayId(v)) + '">' +
+        '<div class="qcard-top"><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span><span class="num" style="font-size:11px;color:var(--ink-faint);">' + esc(m_heure(v)) + '</span></div>' +
+        '<div class="qcard-mat">' + (v.trailer_id ? esc(v.trailer_id) : '<span class="tt-dim">—</span>') + ' <span class="num">·</span> ' + esc(displayId(v)) + '</div>' +
+        '<div class="qcard-meta">' + gueriteBadge(v) + '<span>·</span><span>' + esc(v.driver.contested ? 'Identité contestée' : v.driver.name) + '</span></div>' +
+        '<div class="qcard-mission">' + mission + (dest ? ' · ' + dest : '') + '</div>' +
+        (problem ? '<div class="qcard-tags">' + problem + '</div>' : '') +
+        '<div class="qcard-bottom"><div class="qcard-proofs">' + proofsHtml(v) + '</div><span class="qcard-cta">' + cta + '</span></div>' +
+      '</button>';
+    }).join('');
+
+    container.querySelectorAll('[data-card]').forEach(function(card){
+      card.addEventListener('click', function(){ openQueueModal(card.getAttribute('data-card')); });
+    });
+  }
+
+  function m_heure(v){ return v.mission && v.mission.heure ? v.mission.heure : '—'; }
+
+  // ============================================================
+  // Modal — détail complet (comparaison d'identité, informations de la
+  // mission, preuves, résolution d'anomalie, identification client,
+  // validation, journal de session). Reprend exactement ce qui était
+  // affiché en ligne auparavant — rien n'a été supprimé.
+  // ============================================================
+  function detailHtml(v){
+    var s = sess(v.id);
+    var m = v.mission;
+    var html = '';
+
+    // Triple croisement d'identité — réutilise l'alerte réelle du référentiel (jamais un texte recréé).
+    if (isAnomalie(v)){
+      var idAlert = alertsForVehicle(v.id).filter(function(a){ return a.types.indexOf('identite_divergente') !== -1; })[0];
+      var cmp = idAlert && idAlert.detail && idAlert.detail.compare;
+      html += '<div class="qc-section"><h3>Comparaison d\'identité — triple croisement</h3>' +
+        '<p class="qc-lede">Principe du socle : aucun fait n\'est établi par une source unique (' + (idAlert ? esc(idAlert.sourceTag || '') : '') + ').</p>';
+      if (cmp){
+        html += '<div class="id-compare">' +
+          '<div class="id-card mismatch"><div class="src">Guérite (déclaré)</div><div class="val">' + esc(cmp.guerite) + '</div><div class="meta">' + esc((idAlert.detail && idAlert.detail.note) || '') + '</div><span class="id-state bad">Divergent</span></div>' +
+          '<div class="id-card mismatch"><div class="src">iButton (camion ' + esc(displayId(v)) + ')</div><div class="val">' + esc(cmp.tag) + '</div><div class="meta">Lecteur iButton, télématique camion</div><span class="id-state bad">Divergent</span></div>' +
+          '<div class="id-card corrobore"><div class="src">Tracking (cohérence position)</div><div class="val">' + esc(cmp.gps) + '</div><div class="meta">Source : GPS camion ' + esc(displayId(v)) + '</div><span class="id-state good">Corrobore l\'iButton</span></div>' +
+        '</div>';
+      }
+      html += '</div>';
+    }
+
+    // Informations de la mission
+    html += '<div class="qc-section"><h3>Informations de la mission</h3><dl class="info-grid">' +
+      '<div class="info-item"><dt>Remorque</dt><dd>' + (v.trailer_id ? esc(v.trailer_id) + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="info-item"><dt>Camion</dt><dd>' + esc(displayId(v)) + '</dd></div>' +
+      '<div class="info-item"><dt>Chauffeur</dt><dd>' + esc(v.driver.name) + '</dd></div>' +
+      '<div class="info-item"><dt>Heure</dt><dd>' + esc(m_heure(v)) + '</dd></div>' +
+      '<div class="info-item"><dt>Type de mission</dt><dd>' + (m.type ? esc(m.type) : '<span class="tt-dim">non défini</span>') + '</dd></div>' +
+      '<div class="info-item"><dt>Conteneur</dt><dd>' + (v.container ? esc(v.container.code) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="info-item"><dt>Guérite / site</dt><dd>' + esc(v.site || '—') + '</dd></div>' +
+      '<div class="info-item"><dt>Départ</dt><dd>' + (m.from ? esc(m.from) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="info-item"><dt>Destination</dt><dd>' + (m.to ? esc(m.to) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+    '</dl></div>';
+
+    // Preuves datées — dernière position connue (dérivée, pas un horodatage inventé)
+    html += '<div class="qc-section"><h3>Preuves</h3>' +
+      '<p class="qc-lede">Règle de double preuve : la dernière trace guérite et la dernière trace mission/GPS sont toujours affichées ensemble.</p>' +
+      '<div class="proof-list">' +
+        '<div class="proof-item"><div class="src">Guérite</div><div class="val">' + srcLabel(v.sources.guerite) + '</div><div class="meta">Chrono ' + esc(displayId(v)) + ' · dernière position connue ' + esc(lastKnownTime(v)) + '</div></div>' +
+        '<div class="proof-item"><div class="src">Mission / GPS</div><div class="val">' + derivedPosition(v) + '</div><div class="meta">Tag iButton : ' + srcLabel(v.sources.tag) + '</div></div>' +
+      '</div></div>';
+
+    // Résolution — client à identifier
+    if (needsClientId(v) && !s.clientConfirmed){
+      html += '<div class="qc-section resolve-panel"><h3>Identification du client requise</h3>' +
+        '<p class="qc-lede">Le nom affiché par défaut vient de la déclaration guérite. Confirmez le client réel pour que le point de livraison soit géofencé à l\'avenir.</p>' +
+        '<div class="field"><label for="client-reel-' + v.id + '">Client réel</label>' +
+        '<select class="field-select" id="client-reel-' + v.id + '" data-client-select="' + v.id + '">' +
+          '<option value="" selected disabled>— à identifier —</option>' +
+          SIM.clientOptions.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('') +
+        '</select></div>' +
+        '<div class="field" style="margin-top:12px;"><label for="comment-' + v.id + '">Commentaire agent (tracé, session)</label>' +
+        '<textarea class="qc-comment" id="comment-' + v.id + '" placeholder="Ex. : client confirmé par téléphone avec le chauffeur."></textarea></div>' +
+        '<div class="resolve-footer">' +
+          '<button class="btn btn-primary btn-lg" type="button" data-confirm-client="' + v.id + '">Confirmer le client et valider la mission</button>' +
+        '</div></div>';
+    } else if (needsClientId(v) && s.clientConfirmed){
+      html += '<div class="qc-section"><h3>Client confirmé (session)</h3><p class="qc-lede">' + esc(s.clientConfirmed) + '</p></div>';
+    }
+
+    // Résolution — anomalie identité
+    if (isAnomalie(v) && !s.resolvedAnomaly){
+      var idAlert2 = alertsForVehicle(v.id).filter(function(a){ return a.types.indexOf('identite_divergente') !== -1; })[0];
+      var cmp2 = idAlert2 && idAlert2.detail && idAlert2.detail.compare;
+      html += '<div class="qc-section resolve-panel"><h3>Résolution de l\'anomalie</h3>' +
+        '<p class="qc-lede">La mission reste en Anomalie jusqu\'à ce que l\'agent confirme l\'identité réelle. Aucune donnée n\'est supprimée : la déclaration guérite reste conservée telle quelle, la résolution s\'ajoute en référence.</p>' +
+        '<div class="choice-row" role="group" aria-label="Confirmer l\'identité du chauffeur">' +
+          (cmp2 ? '<button class="choice-chip" type="button" data-resolve="' + v.id + '" data-resolve-value="' + esc(cmp2.guerite) + '">Confirmer : ' + esc(cmp2.guerite) + ' (déclaration guérite)</button>' +
+          '<button class="choice-chip" type="button" data-resolve="' + v.id + '" data-resolve-value="' + esc(cmp2.tag) + '">Confirmer : ' + esc(cmp2.tag) + ' (iButton + tracking)</button>' : '') +
+          '<button class="choice-chip" type="button" data-resolve="' + v.id + '" data-resolve-value="Autre">Autre chauffeur — préciser en commentaire</button>' +
+        '</div>' +
+        '<div class="field"><label for="comment-a-' + v.id + '">Commentaire agent (tracé, session)</label>' +
+        '<textarea class="qc-comment" id="comment-a-' + v.id + '" placeholder="Ex. : appel passé au chauffeur pour confirmation."></textarea></div>' +
+      '</div>';
+    }
+
+    // Journal de session (append-only, jamais un écrasement)
+    if (s.log.length){
+      html += '<div class="qc-section"><h3>Journal (session)</h3><div class="session-log">' +
+        s.log.map(function(l){ return '<div class="session-log-item"><span class="num">' + esc(l.time) + '</span>' + esc(l.text) + '</div>'; }).join('') +
+      '</div></div>';
+    }
+
+    return html;
+  }
+
+  function modalFootHtml(v){
+    var s = sess(v.id);
+    if (s.validated) return '<button class="btn btn-disabled" type="button" disabled>Validée (session)</button>';
+    if (isBlocked(v)) return '<button class="btn btn-disabled" type="button" disabled title="Résolvez d\'abord l\'identité ou le client ci-dessus">Valider</button>';
+    if (needsAction(v)) return '<button class="btn btn-primary" type="button" data-validate="' + v.id + '">Valider</button>';
+    return '';
+  }
+
+  function openQueueModal(id){
+    var v = getVehicle(id);
+    if (!v) return;
+    STATE.modalId = id;
+    document.getElementById('qm-title').textContent = (v.trailer_id ? v.trailer_id + ' · ' : '') + displayId(v) + ' — ' + (v.mission.type || 'Mission');
+    document.getElementById('qm-sub').textContent = esc(v.site || '—') + ' · ' + m_heure(v) + ' · ' + v.driver.name;
+    document.getElementById('qm-status').innerHTML = '<span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span>';
+    document.getElementById('qm-body').innerHTML = detailHtml(v);
+    document.getElementById('qm-goto-live').href = 'live-tracking.html?vehicle=' + encodeURIComponent(v.id);
+    var foot = document.querySelector('.cm-foot');
+    var existingValidate = document.getElementById('qm-validate-slot');
+    if (existingValidate) existingValidate.remove();
+    var slot = document.createElement('span');
+    slot.id = 'qm-validate-slot';
+    slot.innerHTML = modalFootHtml(v);
+    foot.insertBefore(slot, document.getElementById('qm-close'));
+    bindModalEvents(v);
+    var dlg = document.getElementById('modal-queue');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  function refreshModal(){
+    if (!STATE.modalId) return;
+    var v = getVehicle(STATE.modalId);
+    if (!v) return;
+    openQueueModal(v.id);
+  }
+
+  function closeDialog(dlg){ if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+  document.getElementById('qm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-queue')); });
+
+  function bindModalEvents(v){
+    var body = document.getElementById('qm-body');
+    var validateBtn = document.getElementById('qm-validate-slot');
+    if (validateBtn){
+      var vb = validateBtn.querySelector('[data-validate]');
+      if (vb) vb.addEventListener('click', function(){
+        var s = sess(v.id);
+        s.validated = true;
+        s.log.push({ time: NOW, text: 'Mission validée par l\'agent (marque de session).' });
+        renderQueue();
+        refreshModal();
+      });
+    }
+    body.querySelectorAll('[data-confirm-client]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-confirm-client');
+        var sel = document.querySelector('[data-client-select="' + id + '"]');
+        if (!sel || !sel.value) { sel && sel.focus(); return; }
+        var s = sess(id);
+        s.clientConfirmed = sel.value;
+        s.validated = true;
+        s.log.push({ time: NOW, text: 'Client confirmé : ' + sel.value + '. Mission validée.' });
+        renderQueue();
+        refreshModal();
+      });
+    });
+    body.querySelectorAll('[data-resolve]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-resolve');
+        var value = btn.getAttribute('data-resolve-value');
+        var s = sess(id);
+        s.resolvedAnomaly = value;
+        s.log.push({ time: NOW, text: 'Anomalie d\'identité résolue — chauffeur confirmé : ' + value + '.' });
+        renderQueue();
+        refreshModal();
+      });
+    });
+  }
+
+  function renderAll(){
+    renderKPIs();
+    renderFilterPills();
+    renderQueue();
+  }
+
+  document.getElementById('f-search').addEventListener('input', function(ev){ STATE.search = ev.target.value; renderAll(); });
+  document.querySelectorAll('#f-site [data-site]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      STATE.site = btn.getAttribute('data-site');
+      document.querySelectorAll('#f-site button').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      renderAll();
+    });
+  });
+
+  // « Notes de conception » : menu compact replié par défaut.
+  document.getElementById('footnote-toggle').addEventListener('click', function(){
+    var btn = document.getElementById('footnote-toggle');
+    var panel = document.getElementById('footnote-panel');
+    var open = panel.hidden;
+    panel.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+  });
+
+  // Deep-link : ?vehicle=TR-027 ouvre directement le modal de cette mission.
+  var initialVehicle = new URLSearchParams(location.search).get('vehicle');
+  renderAll();
+  if (initialVehicle && getVehicle(initialVehicle)){
+    openQueueModal(initialVehicle);
+  }
+
+})();
 </script>

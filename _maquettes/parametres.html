@@ -1,153 +1,66 @@
 <title>Demo Logistics — Maquettes V0</title>
-<meta name="description" content="Jalon 0 — maquette Paramètres : seuils, objectifs et règles éditables, valeurs à définir et historique des modifications.">
+<meta name="description" content="Jalon 0 — maquette Paramètres : tout seuil, objectif et règle est une donnée en base, organisée par catégories (Général, Seuils & Alertes, Guérites, Matériels, Utilisateurs, Sécurité, Intégrations, À propos).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
   :root{
-    --bg:#eef1ef;
-    --surface:#ffffff;
-    --surface-2:#e3e8e5;
-    --surface-3:#d8ded9;
-    --ink:#1a211f;
-    --ink-dim:#59635f;
-    --ink-faint:#8a938e;
-    --border:#c7cfca;
-    --border-strong:#aab3ad;
-    --accent:#b97a17;
-    --accent-ink:#5a3c0a;
-    --accent-soft:#f3e2c2;
-
-    --st-planifiee:#6b746f;
-    --st-planifiee-bg:#e4e7e5;
-    --st-detectee:#3a6ea8;
-    --st-detectee-bg:#dde8f3;
-    --st-rapprochee:#2f8f7a;
-    --st-rapprochee-bg:#dcefea;
-    --st-proposee:#7a5cb0;
-    --st-proposee-bg:#e9e2f5;
-    --st-validee:#3f8b52;
-    --st-validee-bg:#e0f0e3;
-    --st-anomalie:#c23b3b;
-    --st-anomalie-bg:#f8dede;
-
-    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
-    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
-    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
-
-    --radius-sm:7px;
-    --radius-md:10px;
-    --radius-lg:14px;
-  }
-
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#121613;
-      --surface:#181e1a;
-      --surface-2:#202722;
-      --surface-3:#2a322b;
-      --ink:#e8ece9;
-      --ink-dim:#a3aca6;
-      --ink-faint:#707972;
-      --border:#323b34;
-      --border-strong:#454f47;
-      --accent:#e0a13c;
-      --accent-ink:#1c1305;
-      --accent-soft:#3a2c11;
-
-      --st-planifiee:#a3aca6;
-      --st-planifiee-bg:#242b26;
-      --st-detectee:#7ba7d8;
-      --st-detectee-bg:#1c2a38;
-      --st-rapprochee:#6fc4ac;
-      --st-rapprochee-bg:#16302a;
-      --st-proposee:#b39cdd;
-      --st-proposee-bg:#291f3a;
-      --st-validee:#7bc492;
-      --st-validee-bg:#17301e;
-      --st-anomalie:#e58080;
-      --st-anomalie-bg:#3a1a1a;
-
-      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
-      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#121613;
-    --surface:#181e1a;
-    --surface-2:#202722;
-    --surface-3:#2a322b;
-    --ink:#e8ece9;
-    --ink-dim:#a3aca6;
-    --ink-faint:#707972;
-    --border:#323b34;
-    --border-strong:#454f47;
-    --accent:#e0a13c;
-    --accent-ink:#1c1305;
-    --accent-soft:#3a2c11;
-
-    --st-planifiee:#a3aca6;
-    --st-planifiee-bg:#242b26;
-    --st-detectee:#7ba7d8;
-    --st-detectee-bg:#1c2a38;
-    --st-rapprochee:#6fc4ac;
-    --st-rapprochee-bg:#16302a;
-    --st-proposee:#b39cdd;
-    --st-proposee-bg:#291f3a;
-    --st-validee:#7bc492;
-    --st-validee-bg:#17301e;
-    --st-anomalie:#e58080;
-    --st-anomalie-bg:#3a1a1a;
-
+    --bg:#0a0e17; --surface:#121826; --surface-2:#1a2233; --surface-3:#232c40;
+    --ink:#eef1f7; --ink-dim:#9aa5bc; --ink-faint:#67718c;
+    --border:#232c40; --border-strong:#354061;
+    --accent:#e0a13c; --accent-ink:#1c1305; --accent-soft:#3a2c11;
+    --st-planifiee:#93a0ba; --st-planifiee-bg:#1b2233;
+    --st-detectee:#b09aef; --st-detectee-bg:#241d3d;
+    --st-rapprochee:#5fa8f5; --st-rapprochee-bg:#16233d;
+    --st-proposee:#f2bf4c; --st-proposee-bg:#332711;
+    --st-validee:#52d489; --st-validee-bg:#123423;
+    --st-anomalie:#f37272; --st-anomalie-bg:#3a1717;
+    --zone-nord:#4ade80; --zone-nord-bg:rgba(74,222,128,0.12);
+    --zone-sud:#5fa8f5; --zone-sud-bg:rgba(95,168,245,0.12);
+    --zone-port:#f2a13c; --zone-port-bg:rgba(242,161,60,0.08);
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
     --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
     --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ef; --surface:#ffffff; --surface-2:#e3e8e5; --surface-3:#d8ded9;
+    --ink:#1a211f; --ink-dim:#59635f; --ink-faint:#8a938e;
+    --border:#c7cfca; --border-strong:#aab3ad;
+    --accent:#b97a17; --accent-ink:#5a3c0a; --accent-soft:#f3e2c2;
+    --st-planifiee:#6b746f; --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#7a5cb0; --st-detectee-bg:#e9e2f5;
+    --st-rapprochee:#3a6ea8; --st-rapprochee-bg:#dde8f3;
+    --st-proposee:#a8791b; --st-proposee-bg:#f3e6c8;
+    --st-validee:#3f8b52; --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b; --st-anomalie-bg:#f8dede;
+    --zone-nord:#3f8b52; --zone-nord-bg:#e0f0e3;
+    --zone-sud:#3a6ea8; --zone-sud-bg:#dde8f3;
+    --zone-port:#b97a17; --zone-port-bg:#f3e2c2;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
   }
 
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
   body{
-    background:
-      radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
-      var(--bg);
-    color:var(--ink);
-    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size:14px;
-    line-height:1.45;
-    -webkit-font-smoothing:antialiased;
+    background: radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%), var(--bg);
+    color:var(--ink); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased;
   }
   ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
   .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
-  a{ color:inherit; }
-  button{ font:inherit; }
+  a{ color:inherit; } button{ font:inherit; }
 
-  /* ---------- maquette banner ---------- */
-  .maquette-banner{
-    display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
-    padding:8px 16px; border-bottom:1px solid var(--border);
-  }
-  .mb-tag{
-    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--accent-ink); background:var(--accent-soft);
-    border-radius:999px; padding:3px 9px;
-  }
+  .maquette-banner{ display:flex; align-items:center; justify-content:center; gap:9px; background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center; padding:8px 16px; border-bottom:1px solid var(--border); }
+  .mb-tag{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border-radius:999px; padding:3px 9px; }
 
-  /* ---------- shell header / tabs ---------- */
   .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
-  .brand-row{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto;
-  }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto; }
   .brand{ display:flex; align-items:center; gap:12px; }
   .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
   .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
@@ -156,43 +69,22 @@
   .brand-text{ display:flex; flex-direction:column; gap:1px; }
   .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
   .brand-sub{ color:var(--ink-faint); font-size:12px; }
-  .jalon-tag{
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:4px 11px;
-  }
-
+  .jalon-tag{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:4px 11px; }
   .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
-  .tab{
-    display:flex; align-items:center; gap:8px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
-    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none;
-  }
+  .tab{ display:flex; align-items:center; gap:8px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em; padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none; }
   a.tab:hover{ background:var(--surface-2); }
   .tab.done{ color:var(--ink-dim); }
   .tab.active{ color:var(--accent-ink); background:var(--accent-soft); cursor:default; }
-  .badge-soon{
-    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
-    letter-spacing:.04em; text-transform:uppercase;
-    color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:2px 7px;
-  }
 
-  /* ---------- screen header ---------- */
   .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
   .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
   .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
-  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:78ch; margin-top:6px; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:82ch; margin-top:6px; }
 
   .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
   .spacer{ flex:1 1 auto; }
 
-  .controls-bar{
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-    margin:20px 0 20px 0; padding:14px 16px;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
-  }
+  .controls-bar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:20px 0 16px 0; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md); }
   .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
   .chip{ display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 13px 6px 11px; }
   .chip .n{ font-family:"IBM Plex Mono", monospace; font-weight:500; font-size:13.5px; }
@@ -202,67 +94,91 @@
   .chip.faint{ background:transparent; border-style:dashed; }
   .chip.faint .n, .chip.faint .lbl{ color:var(--ink-faint); }
 
-  /* ---------- layout ---------- */
+  /* ---------- category tabs (Général / Seuils & Alertes / …) ---------- */
+  .settings-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin:0 0 20px 0; border-bottom:1px solid var(--border); padding-bottom:0; }
+  .stab{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13.5px; letter-spacing:.02em;
+    padding:9px 16px; border:none; background:transparent; color:var(--ink-faint); cursor:pointer;
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .stab:hover{ color:var(--ink-dim); }
+  .stab.on{ color:var(--accent); border-bottom-color:var(--accent); }
+  .settings-panel{ display:none; }
+  .settings-panel.on{ display:block; }
+
   .pr-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start; }
   @media (max-width:980px){ .pr-grid{ grid-template-columns:1fr; } }
   .col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 
   .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); }
-  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; flex-wrap:wrap; }
   .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
   .panel-sub{ font-size:11px; color:var(--ink-faint); }
-  .panel-lede{ font-size:12.5px; color:var(--ink-dim); margin:8px 18px 0 18px; max-width:82ch; }
+  .panel-lede{ font-size:12.5px; color:var(--ink-dim); margin:8px 18px 0 18px; max-width:84ch; }
   .panel-body{ padding:14px 18px 18px 18px; }
 
-  /* ---------- editable parameters ---------- */
   .param-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px 20px; }
   .param-item{ display:flex; flex-direction:column; gap:6px; }
   .param-label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); }
-  .param-input-row{ display:flex; align-items:center; gap:8px; }
+  .param-input-row{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   input[type="number"], input[type="time"], input[type="text"].param-text{
     font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
     background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
-    padding:7px 10px; min-height:34px; width:100%; max-width:120px;
+    padding:7px 10px; min-height:34px; width:100%; max-width:150px;
     transition:border-color .12s ease, box-shadow .12s ease;
   }
+  input[type="text"].param-text{ max-width:280px; }
   input[type="number"]{ max-width:84px; }
   input:hover{ border-color:var(--ink-faint); }
   input:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  input:disabled{ opacity:.55; cursor:not-allowed; }
   .param-unit{ font-size:12px; color:var(--ink-faint); white-space:nowrap; }
   .param-meta{ font-size:10.5px; color:var(--ink-faint); }
-  .param-meta a{ text-decoration:underline; text-decoration-style:dotted; }
+  .param-meta a{ text-decoration:underline; text-decoration-style:dotted; cursor:pointer; }
 
-  .tbd-badge{
-    display:inline-flex; align-items:center; gap:5px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
-    color:var(--ink-faint); background:transparent; border:1.5px dashed var(--border-strong);
-    border-radius:999px; padding:4px 11px; width:fit-content;
-  }
+  .tbd-badge{ display:inline-flex; align-items:center; gap:5px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.03em; text-transform:uppercase; color:var(--ink-faint); background:transparent; border:1.5px dashed var(--border-strong); border-radius:999px; padding:4px 11px; width:fit-content; }
 
   .info-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 22px; }
   .info-item dt{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 3px 0; }
   .info-item dd{ margin:0; font-size:13.5px; color:var(--ink); }
 
-  .proposal-note{
-    background:var(--st-proposee-bg); border:1px dashed color-mix(in srgb, var(--st-proposee) 55%, var(--border));
-    border-radius:var(--radius-md); padding:12px 14px;
-  }
-  .proposal-label{
-    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
-    color:var(--st-proposee); margin:0 0 5px 0;
-  }
+  .proposal-note{ background:var(--st-proposee-bg); border:1px dashed color-mix(in srgb, var(--st-proposee) 55%, var(--border)); border-radius:var(--radius-md); padding:12px 14px; }
+  .proposal-label{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--st-proposee); margin:0 0 5px 0; }
   .proposal-note p{ margin:0; font-size:12.5px; color:var(--ink-dim); }
 
-  .tbd-note{
-    background:var(--surface-2); border:1px dashed var(--border-strong);
-    border-radius:var(--radius-md); padding:12px 14px;
-  }
+  .tbd-note{ background:var(--surface-2); border:1px dashed var(--border-strong); border-radius:var(--radius-md); padding:12px 14px; }
   .tbd-note p{ margin:6px 0 0 0; font-size:12px; color:var(--ink-dim); }
+  .tbd-note p:first-child{ margin-top:0; }
 
   .rule-note{ font-size:12.5px; color:var(--ink-dim); }
   .rule-note b{ color:var(--ink); }
 
-  /* ---------- historique ---------- */
+  .ref-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .ref-table th{ text-align:left; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:0 10px 8px 0; border-bottom:1px solid var(--border); }
+  .ref-table td{ padding:9px 10px 9px 0; border-bottom:1px solid var(--border); vertical-align:top; color:var(--ink-dim); }
+  .ref-table tr:last-child td{ border-bottom:none; }
+  .ref-table td.entity{ color:var(--ink); font-weight:600; white-space:nowrap; }
+  .ref-list{ margin:0; padding-left:18px; font-size:12.5px; color:var(--ink-dim); }
+  .ref-list li{ margin-bottom:4px; }
+
+  .guerite-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
+  .guerite-row:last-child{ border-bottom:none; }
+  .guerite-badge{ display:inline-flex; align-items:center; gap:7px; font-weight:600; }
+  .guerite-badge .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .guerite-badge.nord .dot{ background:var(--zone-nord); }
+  .guerite-badge.sud .dot{ background:var(--zone-sud); }
+  .guerite-count{ color:var(--ink-faint); }
+
+  .toggle-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 0; }
+  .toggle-row .param-label{ text-transform:none; letter-spacing:0; font-size:13px; color:var(--ink); }
+  .switch{ position:relative; display:inline-block; width:38px; height:22px; flex:none; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider{ position:absolute; inset:0; background:var(--surface-3); border-radius:999px; transition:background .15s ease; cursor:pointer; }
+  .switch .slider::before{ content:""; position:absolute; width:16px; height:16px; left:3px; top:3px; background:var(--surface); border-radius:50%; transition:transform .15s ease; box-shadow:var(--shadow-sm); }
+  .switch input:checked + .slider{ background:var(--st-validee); }
+  .switch input:checked + .slider::before{ transform:translateX(16px); }
+  .switch input:disabled + .slider{ opacity:.5; cursor:not-allowed; }
+
   .history-list{ display:flex; flex-direction:column; gap:10px; }
   .history-item{ padding:11px 13px; border-radius:var(--radius-md); background:var(--surface-2); border:1px solid var(--border); }
   .history-param{ font-weight:600; font-size:13px; margin:0 0 5px 0; }
@@ -272,12 +188,7 @@
   .history-change .new{ color:var(--st-validee); font-weight:600; }
   .history-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:5px; }
 
-  /* ---------- legend & footnote ---------- */
-  .legend{
-    margin-top:20px; display:flex; align-items:center; gap:24px; flex-wrap:wrap;
-    padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
-    box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim);
-  }
+  .legend{ margin-top:20px; display:flex; align-items:center; gap:24px; flex-wrap:wrap; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim); }
   .legend-group{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
   .legend-title{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px; }
   .legend-swatch{ display:inline-flex; align-items:center; gap:6px; font-size:12px; }
@@ -286,14 +197,8 @@
   .legend-dot.tbd{ background:transparent; border:1.5px dashed var(--border-strong); }
   .legend-dot.proposal{ background:var(--st-proposee); }
 
-  .footnote{
-    margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
-    color:var(--ink-dim); font-size:12.5px; max-width:92ch;
-  }
-  .footnote .fn-badge{
-    flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
-  }
+  .footnote{ margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md); color:var(--ink-dim); font-size:12.5px; max-width:96ch; }
+  .footnote .fn-badge{ flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px; }
   .footnote b{ color:var(--ink); }
   .footnote p{ margin:0 0 8px 0; }
   .footnote p:last-child{ margin-bottom:0; }
@@ -329,14 +234,14 @@
   <div class="screen-title-row">
     <div>
       <h1 class="screen-title">Paramètres</h1>
-      <p class="screen-caption">Tout seuil, objectif et règle est une donnée en base, éditable ici — jamais en dur. Un changement ne réécrit pas le passé : les shifts, rapports et alertes déjà générés restent calculés avec la valeur qui était en vigueur à leur date. Cette maquette ne couvre que les seuils/objectifs/règles ; les référentiels (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) sont hors périmètre de cet écran.</p>
+      <p class="screen-caption">Tout seuil, objectif et règle est une donnée en base, éditable ici — jamais en dur (cadrage §3, règle 2). Un changement ne réécrit pas le passé : les shifts, rapports et alertes déjà générés restent calculés avec la valeur qui était en vigueur à leur date. Les référentiels (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) restent hors périmètre de cet écran.</p>
     </div>
   </div>
 
   <div class="controls-bar">
     <div class="stat-chips">
-      <div class="chip"><span class="n num">11</span><span class="lbl">paramètres validés</span></div>
-      <div class="chip warn"><span class="n num">4</span><span class="lbl">à définir / proposition</span></div>
+      <div class="chip"><span class="n num" id="count-ok">—</span><span class="lbl">paramètres validés</span></div>
+      <div class="chip warn"><span class="n num" id="count-tbd">—</span><span class="lbl">à définir / proposition</span></div>
       <div class="chip faint"><span class="lbl">preset</span><span class="n">TRANSPORT</span></div>
     </div>
     <div class="spacer"></div>
@@ -345,202 +250,322 @@
     </div>
   </div>
 
-  <div class="pr-grid">
+  <nav class="settings-tabs" id="settings-tabs" aria-label="Catégories de paramètres">
+    <button type="button" class="stab on" data-tab="general">Général</button>
+    <button type="button" class="stab" data-tab="seuils">Seuils &amp; Alertes</button>
+    <button type="button" class="stab" data-tab="guerites">Guérites</button>
+    <button type="button" class="stab" data-tab="materiels">Matériels</button>
+    <button type="button" class="stab" data-tab="utilisateurs">Utilisateurs</button>
+    <button type="button" class="stab" data-tab="securite">Sécurité</button>
+    <button type="button" class="stab" data-tab="integrations">Intégrations</button>
+    <button type="button" class="stab" data-tab="apropos">À propos</button>
+  </nav>
 
-    <div class="col">
-
-      <!-- Shifts et horaires -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Shifts et horaires</h2>
-          <span class="panel-sub">SPEC_PRESET_TRANSPORT §6</span>
-        </div>
-        <div class="panel-body">
-          <div class="param-grid">
-            <div class="param-item">
-              <span class="param-label">Shift jour</span>
-              <div class="param-input-row">
-                <input type="time" value="06:00"> <span class="param-unit">→</span> <input type="time" value="18:00">
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Shift nuit</span>
-              <div class="param-input-row">
-                <input type="time" value="18:00"> <span class="param-unit">→</span> <input type="time" value="06:00">
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Dépassement compté 2ᵉ shift</span>
-              <div class="param-input-row">
-                <input type="number" value="5"> <span class="param-unit">heures après la fin du shift</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Heure de référence — Nord</span>
-              <div class="param-input-row">
-                <input type="time" value="09:00"> <span class="param-unit">contrainte légale de circulation</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Heure de référence — Sud</span>
-              <div class="param-input-row">
-                <input type="time" value="07:00"> <span class="param-unit">opérationnelle</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Alerte retard début de shift</span>
-              <div class="param-input-row">
-                <input type="number" value="30"> <span class="param-unit">min après l'heure de référence</span>
-              </div>
-              <span class="param-meta">Modifié le 19/07/2026 — <a href="#historique">voir l'historique</a></span>
+  <!-- ================= GÉNÉRAL ================= -->
+  <div class="settings-panel on" id="panel-general">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Informations système</h2><span class="panel-sub">cadrage §3.5</span></div>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="ok"><span class="param-label">Nom du système</span><div class="param-input-row"><input type="text" class="param-text" value="Demo Logistics — Console opérations"></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Fuseau horaire</span><div class="param-input-row"><input type="text" class="param-text" value="GMT (Abidjan)" style="max-width:160px;"></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Langue</span><div class="param-input-row"><input type="text" class="param-text" value="Français" style="max-width:160px;"></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Devise</span><div class="param-input-row"><input type="text" class="param-text" value="XOF — Franc CFA" style="max-width:160px;"></div></div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Objectifs de rotation -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Objectifs de rotation</h2>
-          <span class="panel-sub">par famille × zone</span>
-        </div>
-        <p class="panel-lede">Paramètres par famille × zone, modifiables sans code et historisés : un changement d'objectif n'affecte que les shifts à venir.</p>
-        <div class="panel-body">
-          <div class="param-grid">
-            <div class="param-item">
-              <span class="param-label">Livraison-Récup — Nord</span>
-              <div class="param-input-row">
-                <input type="number" value="5"> <span class="param-unit">rotations / jour</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Livraison-Récup — Sud</span>
-              <div class="param-input-row">
-                <input type="number" value="3"> <span class="param-unit">rotations / jour</span>
-              </div>
-              <span class="param-meta">Modifié le 15/07/2026 — <a href="#historique">voir l'historique</a></span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Transfert (Nord ↔ Sud)</span>
-              <div class="param-input-row">
-                <input type="number" value="3"> <span class="param-unit">rotations / jour</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <dl class="info-grid" style="grid-template-columns:1fr; gap:0;">
-                <div class="info-item">
-                  <dt>Mission client</dt>
-                  <dd>Défini par mission — pas un seuil global, réglé à la création de chaque mission client.</dd>
-                </div>
-              </dl>
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Shifts</h2><span class="panel-sub">SPEC_PRESET_TRANSPORT §6</span></div>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="ok"><span class="param-label">Shift jour</span><div class="param-input-row"><input type="time" value="06:00"> <span class="param-unit">→</span> <input type="time" value="18:00"></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Shift nuit</span><div class="param-input-row"><input type="time" value="18:00"> <span class="param-unit">→</span> <input type="time" value="06:00"></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Dépassement compté 2ᵉ shift</span><div class="param-input-row"><input type="number" value="5"> <span class="param-unit">heures après la fin du shift</span></div></div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- Alertes chauffeur / mission -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Alertes chauffeur / mission</h2>
-          <span class="panel-sub">cahier des charges §7.2</span>
-        </div>
-        <div class="panel-body">
-          <div class="param-grid">
-            <div class="param-item">
-              <span class="param-label">Survitesses</span>
-              <div class="param-input-row">
-                <input type="number" value="3"> <span class="param-unit">événements / shift</span>
-              </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Source de données</h2><span class="panel-sub">état réel de ce jalon</span></div>
+          <div class="panel-body">
+            <dl class="info-grid">
+              <div class="info-item"><dt>Source actuelle</dt><dd id="gi-source">—</dd></div>
+              <div class="info-item"><dt>Statut</dt><dd id="gi-status">—</dd></div>
+              <div class="info-item"><dt>Véhicules actifs</dt><dd id="gi-vehicles">—</dd></div>
+            </dl>
+            <div class="toggle-row" style="margin-top:14px;">
+              <span class="param-label">Mode simulateur</span>
+              <label class="switch"><input type="checkbox" checked disabled><span class="slider"></span></label>
             </div>
-            <div class="param-item">
-              <span class="param-label">Camion muet</span>
-              <div class="param-input-row">
-                <input type="number" value="2"> <span class="param-unit">heures sans émission</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">6ᵉ jour consécutif</span>
-              <div class="param-input-row">
-                <input type="number" value="6"> <span class="param-unit">jours de travail consécutifs</span>
-              </div>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Accélérations rapides / freinages brusques</span>
-              <span class="tbd-badge">À définir</span>
-            </div>
+            <p class="param-meta">Verrouillé au jalon 0 — aucune source réelle (Google Sheet guérite, GPS) n'est encore connectée. Voir l'onglet Intégrations.</p>
           </div>
-
-          <div class="tbd-note" style="margin-top:16px;">
-            <p><b>Accélérations / freinages brusques</b> — seuils à définir avec le fournisseur télématique (SPEC_PRESET_TRANSPORT §6). Aucune valeur de départ n'est donnée dans les documents.</p>
-          </div>
-
-          <div class="proposal-note" style="margin-top:12px;">
-            <p class="proposal-label">Proposition à valider</p>
-            <p><b>Modalité de l'alerte faible rotation</b> — contrôle continu au prorata du temps écoulé pendant le shift, pour alerter pendant qu'il est encore temps d'agir. Non tranchée (cahier des charges §7.2, question ouverte §9.2).</p>
-          </div>
-
-          <p class="rule-note" style="margin-top:12px;"><b>Identité chauffeur</b> — règle de croisement (iButton × guérite × tracking, caméra à terme), pas un seuil numérique : toute divergence déclenche une alerte.</p>
-        </div>
-      </section>
-
+        </section>
+      </div>
     </div>
+  </div>
 
-    <div class="col">
-
-      <!-- Alertes conteneur -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Alertes conteneur</h2>
-          <span class="panel-sub">cahier des charges Conteneurs §5</span>
-        </div>
-        <p class="panel-lede">Aucune valeur de départ n'est fournie pour ces trois seuils dans les documents — affichés « à définir » plutôt qu'inventés.</p>
-        <div class="panel-body">
-          <div class="param-grid">
-            <div class="param-item">
-              <span class="param-label">Séjour long sur site</span>
-              <span class="tbd-badge">À définir</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Conteneur « perdu »</span>
-              <span class="tbd-badge">À définir</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Vide non restitué</span>
-              <span class="tbd-badge">À définir</span>
+  <!-- ================= SEUILS & ALERTES ================= -->
+  <div class="settings-panel" id="panel-seuils">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Objectifs de rotation</h2><span class="panel-sub">par famille × zone</span></div>
+          <p class="panel-lede">Paramètres par famille × zone, modifiables sans code et historisés : un changement d'objectif n'affecte que les shifts à venir.</p>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="ok"><span class="param-label">Livraison-Récup — Nord</span><div class="param-input-row"><input type="number" value="5"> <span class="param-unit">rotations / jour</span></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Livraison-Récup — Sud</span><div class="param-input-row"><input type="number" value="3"> <span class="param-unit">rotations / jour</span></div><span class="param-meta">Modifié le 15/07/2026 — <a data-goto-historique>voir l'historique</a></span></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Transfert (Nord ↔ Sud)</span><div class="param-input-row"><input type="number" value="3"> <span class="param-unit">rotations / jour</span></div></div>
+              <div class="param-item" data-status="ok"><dl class="info-grid" style="grid-template-columns:1fr; gap:0;"><div class="info-item"><dt>Mission client</dt><dd>Défini par mission — pas un seuil global, réglé à la création de chaque mission client.</dd></div></dl></div>
             </div>
           </div>
-          <div class="tbd-note" style="margin-top:16px;">
-            <p><b>Séjour long sur site</b> — le mécanisme prévu est un seuil par défaut <i>plus</i> un seuil par armateur (les franchises detention/demurrage diffèrent). Valeurs réelles à fournir (question ouverte §9.2 du cahier Conteneurs).</p>
-            <p><b>Conteneur « perdu »</b> et <b>vide non restitué</b> — même logique « > N jours », N non défini.</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Historique -->
-      <section class="panel" id="historique">
-        <div class="panel-head">
-          <h2 class="panel-title">Historique des modifications</h2>
-          <span class="panel-sub">2 entrées</span>
-        </div>
-        <p class="panel-lede">Un changement de paramètre ne réécrit pas le passé (cahier des charges §3, critère d'acceptation §10.5) : les shifts déjà clôturés restent calculés avec la valeur en vigueur à leur date.</p>
-        <div class="panel-body">
-          <div class="history-list">
-            <div class="history-item">
-              <p class="history-param">Objectif Livraison-Récup — Sud</p>
-              <p class="history-change"><span class="old num">4</span><span class="arrow">→</span><span class="new num">3</span> rotations / jour</p>
-              <p class="history-meta">Effectif depuis le 16/07/2026 · modifié le 15/07/2026 par le gérant</p>
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Alertes chauffeur / mission</h2><span class="panel-sub">cahier des charges §7.2</span></div>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="ok"><span class="param-label">Survitesses</span><div class="param-input-row"><input type="number" value="3"> <span class="param-unit">événements / shift</span></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Camion muet</span><div class="param-input-row"><input type="number" value="2"> <span class="param-unit">heures sans émission</span></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">6ᵉ jour consécutif</span><div class="param-input-row"><input type="number" value="6"> <span class="param-unit">jours de travail consécutifs</span></div></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Accélérations / freinages brusques</span><span class="tbd-badge">À définir</span></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Alerte retard début de shift</span><div class="param-input-row"><input type="number" value="30"> <span class="param-unit">min après l'heure de référence (par guérite)</span></div></div>
             </div>
-            <div class="history-item">
-              <p class="history-param">Alerte retard début de shift</p>
-              <p class="history-change"><span class="old num">45</span><span class="arrow">→</span><span class="new num">30</span> min</p>
-              <p class="history-meta">Effectif depuis le 20/07/2026 · modifié le 19/07/2026 par le gérant</p>
+            <div class="tbd-note" style="margin-top:16px;"><p><b>Accélérations / freinages brusques</b> — seuils à définir avec le fournisseur télématique (SPEC_PRESET_TRANSPORT §6). Aucune valeur de départ n'est donnée dans les documents.</p></div>
+            <div class="proposal-note" style="margin-top:12px;"><p class="proposal-label">Proposition à valider</p><p><b>Modalité de l'alerte faible rotation</b> — contrôle continu au prorata du temps écoulé pendant le shift, pour alerter pendant qu'il est encore temps d'agir. Non tranchée (cahier des charges §7.2, question ouverte §9.2).</p></div>
+            <p class="rule-note" style="margin-top:12px;"><b>Identité chauffeur</b> — règle de croisement (iButton × guérite × tracking, caméra à terme), pas un seuil numérique : toute divergence déclenche une alerte. Détail dans l'onglet Sécurité.</p>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Alertes conteneur</h2><span class="panel-sub">cahier des charges Conteneurs §5</span></div>
+          <p class="panel-lede">Aucune valeur de départ n'est fournie pour ces trois seuils dans les documents — affichés « à définir » plutôt qu'inventés.</p>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="tbd"><span class="param-label">Séjour long sur site</span><span class="tbd-badge">À définir</span></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Conteneur « perdu »</span><span class="tbd-badge">À définir</span></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Vide non restitué</span><span class="tbd-badge">À définir</span></div>
+            </div>
+            <div class="tbd-note" style="margin-top:16px;">
+              <p><b>Séjour long sur site</b> — le mécanisme prévu est un seuil par défaut <i>plus</i> un seuil par armateur (les franchises detention/demurrage diffèrent). Valeurs réelles à fournir (question ouverte §9.2 du cahier Conteneurs).</p>
+              <p><b>Conteneur « perdu »</b> et <b>vide non restitué</b> — même logique « > N jours », N non défini.</p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
+        <section class="panel" id="historique">
+          <div class="panel-head"><h2 class="panel-title">Historique des modifications</h2><span class="panel-sub">2 entrées</span></div>
+          <p class="panel-lede">Un changement de paramètre ne réécrit pas le passé (cahier des charges §3, critère d'acceptation §10.5) : les shifts déjà clôturés restent calculés avec la valeur en vigueur à leur date.</p>
+          <div class="panel-body">
+            <div class="history-list">
+              <div class="history-item"><p class="history-param">Objectif Livraison-Récup — Sud</p><p class="history-change"><span class="old num">4</span><span class="arrow">→</span><span class="new num">3</span> rotations / jour</p><p class="history-meta">Effectif depuis le 16/07/2026 · modifié le 15/07/2026 par le gérant</p></div>
+              <div class="history-item"><p class="history-param">Alerte retard début de shift</p><p class="history-change"><span class="old num">45</span><span class="arrow">→</span><span class="new num">30</span> min</p><p class="history-meta">Effectif depuis le 20/07/2026 · modifié le 19/07/2026 par le gérant</p></div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
+  </div>
 
+  <!-- ================= GUÉRITES ================= -->
+  <div class="settings-panel" id="panel-guerites">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Heures de référence par guérite</h2><span class="panel-sub">SPEC_PRESET_TRANSPORT §6</span></div>
+          <p class="panel-lede">Paramètre par site/zone : la contrainte de circulation peut changer par site, ce n'est jamais une valeur unique codée en dur.</p>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="ok"><span class="param-label">Heure de référence — Nord</span><div class="param-input-row"><input type="time" value="09:00"> <span class="param-unit">contrainte légale de circulation</span></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Heure de référence — Sud</span><div class="param-input-row"><input type="time" value="07:00"> <span class="param-unit">opérationnelle</span></div><span class="param-meta">Modifié le 19/07/2026 — <a data-goto-historique>voir l'historique</a></span></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Objectif Livraison-Récup — Nord</span><div class="param-input-row"><input type="number" value="5"> <span class="param-unit">rotations / jour</span></div></div>
+              <div class="param-item" data-status="ok"><span class="param-label">Objectif Livraison-Récup — Sud</span><div class="param-input-row"><input type="number" value="3"> <span class="param-unit">rotations / jour</span></div></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Guérites du référentiel simulé</h2><span class="panel-sub" id="gu-sub"></span></div>
+          <p class="panel-lede">Comptage réel des missions actives par guérite, lu depuis <code>_shared/sim-data.js</code> (le même référentiel que Live Tracking, File de validation et Rapport de shift) — pas une liste de sites inventée pour cet écran.</p>
+          <div class="panel-body" id="gu-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MATÉRIELS ================= -->
+  <div class="settings-panel" id="panel-materiels">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Catégories de véhicules</h2><span class="panel-sub">preset TRANSPORT, SPEC §3</span></div>
+          <p class="panel-lede">Catalogue de référence pré-rempli par le preset — pas encore une table éditable dans ce jalon 0 (référentiels hors périmètre de cet écran, cadrage §5).</p>
+          <div class="panel-body">
+            <ol class="ref-list">
+              <li>Camions (tracteurs)</li>
+              <li>Remorques 20'</li>
+              <li>Remorques 40'</li>
+              <li>Remorques bi-train</li>
+              <li>Véhicules de service (légers)</li>
+              <li>Fourchettes (chariots élévateurs)</li>
+              <li>Engins de manutention de conteneurs</li>
+            </ol>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Documents attendus par type d'entité</h2><span class="panel-sub">validé le 29/07/2026</span></div>
+          <div class="panel-body" style="overflow-x:auto;">
+            <table class="ref-table">
+              <thead><tr><th>Entité</th><th>Documents</th></tr></thead>
+              <tbody>
+                <tr><td class="entity">Camion / véhicule de service</td><td>Carte grise · visite technique · assurance · vignette · autorisation de transport</td></tr>
+                <tr><td class="entity">Remorque</td><td>Carte grise · visite technique · assurance</td></tr>
+                <tr><td class="entity">Fourchette / engin</td><td>Certificat de conformité · contrôle technique périodique · assurance engins</td></tr>
+                <tr><td class="entity">Chauffeur</td><td>Permis poids lourds · visite médicale · carte de qualification si applicable</td></tr>
+                <tr><td class="entity">Cariste / conducteur d'engin</td><td>Certificat d'aptitude (CACES ou équivalent local)</td></tr>
+                <tr><td class="entity">Mission / conteneur</td><td>Bon de livraison · EIR (interchange armateur) · lettre de voiture · documents douaniers si sous douane</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= UTILISATEURS ================= -->
+  <div class="settings-panel" id="panel-utilisateurs">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Rôles prévus</h2><span class="panel-sub">cadrage §7.4, question ouverte</span></div>
+          <p class="panel-lede">Quatre rôles cités par le cadrage — le nombre de comptes par rôle reste une question ouverte au démarrage, affichée « à définir » plutôt qu'un chiffre inventé.</p>
+          <div class="panel-body">
+            <div class="param-grid">
+              <div class="param-item" data-status="tbd"><span class="param-label">Service des opérations</span><span class="tbd-badge">Comptes à définir</span></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Agent(s) tracking</span><span class="tbd-badge">Comptes à définir</span></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Garage</span><span class="tbd-badge">Comptes à définir</span></div>
+              <div class="param-item" data-status="tbd"><span class="param-label">Direction</span><span class="tbd-badge">Comptes à définir</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Ce qui n'est pas encore défini</h2></div>
+          <div class="panel-body">
+            <div class="tbd-note"><p>Le cadrage (§7.4) demande « qui sont les utilisateurs et leurs rôles […], combien de comptes » sans réponse fournie à ce jour. Cette maquette n'invente ni identifiants ni nombre de comptes.</p></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SÉCURITÉ ================= -->
+  <div class="settings-panel" id="panel-securite">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Identité chauffeur — triple croisement</h2><span class="panel-sub">cahier des charges §2.3</span></div>
+          <div class="panel-body">
+            <p class="rule-note">Le chauffeur s'identifie sur le lecteur <b>iButton</b> du camion ; l'identité doit être confirmée par la <b>guérite</b> (chauffeur déclaré) et par le <b>tracking</b> (cohérence des positions). Toute divergence entre sources déclenche une <b>alerte identité</b> et fait passer la mission en Anomalie — jamais un fait établi par une source unique. La caméra embarquée deviendra une 4ᵉ source à terme.</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Rôles d'édition des paramètres</h2></div>
+          <div class="panel-body">
+            <div class="param-item" data-status="tbd"><span class="tbd-badge">Non détaillé dans les documents source</span></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Isolation et accès</h2><span class="panel-sub">cadrage §2, non négociable</span></div>
+          <div class="panel-body">
+            <ul class="ref-list">
+              <li>Nouveau repo, nouvelle base, nouveau déploiement — aucun accès aux systèmes existants du commanditaire.</li>
+              <li>Secrets en variables d'environnement, jamais commités dans le dépôt.</li>
+              <li>Seuls accès externes autorisés : Google Sheet guérite (lecture seule) et plateforme GPS du transporteur (lecture seule).</li>
+              <li>Aucune donnée réelle dans le dépôt — les jeux de test sont fictifs (comme dans ce jalon 0).</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= INTÉGRATIONS ================= -->
+  <div class="settings-panel" id="panel-integrations">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Sources de données</h2><span class="panel-sub">spec ingestion guérite</span></div>
+          <div class="panel-body">
+            <dl class="info-grid">
+              <div class="info-item"><dt>Source actuelle (ce jalon)</dt><dd id="int-source">—</dd></div>
+              <div class="info-item"><dt>Statut</dt><dd id="int-status">—</dd></div>
+              <div class="info-item"><dt>Ingestion guérite</dt><dd>Google Sheet partagé, lecture seule (le connecteur n'écrit jamais dans le Sheet)</dd></div>
+              <div class="info-item"><dt>Intervalle de lecture</dt><dd><span class="tbd-badge">À définir en base</span></dd></div>
+              <div class="info-item"><dt>Fournisseur GPS transporteur</dt><dd><span class="tbd-badge">À définir</span></dd></div>
+            </dl>
+            <div class="tbd-note" style="margin-top:14px;"><p>La spec ingestion cite « toutes les 1-2 min » à titre d'exemple, pas comme une valeur validée (SPEC_INGESTION_GUERITE §3) — affiché « à définir » plutôt que ce chiffre d'exemple.</p></div>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Mode simulateur</h2></div>
+          <div class="panel-body">
+            <div class="toggle-row">
+              <span class="param-label">Utiliser le simulateur local pour les tests</span>
+              <label class="switch"><input type="checkbox" checked disabled><span class="slider"></span></label>
+            </div>
+            <p class="param-meta">Verrouillé Actif — c'est la seule source de ce jalon 0 (<code>_shared/sim-data.js</code>). Se déverrouillera quand un connecteur réel (Google Sheet, GPS) sera branché.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= À PROPOS ================= -->
+  <div class="settings-panel" id="panel-apropos">
+    <div class="pr-grid">
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Jalon 0 — Maquettes</h2></div>
+          <div class="panel-body">
+            <dl class="info-grid">
+              <div class="info-item"><dt>Statut du projet</dt><dd>Pilote V0, autonome et jetable-par-conception (cadrage §1)</dd></div>
+              <div class="info-item"><dt>Stack cible</dt><dd>Next.js (App Router) + TypeScript · Prisma + PostgreSQL · Railway · Auth.js</dd></div>
+              <div class="info-item"><dt>Ce prototype (jalon 0)</dt><dd>HTML statique + simulateur local (<code>_shared/sim-data.js</code>) — pas encore de migration React/Next.js</dd></div>
+              <div class="info-item"><dt>Cadrage rédigé le</dt><dd>03/08/2026</dd></div>
+            </dl>
+          </div>
+        </section>
+      </div>
+      <div class="col">
+        <section class="panel">
+          <div class="panel-head"><h2 class="panel-title">Documents de référence</h2></div>
+          <div class="panel-body">
+            <ul class="ref-list">
+              <li>CADRAGE_V0_PILOTE.md — mission, règles de conception, jalons</li>
+              <li>CAHIER_DES_CHARGES_CONTENEURS.md</li>
+              <li>CAHIER_DES_CHARGES_MISSIONS_CHAUFFEURS_LIVE.md</li>
+              <li>SPEC_INGESTION_GUERITE.md</li>
+              <li>SPEC_PRESET_TRANSPORT.md — vocabulaire, seuils de départ</li>
+              <li>STACK_PILOTE_V0.md</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
   </div>
 
   <div class="legend">
@@ -555,8 +580,68 @@
   <div class="footnote">
     <span class="fn-badge">i</span>
     <div>
-      <p><b>Notes de conception (jalon 0)</b> — Le preset est de la configuration transversale, consommée par les quatre couches ; il ne produit ni ne consomme d'événements (SPEC_PRESET_TRANSPORT, en-tête). Tout seuil, objectif et règle affiché ici est une donnée en base, jamais en dur (cadrage §3, règle 2). Cette maquette est un wireframe : les champs sont présentés comme éditables mais aucune sauvegarde n'est fonctionnelle.</p>
-      <p><b>Hors périmètre de cette maquette</b> — Les référentiels (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) sont exclus par décision explicite, bien que bundlés avec Paramètres au jalon 1 (cadrage §5). Les pondérations de la notation chauffeurs (8 critères) sont un sous-système distinct, non défini (question ouverte §9.3) et planifié au jalon 7, pas au jalon 0. Congés/RH et rôles d'édition ne sont pas détaillés dans les documents source.</p>
+      <p><b>Notes de conception (jalon 0)</b> — Le preset est de la configuration transversale, consommée par les quatre couches ; il ne produit ni ne consomme d'événements (SPEC_PRESET_TRANSPORT, en-tête). Tout seuil, objectif et règle affiché ici est une donnée en base, jamais en dur (cadrage §3, règle 2). Cette maquette est un wireframe : les champs sont présentés comme éditables mais <b>aucune sauvegarde n'est fonctionnelle</b> — préparé visuellement pour un futur branchement API, sans fausse API créée pour ce jalon.</p>
+      <p><b>Hors périmètre de cette maquette</b> — les référentiels complets (chauffeurs, camions, remorques, sites, clients, armateurs, familles de mission) sont exclus par décision explicite, bien que bundlés avec Paramètres au jalon 1 (cadrage §5). Les pondérations de la notation chauffeurs (8 critères) sont un sous-système distinct, non défini (question ouverte §9.3) et planifié au jalon 7. Congés/RH ne sont pas détaillés dans les documents source.</p>
     </div>
   </div>
 </main>
+
+<script src="_shared/sim-data.js"></script>
+<script>
+(function(){
+
+  // ---------- onglets de catégories ----------
+  document.querySelectorAll('.stab').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var key = btn.getAttribute('data-tab');
+      document.querySelectorAll('.stab').forEach(function(b){ b.classList.remove('on'); });
+      document.querySelectorAll('.settings-panel').forEach(function(p){ p.classList.remove('on'); });
+      btn.classList.add('on');
+      document.getElementById('panel-' + key).classList.add('on');
+    });
+  });
+
+  // ---------- lien "voir l'historique" : bascule sur l'onglet Seuils & Alertes puis scrolle ----------
+  document.querySelectorAll('[data-goto-historique]').forEach(function(a){
+    a.addEventListener('click', function(){
+      document.querySelector('.stab[data-tab="seuils"]').click();
+      var hist = document.getElementById('historique');
+      if (hist && typeof hist.scrollIntoView === 'function') hist.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+
+  // ---------- compteurs "validés / à définir", comptés depuis les data-status du DOM ----------
+  function renderCounts(){
+    var ok = document.querySelectorAll('[data-status="ok"]').length;
+    var tbd = document.querySelectorAll('[data-status="tbd"]').length;
+    document.getElementById('count-ok').textContent = ok;
+    document.getElementById('count-tbd').textContent = tbd;
+  }
+  renderCounts();
+
+  // ---------- source de données réelle de ce jalon (SIM), pas un texte figé ----------
+  function renderDataSource(){
+    var total = (typeof SIM !== 'undefined') ? SIM.vehicles.length : null;
+    ['gi-source','int-source'].forEach(function(id){ var el=document.getElementById(id); if (el) el.textContent = 'Simulateur local (API Trace In)'; });
+    ['gi-status','int-status'].forEach(function(id){ var el=document.getElementById(id); if (el) el.textContent = 'Connecté'; });
+    var v = document.getElementById('gi-vehicles');
+    if (v) v.textContent = total !== null ? (total + ' véhicule(s) — _shared/sim-data.js') : 'Non disponible';
+  }
+  renderDataSource();
+
+  // ---------- guérites du référentiel simulé (siteMissionCounts, sim-data.js) ----------
+  function renderGuerites(){
+    var list = document.getElementById('gu-list');
+    var sub = document.getElementById('gu-sub');
+    if (!list || typeof siteMissionCounts !== 'function') return;
+    var sites = siteMissionCounts();
+    sub.textContent = sites.length + ' guérite(s) actives';
+    list.innerHTML = sites.map(function(s){
+      var cls = s.site === 'Nord' ? 'nord' : s.site === 'Sud' ? 'sud' : '';
+      return '<div class="guerite-row"><span class="guerite-badge ' + cls + '"><span class="dot"></span>' + esc(s.site) + '</span><span class="guerite-count num">' + s.count + ' mission(s) active(s)</span></div>';
+    }).join('');
+  }
+  renderGuerites();
+
+})();
+</script>

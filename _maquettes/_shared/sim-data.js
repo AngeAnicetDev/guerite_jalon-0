@@ -522,6 +522,98 @@
     );
   }
 
+  /* ============================================================
+   * CONTENEURS — dérivés de SIM.vehicles (aucune liste de conteneurs
+   * indépendante). Seuls les véhicules qui portent un `container` dans
+   * le référentiel simulé sont des conteneurs actifs. Ajouté pour les
+   * écrans Fiche conteneur / File de validation / Rapport de shift —
+   * même règle qu'ailleurs dans ce fichier : une seule fonction, lue
+   * par tous les écrans qui en ont besoin, jamais un second tableau.
+   * ============================================================ */
+
+  // Armateur déduit du préfixe propriétaire (4 premières lettres du n°
+  // conteneur) — table de correspondance éditable en principe (cahier des
+  // charges Conteneurs §2.1) ; ici réduite aux préfixes réellement présents
+  // dans le référentiel simulé, pas une liste mondiale inventée.
+  function armateurFromCode(code) {
+    var prefix = (code || '').slice(0, 4).toUpperCase();
+    var map = { 'CMAU': 'CMA CGM', 'MAEU': 'Maersk', 'MSCU': 'MSC' };
+    return map[prefix] || null;
+  }
+
+  // Validation du chiffre de contrôle ISO 6346 (cahier des charges
+  // Conteneurs §2.1 : "le module DOIT valider le chiffre de contrôle à
+  // chaque saisie/lecture"). Implémentation de l'algorithme normalisé :
+  // 4 lettres + 6 chiffres, valeurs numériques pondérées par 2^position,
+  // somme mod 11 (10 -> 0) = chiffre de contrôle attendu. Un numéro
+  // fictif de la simulation qui ne satisfait pas ce calcul est un signal
+  // réel du métier ("à vérifier"), pas un bug d'affichage.
+  var ISO6346_LETTER_VALUES = { A:10,B:12,C:13,D:14,E:15,F:16,G:17,H:18,I:19,J:20,K:21,L:23,M:24,N:25,O:26,P:27,Q:28,R:29,S:30,T:31,U:32,V:34,W:35,X:36,Y:37,Z:38 };
+  function iso6346Check(code) {
+    var digits = (code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    if (digits.length !== 11) return { applicable: false };
+    var chars = digits.slice(0, 10).split('');
+    var given = +digits.charAt(10);
+    var sum = 0;
+    for (var i = 0; i < chars.length; i++) {
+      var ch = chars[i];
+      var val = /[0-9]/.test(ch) ? +ch : ISO6346_LETTER_VALUES[ch];
+      if (val === undefined) return { applicable: false };
+      sum += val * Math.pow(2, i);
+    }
+    var expected = sum % 11;
+    if (expected === 10) expected = 0;
+    return { applicable: true, expected: expected, given: given, valid: expected === given };
+  }
+
+  // Même règle de déduction que Remorques (containerState) : transfert
+  // port -> site = plein, site -> port = vide, déduite du texte de
+  // destination déjà présent dans la mission (aucun champ dédié dans SIM).
+  function containerChargeState(v) {
+    var to = v.mission && v.mission.to;
+    if (!to) return null;
+    if (/\(plein\)/i.test(to)) return 'Plein';
+    if (/\(vide\)/i.test(to)) return 'Vide';
+    return null;
+  }
+
+  // Résumé de mission court, identique à celui de Remorques (dupliqué
+  // intentionnellement, même raison que driverRoster()/vehicleDetailHTML()
+  // ci-dessus : ne pas modifier remorques.html hors périmètre de cette
+  // étape).
+  function missionSummary(v) {
+    var m = v.mission;
+    if (!m || (!m.type && !m.to)) return null;
+    return m.client ? (m.type + ' · ' + m.client) : (m.type ? m.type + ' · ' + m.to : m.to);
+  }
+
+  function containersFromVehicles() {
+    return SIM.vehicles.filter(function (v) { return !!v.container; }).map(function (v) {
+      return {
+        code: v.container.code,
+        qrToChange: !!v.container.qrToChange,
+        armateur: armateurFromCode(v.container.code),
+        chargeState: containerChargeState(v),
+        vehicle: v
+      };
+    });
+  }
+
+  // Répartition des missions actives par site/guérite (Nord/Sud) — compte
+  // simple des véhicules du référentiel actif par v.site, réutilisé par
+  // File de validation et Rapport de shift. Pas une mesure de temps
+  // (contrairement à dwellBySite) : un dénombrement de missions.
+  function siteMissionCounts() {
+    var sites = {};
+    SIM.vehicles.forEach(function (v) {
+      var site = v.site || 'Non renseigné';
+      if (!sites[site]) sites[site] = { site: site, count: 0, vehicleIds: [] };
+      sites[site].count++;
+      sites[site].vehicleIds.push(v.id);
+    });
+    return Object.keys(sites).map(function (s) { return sites[s]; }).sort(function (a, b) { return b.count - a.count; });
+  }
+
   global.SIM = SIM;
   global.NOW = NOW;
   global.displayId = displayId;
@@ -551,5 +643,13 @@
   global.attentionPoints = attentionPoints;
   global.driverRoster = driverRoster;
   global.vehicleDetailHTML = vehicleDetailHTML;
+
+  // ---------- exports : conteneurs / preset (File de validation, Fiche conteneur, Rapport de shift) ----------
+  global.armateurFromCode = armateurFromCode;
+  global.iso6346Check = iso6346Check;
+  global.containerChargeState = containerChargeState;
+  global.missionSummary = missionSummary;
+  global.containersFromVehicles = containersFromVehicles;
+  global.siteMissionCounts = siteMissionCounts;
 
 })(window);

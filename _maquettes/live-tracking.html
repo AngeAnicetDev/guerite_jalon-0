@@ -102,6 +102,15 @@
   }
 
   *{ box-sizing:border-box; }
+  /* Correctif : plusieurs composants (menu du sélecteur véhicule, bannière
+     de date, légende) fixent display:flex sur leur propre classe ; à
+     spécificité égale avec la règle UA [hidden]{display:none}, une règle
+     auteur déclarée après gagne — l'attribut hidden posé en JS n'avait
+     donc plus aucun effet visuel (menu "resté ouvert", légende jamais
+     repliée). Cette règle, plus spécifique (attribut + classe), rétablit
+     le comportement natif de `hidden` partout sur l'écran (le !important
+     garantit la priorité quelle que soit la spécificité de la classe). */
+  [hidden]{ display:none !important; }
   html,body{ margin:0; padding:0; }
   body{
     background:
@@ -208,6 +217,87 @@
   .chip.warn .n, .chip.warn .lbl{ color:var(--st-anomalie); }
   .chip.info{ background:var(--st-proposee-bg); border-color:transparent; }
   .chip.info .n, .chip.info .lbl{ color:var(--st-proposee); }
+  button.chip{ cursor:pointer; font:inherit; transition:border-color .12s ease, background .12s ease; }
+  button.chip:hover{ border-color:var(--border-strong); background:var(--surface-3); }
+
+  /* ---------- historique de la journée (menu compact près de la date) ---------- */
+  .date-history-btn{
+    display:inline-flex; align-items:center; gap:6px; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:12px;
+    padding:7px 11px; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-dim); cursor:pointer;
+    white-space:nowrap; align-self:flex-end;
+  }
+  .date-history-btn:hover{ background:var(--surface-2); color:var(--ink); }
+  .date-empty-banner{
+    display:flex; align-items:center; gap:10px; padding:10px 13px; margin:0 0 18px 0;
+    background:var(--st-proposee-bg); border:1px solid color-mix(in srgb, var(--st-proposee) 45%, var(--border)); border-radius:var(--radius-md);
+    font-size:12.5px; color:var(--st-proposee);
+  }
+
+  /* ---------- sélecteur de véhicule compact (remplace la rangée de boutons TR-xxx) ---------- */
+  .vehicle-picker{ position:relative; }
+  .vehicle-picker-btn{
+    display:inline-flex; align-items:center; gap:7px; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:13px;
+    padding:8px 13px; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:var(--surface); color:var(--ink);
+    cursor:pointer; white-space:nowrap;
+  }
+  .vehicle-picker-btn:hover{ background:var(--surface-2); }
+  .vehicle-picker-btn .chevron{ color:var(--ink-faint); font-size:10px; }
+  .vehicle-picker-btn.has-selection{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-ink); }
+  .vehicle-picker-menu{
+    position:absolute; z-index:30; top:calc(100% + 6px); left:0; width:min(320px,88vw);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-md); box-shadow:var(--shadow-lg);
+    padding:10px; display:flex; flex-direction:column; gap:8px;
+  }
+  .vehicle-picker-menu input[type="search"]{
+    width:100%; font-family:"IBM Plex Sans",sans-serif; font-size:13px; color:var(--ink); background:var(--surface-2);
+    border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:7px 10px;
+  }
+  .vehicle-picker-list{ display:flex; flex-direction:column; gap:2px; max-height:280px; overflow:auto; }
+  .vp-item{
+    display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 8px; border-radius:var(--radius-sm);
+    background:none; border:none; text-align:left; width:100%; cursor:pointer; color:var(--ink); font:inherit;
+  }
+  .vp-item:hover{ background:var(--surface-2); }
+  .vp-item.is-selected{ background:var(--accent-soft); color:var(--accent-ink); }
+  .vp-item .vp-name{ font-weight:600; font-size:12.5px; }
+  .vp-item .vp-sub{ font-size:10.5px; color:var(--ink-faint); }
+  .vp-item.is-selected .vp-sub{ color:var(--accent-ink); opacity:.75; }
+  .vp-empty{ padding:10px; text-align:center; font-size:12px; color:var(--ink-faint); font-style:italic; }
+
+  /* ---------- KPI cliquables (liste au clic, jamais dans la page) ---------- */
+  .type-vehicle-list{ display:flex; flex-wrap:wrap; gap:8px; }
+  .type-vehicle-chip{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:12.5px; padding:7px 13px; border-radius:999px;
+    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-dim); cursor:pointer;
+  }
+  .type-vehicle-chip:hover{ background:var(--surface-3); color:var(--ink); border-color:var(--accent); }
+
+  /* ---------- zones cliquables sur la carte ---------- */
+  .zone-rect{ cursor:pointer; transition:opacity .15s ease, stroke-width .15s ease; }
+  .zone-label, .zone-sub{ cursor:pointer; }
+  .map-svg.has-zone-focus .zone-rect:not(.is-zone-active){ opacity:.28; }
+  .map-svg.has-zone-focus .zone-rect.is-zone-active{ stroke-width:2.4; }
+  .mlo-row.is-filter{ cursor:pointer; border:1px solid transparent; border-radius:999px; padding:2px 7px 2px 2px; background:none; font:inherit; }
+  .mlo-row.is-filter:hover{ background:var(--surface-3); }
+  .mlo-row.is-filter.on{ border-color:var(--border-strong); background:var(--surface-3); color:var(--ink); }
+
+  /* ---------- légende & règles : menu compact fermé par défaut ---------- */
+  .legend-toggle{
+    display:inline-flex; align-items:center; gap:7px; font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:13px;
+    padding:9px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-dim);
+    cursor:pointer; margin-top:20px; width:fit-content;
+  }
+  .legend-toggle:hover{ background:var(--surface-2); color:var(--ink); }
+  .legend-toggle .chevron{ font-size:10px; transition:transform .15s ease; }
+  .legend-toggle[aria-expanded="true"] .chevron{ transform:rotate(180deg); }
+
+  /* ---------- à traiter (compact, remplace le grand bloc "Données à compléter") ---------- */
+  .totreat-row{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; }
+  .totreat-summary{ font-size:13.5px; }
+  .totreat-summary .n{ font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:16px; color:var(--accent); }
+  .totreat-list{ display:flex; flex-direction:column; gap:8px; }
+  .totreat-item{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); font-size:12.5px; }
+  .totreat-item .n{ font-family:"IBM Plex Mono",monospace; font-weight:600; }
 
   .sim-live-badge{
     display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--ink-dim);
@@ -294,22 +384,24 @@
   .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
   .proof-badge.missing{ background:var(--surface-3); color:var(--ink-faint); border:1px dashed var(--border-strong); }
 
-  /* ---------- indicateurs de flotte ---------- */
-  .fleet-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px 0; }
-  .fleet-card{ display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:14px 16px; }
-  .fc-icon{
-    flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    background:var(--surface-2); color:var(--ink-dim);
+  /* ---------- indicateurs de flotte : petits ronds façon notification,
+     pas de grande carte ---------- */
+  .fleet-row{ display:flex; flex-wrap:wrap; gap:18px; margin:0 0 18px 0; }
+  .fleet-card{
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    background:none; border:none; padding:0; cursor:pointer; width:76px; text-align:center;
   }
-  .fc-icon svg{ width:21px; height:21px; }
-  .fleet-card.total .fc-icon{ background:var(--st-rapprochee-bg); color:var(--st-rapprochee); }
-  .fleet-card.used .fc-icon{ background:var(--st-validee-bg); color:var(--st-validee); }
-  .fleet-card.unused .fc-icon{ background:var(--surface-3); color:var(--ink-faint); }
-  .fleet-card .fc-n{ font-family:"IBM Plex Mono",monospace; font-size:27px; font-weight:600; line-height:1; }
-  .fleet-card .fc-lbl{ font-size:11.5px; color:var(--ink-dim); margin-top:4px; }
-  .fleet-card.used .fc-n{ color:var(--st-validee); }
-  .fleet-card.unused .fc-n{ color:var(--ink-faint); }
-  @media (max-width:700px){ .fleet-row{ grid-template-columns:1fr; } }
+  .fc-badge{
+    flex:none; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono",monospace; font-size:14px; font-weight:700; line-height:1;
+    background:var(--surface); border:2px solid var(--border-strong); color:var(--ink);
+    box-shadow:var(--shadow-sm); transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .fleet-card:hover .fc-badge{ transform:scale(1.06); box-shadow:var(--shadow-md); }
+  .fleet-card.total .fc-badge{ border-color:var(--st-rapprochee); color:var(--st-rapprochee); }
+  .fleet-card.used .fc-badge{ border-color:var(--st-validee); color:var(--st-validee); background:var(--st-validee-bg); }
+  .fleet-card.unused .fc-badge{ border-color:var(--border-strong); color:var(--ink-faint); }
+  .fc-lbl{ font-size:10px; color:var(--ink-dim); line-height:1.25; }
 
   /* ---------- filtre véhicules / filtre anomalies ---------- */
   .filter-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 18px 0; }
@@ -342,6 +434,17 @@
   @media (max-width:980px){ .tracking-grid{ grid-template-columns:1fr; } }
   .col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 
+  /* ---------- ordre strict de l'écran : sections empilées, chacune
+     compacte, rien de gros inséré entre elles ---------- */
+  .screen-section{ margin:0 0 20px 0; }
+  .section-label{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-faint); margin:0 0 8px 0;
+  }
+  .filter-row{ display:flex; align-items:flex-end; gap:10px; }
+  .pair-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
+  @media (max-width:900px){ .pair-grid{ grid-template-columns:1fr; } }
+
   .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); }
   .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; flex-wrap:wrap; }
   .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
@@ -350,7 +453,7 @@
 
   /* ---------- map ---------- */
   .map-wrap{
-    position:relative; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);
+    position:relative; max-width:1000px; margin:0 auto; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);
     background:
       radial-gradient(600px 300px at 15% 10%, rgba(224,161,60,0.05), transparent 60%),
       repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 28px),
@@ -576,6 +679,56 @@
   .modal-anomaly ul{ margin:6px 0 0 0; padding-left:18px; }
   .modal-anomaly li{ margin-bottom:3px; }
 
+  /* ---------- rotation (modal mission) : véhicule → rotation → étapes.
+     Dérivée de vehicleHistory() — jamais des étapes/horaires inventés.
+     L'étape la plus récente réellement connue est marquée « en cours ». ---------- */
+  .rotation-panel{ margin-top:10px; padding:12px 13px; background:var(--surface-2); border-radius:var(--radius-md); }
+  .rotation-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:12px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 10px 0; }
+  .rotation-steps{ display:flex; flex-direction:column; }
+  .rstep{ display:flex; align-items:flex-start; gap:10px; }
+  .rstep-marker{
+    flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-3); color:var(--ink-faint); font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:700;
+  }
+  .rstep.is-current .rstep-marker{ background:var(--st-validee); color:var(--accent-ink); }
+  .rstep.is-alert .rstep-marker{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .rstep-body{ padding:1px 0 10px 0; display:flex; flex-direction:column; gap:2px; }
+  .rstep.is-current .rstep-body{ padding-bottom:2px; }
+  .rstep-time{ font-size:10.5px; color:var(--ink-faint); }
+  .rstep-label{ font-size:12.5px; color:var(--ink); }
+  .rstep.is-current .rstep-label{ font-weight:600; }
+  .rstep-connector{ width:2px; height:12px; background:var(--border-strong); margin-left:10px; }
+  .rotation-next{ font-size:11.5px; color:var(--ink-dim); margin:4px 0 0 0; }
+  .rotation-note{ font-size:11px; color:var(--ink-faint); margin:10px 0 0 0; font-style:italic; }
+
+  /* ---------- modal rotation (dédié) : progression Départ → En route →
+     Destination, avec les heures réellement disponibles. ---------- */
+  .rprog{ display:flex; align-items:center; gap:0; margin:2px 0 4px 0; }
+  .rprog-step{ display:flex; flex-direction:column; align-items:center; gap:5px; flex:1 1 0; text-align:center; }
+  .rprog-dot{
+    width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-3); color:var(--ink-faint); font-size:12px; border:2px solid var(--border-strong);
+  }
+  .rprog-step.is-done .rprog-dot{ background:var(--st-validee-bg); color:var(--st-validee); border-color:var(--st-validee); }
+  .rprog-step.is-current .rprog-dot{ background:var(--st-validee); color:var(--accent-ink); border-color:var(--st-validee); }
+  .rprog-lbl{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px; color:var(--ink-dim); }
+  .rprog-time{ font-size:10px; color:var(--ink-faint); font-family:"IBM Plex Mono",monospace; }
+  .rprog-line{ flex:1 1 24px; height:2px; background:var(--border-strong); margin:0 -2px 20px -2px; max-width:60px; }
+  .rprog-line.is-done{ background:var(--st-validee); }
+
+  .rotation-meta-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px 18px; margin:14px 0 0 0; }
+  .rmeta dt{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0; }
+  .rmeta dd{ margin:2px 0 0 0; font-size:12.5px; }
+  .rotation-objective{ margin-top:14px; padding:10px 12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:12px; }
+  .rotation-events{ display:flex; flex-direction:column; gap:6px; margin-top:6px; }
+
+  /* ---------- historique (modal, journée ou véhicule) ---------- */
+  .day-history-list{ display:flex; flex-direction:column; gap:6px; max-height:60vh; overflow:auto; }
+  .day-history-item{ display:flex; align-items:baseline; gap:9px; font-size:12px; border-left:2px solid var(--border-strong); padding-left:9px; }
+  .day-history-item.h-alert{ border-left-color:var(--st-anomalie); }
+  .day-history-item .h-time{ font-family:"IBM Plex Mono",monospace; color:var(--ink-faint); flex:none; }
+  .day-history-item .h-vehicle{ font-family:"IBM Plex Mono",monospace; color:var(--ink-dim); flex:none; }
+
   /* ---------- legend & footnote ---------- */
   .legend{
     margin-top:20px; display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;
@@ -637,11 +790,27 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       ORDRE STRICT DE L'ÉCRAN (décision fonctionnelle) :
+       1. Date / Shift / Site
+       2. KPI / Actions (flotte + indicateurs cliquables)
+       3. Filtre véhicule
+       4. Carte des zones (+ planning intégré, même thème carte/suivi)
+       5. À traiter + Chauffeurs (cartes compactes)
+       6. Légende & règles (repliée par défaut)
+       Aucun grand bloc entre ces sections — l'ancien bloc "Alertes
+       actives" et le tableau "Missions en cours" (redondant avec les
+       cartes du planning) ont été retirés de la page principale ; les
+       alertes restent accessibles via le KPI "alertes actives" (modal).
+       ============================================================ -->
+
+  <!-- 1. Date / Shift / Site -->
   <div class="controls-bar">
     <div class="field">
       <label for="f-date">Date</label>
-      <input type="date" id="f-date" value="2026-08-25">
+      <input type="date" id="f-date">
     </div>
+    <button type="button" class="date-history-btn" id="btn-day-history">🕘 Historique de la journée</button>
     <div class="v-divider"></div>
     <div class="field">
       <label>Shift</label>
@@ -653,215 +822,159 @@
     <div class="v-divider"></div>
     <div class="field">
       <label>Site</label>
-      <div class="segmented" role="group" aria-label="Site">
-        <button type="button" class="on">Tous</button>
-        <button type="button">Nord</button>
-        <button type="button">Sud</button>
+      <div class="segmented" role="group" aria-label="Site" id="f-site">
+        <button type="button" class="on" data-zone-filter="all">Tous</button>
+        <button type="button" data-zone-filter="Nord">Nord</button>
+        <button type="button" data-zone-filter="Sud">Sud</button>
       </div>
     </div>
     <div class="spacer"></div>
     <span class="sim-live-badge" title="Aperçu figé du simulateur local, pas un flux temps réel — l'intégration Trace In réelle arrive au jalon 6"><span class="sim-live-dot"></span>Simulateur local · aperçu 10:42</span>
-    <div class="stat-chips" id="top-stat-chips"></div>
   </div>
 
-  <!-- Indicateurs de flotte -->
-  <div class="fleet-row" id="fleet-row" aria-label="Indicateurs de flotte"></div>
+  <div class="date-empty-banner" id="date-empty-banner" hidden></div>
 
-  <!-- Filtre véhicules -->
-  <div class="filter-bar" id="vehicle-filter-bar" role="group" aria-label="Filtre par véhicule"></div>
-
-  <div class="tracking-grid">
-
-    <div class="col">
-
-      <!-- Carte -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Carte des zones</h2>
-          <span class="panel-sub">Aperçu simulé à 10:42 · source : simulateur Trace In (local)</span>
-        </div>
-        <div class="panel-body">
-          <div class="map-toolbar">
-            <div class="map-legend-inline" aria-hidden="true">
-              <div class="mlo-group">
-                <span class="mlo-title">Véhicules</span>
-                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-proposee);"></span>Proposée</span>
-                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-rapprochee);"></span>Rapprochée</span>
-                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-validee);"></span>Validée</span>
-                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-anomalie);"></span>Anomalie</span>
-                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-detectee);"></span>Détectée</span>
-              </div>
-              <div class="mlo-group">
-                <span class="mlo-title">Zones</span>
-                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-nord-bg); border:1px solid var(--zone-nord);"></span>Site Nord</span>
-                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-sud-bg); border:1px solid var(--zone-sud);"></span>Site Sud</span>
-                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-port-bg); border:1px dashed var(--zone-port);"></span>Port d'Abidjan</span>
-              </div>
-            </div>
-            <div class="map-zoom-controls">
-              <button type="button" id="map-zoom-in" title="Zoom avant" aria-label="Zoom avant">+</button>
-              <button type="button" id="map-zoom-out" title="Zoom arrière" aria-label="Zoom arrière">−</button>
-              <button type="button" id="map-zoom-reset" title="Recentrer" aria-label="Recentrer">⊙</button>
-            </div>
-          </div>
-          <div class="map-wrap">
-            <svg class="map-svg" id="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord, Site Sud et zone client, avec la position des camions en mission — cliquer un camion ou une zone pour son détail">
-              <!-- routes -->
-              <path class="route-line" d="M 206 150 C 320 130, 380 90, 466 68"></path>
-              <path class="route-line" d="M 206 168 C 320 195, 380 235, 466 252"></path>
-
-              <!-- géofences -->
-              <rect class="geofence-ring" x="12" y="84" width="204" height="156" rx="24"></rect>
-              <rect class="geofence-ring" x="458" y="8" width="234" height="124" rx="20"></rect>
-              <rect class="geofence-ring" x="458" y="188" width="234" height="124" rx="20"></rect>
-
-              <!-- zone Port -->
-              <rect class="zone-rect zone-port" x="24" y="96" width="180" height="132" rx="16"></rect>
-              <text class="zone-label" x="114" y="150" text-anchor="middle">Port d'Abidjan</text>
-              <text class="zone-sub" x="114" y="166" text-anchor="middle">guérite unique — entrée / sortie</text>
-
-              <!-- zone Nord -->
-              <rect class="zone-rect zone-nord" x="470" y="20" width="210" height="100" rx="16"></rect>
-              <text class="zone-label" x="575" y="38" text-anchor="middle">Site Nord</text>
-              <text class="zone-sub" x="575" y="52" text-anchor="middle">géofence connue</text>
-
-              <!-- zone Sud -->
-              <rect class="zone-rect zone-sud" x="470" y="200" width="210" height="100" rx="16"></rect>
-              <text class="zone-label" x="575" y="218" text-anchor="middle">Site Sud</text>
-              <text class="zone-sub" x="575" y="232" text-anchor="middle">géofence connue</text>
-
-              <!-- zone sans géofence -->
-              <line class="link-line" x1="518" y1="280" x2="560" y2="306"></line>
-              <rect class="no-geofence-box" x="524" y="306" width="150" height="24" rx="7"></rect>
-              <text class="no-geofence-label" x="599" y="322" text-anchor="middle">« Client non identifié »</text>
-
-              <!-- zone Client identifiée -->
-              <rect class="client-zone-box" x="24" y="250" width="180" height="54" rx="14" data-map-id="client:CFAO"></rect>
-              <text class="client-zone-label" x="114" y="274" text-anchor="middle" data-map-id="client:CFAO">Client — CFAO Motors</text>
-              <text class="client-zone-sub" x="114" y="290" text-anchor="middle" data-map-id="client:CFAO">zone client · sans géofence guérite dédiée</text>
-
-              <!-- véhicules : générés depuis SIM.vehicles (référentiel unique) -->
-              <g id="trucks-layer"></g>
-            </svg>
-          </div>
-          <p class="map-note" id="map-note"></p>
-
-          <div class="truck-detail is-empty" id="truck-detail">Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le filtre ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).</div>
-
-          <div class="geofence-section">
-            <div class="panel-sub" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
-              <span class="legend-title">Présence en géofence</span>
-              <details class="popover">
-                <summary class="link-trigger">ℹ Règle des 15 minutes</summary>
-                <div class="popover-panel">
-                  <div class="popover-title">Règle des 15 minutes</div>
-                  <p class="popover-note">Une sortie de géofence de moins de 15 minutes ne réinitialise pas le compteur de présence : le temps continue d'être calculé depuis la première entrée. Une sortie de 15 minutes ou plus peut, elle, constituer une nouvelle présence à l'entrée suivante.</p>
-                  <div class="popover-timeline">
-                    <div class="popover-timeline-item"><b>10:00</b> — entrée Proline</div>
-                    <div class="popover-timeline-item is-exit"><b>10:05</b> — sortie (5 min)</div>
-                    <div class="popover-timeline-item"><b>10:10</b> — entrée à nouveau — compteur non réinitialisé</div>
-                  </div>
-                  <p class="popover-note" style="margin-bottom:0;">Calculé pour une référence à 10:30 → <strong id="rule-demo-result">—</strong> <span style="color:var(--ink-faint);">(et non 20 min)</span></p>
-                </div>
-              </details>
-            </div>
-            <div class="geofence-list" id="geofence-list"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Missions en cours -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Missions en cours</h2>
-          <span class="panel-sub" id="missions-count"></span>
-        </div>
-        <div class="panel-body">
-          <div class="table-scroll">
-            <table class="tracking-table">
-              <thead>
-                <tr>
-                  <th>Heure</th>
-                  <th>Chauffeur</th>
-                  <th>Camion · remorque</th>
-                  <th>Type</th>
-                  <th>Client</th>
-                  <th>Site</th>
-                  <th>Statut</th>
-                </tr>
-              </thead>
-              <tbody id="missions-tbody"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- Historique du véhicule sélectionné -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Historique du véhicule</h2>
-          <span class="panel-sub" id="history-sub"></span>
-        </div>
-        <div class="panel-body" id="history-panel"></div>
-      </section>
-
-    </div>
-
-    <div class="col">
-
-      <!-- Alertes actives -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Alertes actives</h2>
-          <span class="panel-sub" id="alerts-count"></span>
-        </div>
-        <div class="panel-body">
-          <div class="anomaly-filter-bar" id="anomaly-filter-bar" role="group" aria-label="Filtre par type d'anomalie"></div>
-          <div id="alerts-container"></div>
-        </div>
-      </section>
-
-      <!-- Données à compléter -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Données à compléter</h2>
-        </div>
-        <div class="panel-body">
-          <p class="complete-note">Ces compléments modifient le référentiel de la simulation (démo locale uniquement) ; dans le produit final, ces actions resteraient dans File de validation.</p>
-          <div class="complete-chips" id="complete-chips"></div>
-        </div>
-      </section>
-
-      <!-- Chauffeurs -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Chauffeurs</h2>
-          <span class="panel-sub">référentiel actif</span>
-        </div>
-        <div class="panel-body">
-          <p class="complete-note">Score de notation : pondération non validée (question ouverte, cahier des charges Missions §9.3) — affiché « à définir », aucune formule inventée.</p>
-          <div class="driver-list" id="driver-list"></div>
-        </div>
-      </section>
-
-    </div>
-
+  <!-- 2. KPI / Actions -->
+  <div class="screen-section">
+    <p class="section-label">Indicateurs — cliquer pour le détail</p>
+    <div class="fleet-row" id="fleet-row" aria-label="Indicateurs de flotte"></div>
+    <div class="stat-chips" id="top-stat-chips" style="margin-top:10px;"></div>
   </div>
 
-  <!-- Planning intégré -->
-  <section class="panel" style="margin-top:20px;">
+  <!-- 3. Filtre véhicule -->
+  <div class="screen-section filter-row">
+    <div class="field">
+      <label>Filtre véhicule</label>
+      <div class="vehicle-picker" id="vehicle-picker">
+        <button type="button" class="vehicle-picker-btn" id="vehicle-picker-btn" aria-haspopup="listbox" aria-expanded="false">
+          <span id="vehicle-picker-label">Tous les véhicules</span><span class="chevron">▾</span>
+        </button>
+        <div class="vehicle-picker-menu" id="vehicle-picker-menu" hidden role="listbox" aria-label="Choisir un véhicule">
+          <input type="search" id="vehicle-picker-search" placeholder="Rechercher un véhicule (ex : TR-027, Traoré)…" autocomplete="off">
+          <div class="vehicle-picker-list" id="vehicle-picker-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Carte des zones (+ planning intégré) -->
+  <section class="panel screen-section">
     <div class="panel-head">
-      <h2 class="panel-title">Planning des opérations — intégré</h2>
-      <span class="panel-sub" id="planning-count"></span>
+      <h2 class="panel-title">Carte des zones</h2>
+      <span class="panel-sub">Aperçu simulé à 10:42 · source : simulateur Trace In (local)</span>
     </div>
     <div class="panel-body">
-      <p class="complete-note">Vue compacte du planning fusionnée dans Live Tracking, sur le même référentiel véhicules (aucune liste indépendante) — cliquez une carte pour le détail complet de la mission.</p>
+      <div class="map-toolbar">
+        <div class="map-legend-inline" id="map-legend-inline">
+          <div class="mlo-group">
+            <span class="mlo-title">Véhicules</span>
+            <button type="button" class="mlo-row is-filter" data-statut-filter="proposee"><span class="mlo-dot" style="background:var(--st-proposee);"></span>Proposée</button>
+            <button type="button" class="mlo-row is-filter" data-statut-filter="rapprochee"><span class="mlo-dot" style="background:var(--st-rapprochee);"></span>Rapprochée</button>
+            <button type="button" class="mlo-row is-filter" data-statut-filter="validee"><span class="mlo-dot" style="background:var(--st-validee);"></span>Validée</button>
+            <button type="button" class="mlo-row is-filter" data-statut-filter="anomalie"><span class="mlo-dot" style="background:var(--st-anomalie);"></span>Anomalie</button>
+            <button type="button" class="mlo-row is-filter" data-statut-filter="detectee"><span class="mlo-dot" style="background:var(--st-detectee);"></span>Détectée</button>
+          </div>
+          <div class="mlo-group">
+            <span class="mlo-title">Zones</span>
+            <button type="button" class="mlo-row is-filter" data-zone-filter="Nord"><span class="mlo-swatch" style="background:var(--zone-nord-bg); border:1px solid var(--zone-nord);"></span>Site Nord</button>
+            <button type="button" class="mlo-row is-filter" data-zone-filter="Sud"><span class="mlo-swatch" style="background:var(--zone-sud-bg); border:1px solid var(--zone-sud);"></span>Site Sud</button>
+            <button type="button" class="mlo-row is-filter" data-zone-filter="Port"><span class="mlo-swatch" style="background:var(--zone-port-bg); border:1px dashed var(--zone-port);"></span>Port d'Abidjan</button>
+          </div>
+        </div>
+        <div class="map-zoom-controls">
+          <button type="button" id="map-zoom-in" title="Zoom avant" aria-label="Zoom avant">+</button>
+          <button type="button" id="map-zoom-out" title="Zoom arrière" aria-label="Zoom arrière">−</button>
+          <button type="button" id="map-zoom-reset" title="Recentrer" aria-label="Recentrer">⊙</button>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <svg class="map-svg" id="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord, Site Sud et zone client, avec la position des camions en mission — cliquer un camion ou une zone pour son détail">
+          <!-- routes -->
+          <path class="route-line" d="M 206 150 C 320 130, 380 90, 466 68"></path>
+          <path class="route-line" d="M 206 168 C 320 195, 380 235, 466 252"></path>
+
+          <!-- géofences -->
+          <rect class="geofence-ring" x="12" y="84" width="204" height="156" rx="24"></rect>
+          <rect class="geofence-ring" x="458" y="8" width="234" height="124" rx="20"></rect>
+          <rect class="geofence-ring" x="458" y="188" width="234" height="124" rx="20"></rect>
+
+          <!-- zone Port -->
+          <rect class="zone-rect zone-port" x="24" y="96" width="180" height="132" rx="16" data-map-id="zone:Port"></rect>
+          <text class="zone-label" x="114" y="150" text-anchor="middle" data-map-id="zone:Port">Port d'Abidjan</text>
+          <text class="zone-sub" x="114" y="166" text-anchor="middle" data-map-id="zone:Port">guérite unique — entrée / sortie</text>
+
+          <!-- zone Nord -->
+          <rect class="zone-rect zone-nord" x="470" y="20" width="210" height="100" rx="16" data-map-id="zone:Nord"></rect>
+          <text class="zone-label" x="575" y="38" text-anchor="middle" data-map-id="zone:Nord">Site Nord</text>
+          <text class="zone-sub" x="575" y="52" text-anchor="middle" data-map-id="zone:Nord">géofence connue</text>
+
+          <!-- zone Sud -->
+          <rect class="zone-rect zone-sud" x="470" y="200" width="210" height="100" rx="16" data-map-id="zone:Sud"></rect>
+          <text class="zone-label" x="575" y="218" text-anchor="middle" data-map-id="zone:Sud">Site Sud</text>
+          <text class="zone-sub" x="575" y="232" text-anchor="middle" data-map-id="zone:Sud">géofence connue</text>
+
+          <!-- zone sans géofence -->
+          <line class="link-line" x1="518" y1="280" x2="560" y2="306"></line>
+          <rect class="no-geofence-box" x="524" y="306" width="150" height="24" rx="7"></rect>
+          <text class="no-geofence-label" x="599" y="322" text-anchor="middle">« Client non identifié »</text>
+
+          <!-- zone Client identifiée -->
+          <rect class="client-zone-box" x="24" y="250" width="180" height="54" rx="14" data-map-id="client:CFAO"></rect>
+          <text class="client-zone-label" x="114" y="274" text-anchor="middle" data-map-id="client:CFAO">Client — CFAO Motors</text>
+          <text class="client-zone-sub" x="114" y="290" text-anchor="middle" data-map-id="client:CFAO">zone client · sans géofence guérite dédiée</text>
+
+          <!-- véhicules : générés depuis SIM.vehicles (référentiel unique) -->
+          <g id="trucks-layer"></g>
+        </svg>
+      </div>
+      <p class="map-note" id="map-note"></p>
+
+      <div class="truck-detail is-empty" id="truck-detail">Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le filtre ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).</div>
+
+      <div class="geofence-section">
+        <div class="panel-sub" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
+          <span class="legend-title">Présence en géofence</span>
+          <details class="popover">
+            <summary class="link-trigger">ℹ Règle des 15 minutes</summary>
+            <div class="popover-panel">
+              <div class="popover-title">Règle des 15 minutes</div>
+              <p class="popover-note">Une sortie de géofence de moins de 15 minutes ne réinitialise pas le compteur de présence : le temps continue d'être calculé depuis la première entrée. Une sortie de 15 minutes ou plus peut, elle, constituer une nouvelle présence à l'entrée suivante.</p>
+              <div class="popover-timeline">
+                <div class="popover-timeline-item"><b>10:00</b> — entrée Proline</div>
+                <div class="popover-timeline-item is-exit"><b>10:05</b> — sortie (5 min)</div>
+                <div class="popover-timeline-item"><b>10:10</b> — entrée à nouveau — compteur non réinitialisé</div>
+              </div>
+              <p class="popover-note" style="margin-bottom:0;">Calculé pour une référence à 10:30 → <strong id="rule-demo-result">—</strong> <span style="color:var(--ink-faint);">(et non 20 min)</span></p>
+            </div>
+          </details>
+        </div>
+        <div class="geofence-list" id="geofence-list"></div>
+      </div>
+
+      <div class="panel-sub" style="margin-top:18px;">Planning des opérations — intégré <span id="planning-count"></span></div>
+      <p class="complete-note" style="margin:4px 0 10px 0;">Vue compacte du planning, sur le même référentiel véhicules (aucune liste indépendante) — cliquez une carte pour le détail complet de la mission.</p>
       <div class="mission-card-grid" id="planning-cards"></div>
-      <div class="out-of-scope-note" id="out-of-scope-note"></div>
     </div>
   </section>
 
-  <div class="legend">
+  <!-- 5. À traiter (cartes compactes) -->
+  <div class="screen-section">
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">À traiter</h2>
+      </div>
+      <div class="panel-body">
+        <div class="totreat-row">
+          <span class="totreat-summary"><span class="n" id="totreat-count">0</span> élément(s) à traiter</span>
+          <button type="button" class="btn btn-primary" id="btn-totreat-open">Voir les éléments</button>
+        </div>
+        <p class="complete-note" style="margin:10px 0 0 0;">Résumé de lecture seule : clients à identifier, missions à valider, anomalies à résoudre, QR à changer. Le traitement reste dans File de validation — Live Tracking ne réinvente pas cette logique.</p>
+      </div>
+    </section>
+  </div>
+
+  <button type="button" class="legend-toggle" id="legend-toggle" aria-expanded="false" aria-controls="legend-panel">Légende &amp; règles <span class="chevron">▾</span></button>
+  <div class="legend" id="legend-panel" hidden>
     <div class="legend-group">
       <span class="legend-title">Statuts de mission</span>
       <div class="legend-row">
@@ -917,7 +1030,8 @@
     </div>
   </div>
 
-  <div class="footnote">
+  <button type="button" class="legend-toggle" id="footnote-toggle" aria-expanded="false" aria-controls="footnote-panel">Notes de conception <span class="chevron">▾</span></button>
+  <div class="footnote" id="footnote-panel" hidden>
     <span class="fn-badge">i</span>
     <div>
       <p><b>Notes de conception (jalon 0 — phase prototype de démonstration)</b> — Tous les blocs de cet écran (carte, missions, géofences, alertes, filtre véhicule, filtre anomalie, historique, indicateurs de flotte, chauffeurs, planning intégré, données à compléter) lisent désormais un <b>unique</b> objet <code>SIM</code> en JavaScript (source unique de vérité, structurée pour préfigurer un futur connecteur API Trace In). Le référentiel actif de la simulation compte <b>7 véhicules</b>, exactement ceux positionnés sur la carte : TR-014, TR-021, TR-027, TR-041, TR-055, TR-058, TR-063.</p>
@@ -928,20 +1042,6 @@
   </div>
 </main>
 
-<dialog class="complete-modal" id="modal-complete">
-  <form method="dialog">
-    <div class="cm-head">
-      <h3 class="cm-title" id="cm-title">Compléter</h3>
-      <p class="cm-sub" id="cm-sub"></p>
-    </div>
-    <div class="cm-body" id="cm-body"></div>
-    <div class="cm-foot">
-      <button type="button" class="btn btn-ghost" id="cm-cancel">Annuler</button>
-      <button type="button" class="btn btn-primary" id="cm-confirm">Confirmer</button>
-    </div>
-  </form>
-</dialog>
-
 <!-- Clic camion sur la carte -> détail véhicule (référentiel central) -->
 <dialog class="detail-modal" id="modal-vehicle">
   <div class="cm-head">
@@ -949,7 +1049,12 @@
     <p class="cm-sub">Mêmes données que la carte, le filtre véhicule et les alertes — référentiel central.</p>
   </div>
   <div class="cm-body" id="vm-body"></div>
-  <div class="cm-foot"><button type="button" class="btn btn-ghost" id="vm-close">Fermer</button></div>
+  <div class="cm-foot">
+    <button type="button" class="btn btn-ghost" id="vm-rotation">Voir la rotation</button>
+    <button type="button" class="btn btn-ghost" id="vm-history">Voir l'historique</button>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-primary" id="vm-close">Fermer</button>
+  </div>
 </dialog>
 
 <!-- Clic carte de mission dans le planning intégré -> détail mission (référentiel central) -->
@@ -959,7 +1064,82 @@
     <p class="cm-sub" id="mm-sub"></p>
   </div>
   <div class="cm-body" id="mm-body"></div>
-  <div class="cm-foot"><button type="button" class="btn btn-ghost" id="mm-close">Fermer</button></div>
+  <div class="cm-foot">
+    <button type="button" class="btn btn-ghost" id="mm-rotation">Voir la rotation</button>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-primary" id="mm-close">Fermer</button>
+  </div>
+</dialog>
+
+<!-- Modal rotation dédié — véhicule → rotation → mission → étapes ->
+     conteneur → remorque → chauffeur → événements → anomalies ->
+     objectif de rotation → écart, avec progression Départ/En route/
+     Destination. Aucune étape/durée inventée (voir rotationStepsHTML /
+     openRotationModal). -->
+<dialog class="detail-modal" id="modal-rotation">
+  <div class="cm-head">
+    <h3 class="cm-title" id="rm-title">Rotation</h3>
+    <p class="cm-sub" id="rm-sub"></p>
+  </div>
+  <div class="cm-body" id="rm-body"></div>
+  <div class="cm-foot">
+    <a class="btn btn-ghost" id="rm-goto-validation" href="#">Voir dans File de validation</a>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-primary" id="rm-close">Fermer</button>
+  </div>
+</dialog>
+
+<!-- Modal historique — soit d'un véhicule (bouton du modal véhicule), soit
+     de toute la journée sélectionnée (bouton près de la date) : les deux
+     réutilisent vehicleHistory(), aucune deuxième source. -->
+<dialog class="detail-modal" id="modal-history">
+  <div class="cm-head">
+    <h3 class="cm-title" id="hm-title">Historique</h3>
+    <p class="cm-sub" id="hm-sub"></p>
+  </div>
+  <div class="cm-body" id="hm-body"></div>
+  <div class="cm-foot"><button type="button" class="btn btn-primary" id="hm-close">Fermer</button></div>
+</dialog>
+
+<!-- Modal Alertes actives — décision fonctionnelle : plus de grande div
+     permanente dans la page principale ; accessible uniquement depuis le
+     KPI « X alertes actives ». Reprend exactement le rendu précédent
+     (groupes de sévérité, détail dépliable, filtre par type, comparaison
+     des sources, "voir sur la carte") — rien n'a été perdu, seulement
+     déplacé dans ce modal. -->
+<dialog class="detail-modal" id="modal-alerts">
+  <div class="cm-head">
+    <h3 class="cm-title" id="am-title">Alertes actives</h3>
+    <p class="cm-sub" id="am-sub"></p>
+  </div>
+  <div class="cm-body">
+    <div class="anomaly-filter-bar" id="am-anomaly-filter-bar" role="group" aria-label="Filtre par type d'anomalie"></div>
+    <div id="am-container"></div>
+  </div>
+  <div class="cm-foot"><button type="button" class="btn btn-primary" id="am-close">Fermer</button></div>
+</dialog>
+
+<!-- Modal générique "liste de véhicules concernés" — ouvert par les KPI
+     cliquables du haut (missions, client à identifier, anomalies,
+     QR à changer, flotte) : jamais une longue liste affichée en page. -->
+<dialog class="detail-modal" id="modal-list">
+  <div class="cm-head">
+    <h3 class="cm-title" id="lm-title">Véhicules concernés</h3>
+    <p class="cm-sub" id="lm-sub"></p>
+  </div>
+  <div class="cm-body"><div class="type-vehicle-list" id="lm-body"></div></div>
+  <div class="cm-foot"><button type="button" class="btn btn-primary" id="lm-close">Fermer</button></div>
+</dialog>
+
+<!-- "À traiter" — résumé catégorisé, chaque élément renvoie vers File de
+     validation (aucune deuxième logique de validation ici). -->
+<dialog class="detail-modal" id="modal-totreat">
+  <div class="cm-head">
+    <h3 class="cm-title">À traiter</h3>
+    <p class="cm-sub">Le détail et la résolution se font dans File de validation.</p>
+  </div>
+  <div class="cm-body"><div class="totreat-list" id="totreat-body"></div></div>
+  <div class="cm-foot"><button type="button" class="btn btn-primary" id="totreat-close">Fermer</button></div>
 </dialog>
 
 <script src="_shared/sim-data.js"></script>
@@ -973,12 +1153,86 @@
   // page (le filtre sélectionné) reste local.
   // ============================================================
 
-  var STATE = { vehicle:'all', anomalyType:'all' };
+  var STATE = { vehicle:'all', zone:'all', statut:'all', anomalyType:'all', date:null };
+
+  // ============================================================
+  // DATE — SIM ne modélise qu'un seul instantané (aujourd'hui, 10:42).
+  // TODAY_ISO est calculé depuis la date réelle du poste au chargement
+  // (jamais une chaîne écrite en dur) : c'est le seul jour pour lequel
+  // ce référentiel simulé a des données. Toute autre date sélectionnée
+  // affiche honnêtement l'absence de données, jamais un événement
+  // fabriqué pour remplir l'écran.
+  // ============================================================
+  function todayISO(){
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+  var TODAY_ISO = todayISO();
+  function dayHasData(){ return STATE.date === TODAY_ISO; }
+
+  // ---------- zone/statut d'un véhicule (déjà présents dans SIM, jamais recréés) ----------
+  function vehicleInZone(v, zone){
+    if (zone === 'all') return true;
+    if (zone === 'CFAO') return !!(v.mission && v.mission.client === 'CFAO Motors');
+    if (zone === 'Port') return !!(v.mission && (v.mission.from === "Port d’Abidjan" || v.mission.to === "Port d’Abidjan"));
+    return v.site === zone || (v.geofence && v.geofence.zone === (zone === 'Nord' ? 'Site Nord' : zone === 'Sud' ? 'Site Sud' : zone));
+  }
 
   function visibleVehicles(){
-    if (STATE.vehicle === 'all') return SIM.vehicles;
-    var v = getVehicle(STATE.vehicle);
-    return v ? [v] : [];
+    if (!dayHasData()) return [];
+    var list = SIM.vehicles;
+    if (STATE.vehicle !== 'all'){
+      var v = getVehicle(STATE.vehicle);
+      list = v ? [v] : [];
+    }
+    if (STATE.zone !== 'all') list = list.filter(function(vv){ return vehicleInZone(vv, STATE.zone); });
+    if (STATE.statut !== 'all') list = list.filter(function(vv){ return vv.statut === STATE.statut; });
+    return list;
+  }
+
+  // ============================================================
+  // KPI cliquables — jamais de longue liste affichée dans la page :
+  // chaque carte/puce ouvre #modal-list avec les véhicules concernés
+  // (données réelles, mêmes chips que sur Dashboard).
+  // ============================================================
+  function openListModal(title, sub, vehicleIds){
+    document.getElementById('lm-title').textContent = title;
+    document.getElementById('lm-sub').textContent = sub;
+    document.getElementById('lm-body').innerHTML = vehicleIds.map(function(vid){
+      var v = getVehicle(vid);
+      return '<button type="button" class="type-vehicle-chip" data-goto-vehicle-list="' + vid + '">' + esc(displayId(v)) + (v ? ' · ' + esc(v.driver.name) : '') + '</button>';
+    }).join('') || '<p class="tt-dim">Aucun véhicule concerné.</p>';
+    document.querySelectorAll('#lm-body [data-goto-vehicle-list]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        closeDialog(document.getElementById('modal-list'));
+        var id = btn.getAttribute('data-goto-vehicle-list');
+        selectVehicle(id);
+        openVehicleModal(id);
+      });
+    });
+    var dlg = document.getElementById('modal-list');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  function bindKpiListButtons(container, map){
+    container.querySelectorAll('[data-kpi-list]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var key = btn.getAttribute('data-kpi-list');
+        // "Alertes actives" ouvre le modal d'alertes dédié (groupes de
+        // sévérité, détail, filtre par type) — pas la liste générique de
+        // véhicules, pour ne rien perdre de ce qu'affichait l'ancien bloc.
+        if (key === 'alerts'){ openAlertsModal(); return; }
+        var ids = map[key] || [];
+        var labels = {
+          total: 'Total flotte', used: 'Véhicules utilisés', unused: 'Véhicules non utilisés',
+          missions: 'Missions en cours', client: 'Client à identifier', anomalies: 'Anomalies',
+          qr: 'QR code à changer'
+        };
+        openListModal(labels[key] || key, ids.length + ' véhicule(s)', ids);
+      });
+    });
   }
 
   // ============================================================
@@ -986,61 +1240,82 @@
   // ============================================================
   function renderFleet(){
     var total = SIM.vehicles.length;
-    var used = SIM.vehicles.filter(function(v){ return v.mission && (v.mission.type || v.mission.to); }).length;
-    var unused = total - used;
+    var usedIds = dayHasData() ? SIM.vehicles.filter(function(v){ return v.mission && (v.mission.type || v.mission.to); }).map(function(v){ return v.id; }) : [];
+    var unusedIds = dayHasData() ? SIM.vehicles.filter(function(v){ return usedIds.indexOf(v.id) === -1; }).map(function(v){ return v.id; }) : [];
+    var allIds = SIM.vehicles.map(function(v){ return v.id; });
     var el = document.getElementById('fleet-row');
-    var icTruck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="13" height="9"></rect><path d="M14 10h4l3 3v3h-7z"></path><circle cx="6" cy="18" r="1.6"></circle><circle cx="17.5" cy="18" r="1.6"></circle></svg>';
-    var icPerson = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>';
-    var icPersonOff = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="8" r="3.4"></circle><path d="M3.5 20c0-3.9 3.1-7 7-7 1.1 0 2.1.25 3 .7"></path><line x1="16" y1="6" x2="21" y2="16"></line><line x1="21" y1="6" x2="16" y2="16"></line></svg>';
     el.innerHTML =
-      '<div class="fleet-card total"><div class="fc-icon">' + icTruck + '</div><div><div class="fc-n num">' + total + '</div><div class="fc-lbl">Total de la flotte (référentiel simulé)</div></div></div>' +
-      '<div class="fleet-card used"><div class="fc-icon">' + icPerson + '</div><div><div class="fc-n num">' + used + '</div><div class="fc-lbl">Véhicules utilisés (avec activité ce shift)</div></div></div>' +
-      '<div class="fleet-card unused"><div class="fc-icon">' + icPersonOff + '</div><div><div class="fc-n num">' + unused + '</div><div class="fc-lbl">Véhicules non utilisés</div></div></div>';
+      '<button type="button" class="fleet-card total" data-kpi-list="total" title="Total de la flotte (référentiel simulé)"><span class="fc-badge num">' + total + '</span><span class="fc-lbl">Total flotte</span></button>' +
+      '<button type="button" class="fleet-card used" data-kpi-list="used" title="Véhicules utilisés (avec activité ce shift)"><span class="fc-badge num">' + usedIds.length + '</span><span class="fc-lbl">Utilisés</span></button>' +
+      '<button type="button" class="fleet-card unused" data-kpi-list="unused" title="Véhicules non utilisés"><span class="fc-badge num">' + unusedIds.length + '</span><span class="fc-lbl">Non utilisés</span></button>';
+    bindKpiListButtons(el, { total: allIds, used: usedIds, unused: unusedIds });
   }
 
   // ============================================================
-  // RENDU : Filtre véhicules (généré depuis SIM.vehicles)
+  // RENDU : sélecteur de véhicule compact (remplace la rangée de
+  // boutons TR-xxx) — un seul bouton « Tous les véhicules ▾ », menu
+  // déroulant avec recherche, liste dérivée uniquement de SIM.vehicles.
   // ============================================================
-  function renderVehicleFilter(){
-    var el = document.getElementById('vehicle-filter-bar');
-    var html = '<span class="filter-bar-label">Filtrer par véhicule</span>';
-    html += '<button type="button" class="fchip' + (STATE.vehicle === 'all' ? ' on' : '') + '" data-vehicle-filter="all">Tous les véhicules <span class="n">' + SIM.vehicles.length + '</span></button>';
-    SIM.vehicles.forEach(function(v){
-      var isAnom = v.statut === 'anomalie';
-      html += '<button type="button" class="fchip' + (STATE.vehicle === v.id ? ' on' : '') + (isAnom ? ' anomalie-chip' : '') + '" data-vehicle-filter="' + v.id + '">' + esc(displayId(v)) + '</button>';
+  function renderVehiclePickerLabel(){
+    var btn = document.getElementById('vehicle-picker-btn');
+    var lbl = document.getElementById('vehicle-picker-label');
+    if (STATE.vehicle === 'all'){
+      lbl.textContent = 'Tous les véhicules';
+      btn.classList.remove('has-selection');
+    } else {
+      var v = getVehicle(STATE.vehicle);
+      lbl.textContent = v ? (displayId(v) + ' · ' + v.driver.name) : 'Véhicule inconnu';
+      btn.classList.add('has-selection');
+    }
+  }
+
+  function renderVehiclePickerList(query){
+    var list = document.getElementById('vehicle-picker-list');
+    var q = (query || '').trim().toUpperCase();
+    var vehicles = SIM.vehicles.filter(function(v){
+      if (!q) return true;
+      var hay = (displayId(v) + ' ' + v.driver.name + ' ' + (v.trailer_id || '')).toUpperCase();
+      return hay.indexOf(q) !== -1;
     });
-    html += '<button type="button" class="reset-link" id="reset-filters">Réinitialiser les filtres</button>';
-    el.innerHTML = html;
-    el.querySelectorAll('[data-vehicle-filter]').forEach(function(btn){
+    var html = '<button type="button" class="vp-item' + (STATE.vehicle === 'all' ? ' is-selected' : '') + '" data-vehicle-pick="all"><span class="vp-name">Tous les véhicules</span><span class="vp-sub num">' + SIM.vehicles.length + '</span></button>';
+    html += vehicles.map(function(v){
+      return '<button type="button" class="vp-item' + (STATE.vehicle === v.id ? ' is-selected' : '') + '" data-vehicle-pick="' + v.id + '">' +
+        '<span><span class="vp-name">' + esc(displayId(v)) + (v.trailer_id ? ' · ' + esc(v.trailer_id) : '') + '</span><br><span class="vp-sub">' + esc(v.driver.name) + '</span></span>' +
+        (v.statut === 'anomalie' ? '<span class="tag-flag critical">anomalie</span>' : '') +
+      '</button>';
+    }).join('');
+    if (!vehicles.length) html += '<p class="vp-empty">Aucun véhicule ne correspond à cette recherche.</p>';
+    list.innerHTML = html;
+    list.querySelectorAll('[data-vehicle-pick]').forEach(function(btn){
       btn.addEventListener('click', function(){
-        STATE.vehicle = btn.getAttribute('data-vehicle-filter');
+        STATE.vehicle = btn.getAttribute('data-vehicle-pick');
+        closeVehiclePicker();
         onFilterChange();
       });
     });
-    document.getElementById('reset-filters').addEventListener('click', function(){
-      STATE.vehicle = 'all'; STATE.anomalyType = 'all';
-      onFilterChange();
-    });
   }
 
-  // ============================================================
-  // RENDU : Filtre anomalies (types fixes du cadrage, comptes réels)
-  // ============================================================
-  function renderAnomalyFilter(){
-    var el = document.getElementById('anomaly-filter-bar');
-    var html = '<button type="button" class="achip' + (STATE.anomalyType === 'all' ? ' on' : '') + '" data-anomaly-filter="all">Tous les types <span class="n">' + SIM.alerts.length + '</span></button>';
-    SIM.alertTypes.forEach(function(t){
-      var n = alertCountForType(t.key);
-      html += '<button type="button" class="achip' + (STATE.anomalyType === t.key ? ' on' : '') + (n === 0 ? ' is-zero' : '') + '" data-anomaly-filter="' + t.key + '">' + esc(t.label) + ' <span class="n">' + n + '</span></button>';
+  function openVehiclePicker(){
+    document.getElementById('vehicle-picker-menu').hidden = false;
+    document.getElementById('vehicle-picker-btn').setAttribute('aria-expanded', 'true');
+    document.getElementById('vehicle-picker-search').value = '';
+    renderVehiclePickerList('');
+    document.getElementById('vehicle-picker-search').focus();
+  }
+  function closeVehiclePicker(){
+    document.getElementById('vehicle-picker-menu').hidden = true;
+    document.getElementById('vehicle-picker-btn').setAttribute('aria-expanded', 'false');
+  }
+  function initVehiclePicker(){
+    document.getElementById('vehicle-picker-btn').addEventListener('click', function(ev){
+      ev.stopPropagation();
+      var menu = document.getElementById('vehicle-picker-menu');
+      if (menu.hidden) openVehiclePicker(); else closeVehiclePicker();
     });
-    el.innerHTML = html;
-    el.querySelectorAll('[data-anomaly-filter]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        STATE.anomalyType = btn.getAttribute('data-anomaly-filter');
-        renderAnomalyFilter();
-        renderAlerts();
-      });
-    });
+    document.getElementById('vehicle-picker-search').addEventListener('input', function(ev){ renderVehiclePickerList(ev.target.value); });
+    document.getElementById('vehicle-picker-menu').addEventListener('click', function(ev){ ev.stopPropagation(); });
+    document.addEventListener('click', function(){ closeVehiclePicker(); });
+    document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') closeVehiclePicker(); });
   }
 
   // ============================================================
@@ -1049,9 +1324,11 @@
   function renderMap(){
     var layer = document.getElementById('trucks-layer');
     var html = '';
+    var noData = !dayHasData();
     SIM.vehicles.forEach(function(v){
-      var off = (STATE.vehicle !== 'all' && STATE.vehicle !== v.id);
-      var groupClass = 'veh-group' + (off ? ' vehicle-off' : '');
+      var off = noData || (STATE.vehicle !== 'all' && STATE.vehicle !== v.id) || (STATE.zone !== 'all' && !vehicleInZone(v, STATE.zone)) || (STATE.statut !== 'all' && v.statut !== STATE.statut);
+      var selected = STATE.vehicle === v.id;
+      var groupClass = 'veh-group' + (off ? ' vehicle-off' : '') + (selected ? ' is-highlighted' : '');
       html += '<g class="' + groupClass + '" data-vehicle-group="' + v.id + '">';
       if (v.map.pulse){ html += '<circle class="pulse-ring" cx="' + v.map.x + '" cy="' + v.map.y + '" r="7"></circle>'; }
       html += '<circle class="truck-dot st-' + v.statut + '" cx="' + v.map.x + '" cy="' + v.map.y + '" r="7" data-map-id="truck:' + v.id + '"></circle>';
@@ -1063,8 +1340,18 @@
     });
     layer.innerHTML = html;
 
+    // zones dominantes / atténuées selon la zone sélectionnée
+    var svg = document.getElementById('map-svg');
+    svg.classList.toggle('has-zone-focus', STATE.zone !== 'all' && STATE.zone !== 'CFAO');
+    svg.querySelectorAll('.zone-rect').forEach(function(rect){
+      var key = (rect.getAttribute('data-map-id') || '').split(':')[1];
+      rect.classList.toggle('is-zone-active', key === STATE.zone);
+    });
+
     var note = document.getElementById('map-note');
-    note.textContent = 'Représentation schématique des zones (Port, Nord, Sud, Client), pas une carte géolocalisée réelle — l’intégration GPS/télématique arrive avec le jalon 6. Les ' + SIM.vehicles.length + ' véhicules positionnés ici sont l’intégralité du référentiel actif de la simulation : tous les blocs de cet écran (missions, géofences, alertes, historique, planning) portent exclusivement sur ces véhicules. Cliquer un camion, un libellé ou une zone affiche son détail.';
+    note.textContent = noData
+      ? 'Aucune donnée simulée pour la date sélectionnée — la carte n\'affiche aucun véhicule.'
+      : 'Représentation schématique des zones (Port, Nord, Sud, Client), pas une carte géolocalisée réelle — l’intégration GPS/télématique arrive avec le jalon 6. Les ' + SIM.vehicles.length + ' véhicules positionnés ici sont l’intégralité du référentiel actif de la simulation. Cliquer un camion, un libellé ou une zone affiche son détail.';
   }
 
   // ============================================================
@@ -1114,29 +1401,6 @@
   }
 
   // ============================================================
-  // RENDU : Missions en cours
-  // ============================================================
-  function renderMissions(){
-    var tbody = document.getElementById('missions-tbody');
-    var vs = visibleVehicles();
-    document.getElementById('missions-count').textContent = vs.length + ' mission' + (vs.length > 1 ? 's' : '');
-    tbody.innerHTML = vs.map(function(v){
-      var m = v.mission;
-      var rowClass = v.statut === 'anomalie' ? ' class="row-anomalie"' : '';
-      var clientCell = m.client ? esc(m.client) : '<span class="tt-dim">' + esc(m.to || 'Aucune ligne planifiée ne correspond') + '</span>';
-      return '<tr' + rowClass + '>' +
-        '<td class="tt-heure">' + esc(m.heure) + '</td>' +
-        '<td><div class="tt-name' + (v.driver.confirmed ? '' : ' tt-dim') + '">' + esc(v.driver.name) + '</div></td>' +
-        '<td><span class="num">' + esc(displayId(v)) + '</span> · <span class="num">' + esc(v.trailer_id || '—') + '</span></td>' +
-        '<td>' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + '</td>' +
-        '<td>' + clientCell + '</td>' +
-        '<td>' + esc(m.site) + '</td>' +
-        '<td><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></td>' +
-      '</tr>';
-    }).join('') || '<tr><td colspan="7" class="tt-dim" style="text-align:center; padding:16px;">Aucun véhicule pour ce filtre.</td></tr>';
-  }
-
-  // ============================================================
   // RENDU : Planning intégré — cartes de mission compactes
   // (même référentiel que la carte et « Missions en cours », aucune
   // liste indépendante ; clic sur une carte -> modal mission)
@@ -1150,7 +1414,7 @@
       var dest = m.client ? esc(m.client) : esc(m.to || '—');
       return '<div class="mission-card' + (v.statut === 'anomalie' ? ' is-anomalie' : '') + '" data-mission-vehicle="' + v.id + '" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détail mission ' + esc(displayId(v)) + '">' +
         '<div class="mc-top"><span class="mc-heure num">' + esc(m.heure) + '</span><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
-        '<div class="mc-main">' + esc(displayId(v)) + ' · ' + esc(v.trailer_id || '—') + '</div>' +
+        '<div class="mc-main">' + esc(v.trailer_id || '—') + ' · ' + esc(displayId(v)) + '</div>' +
         '<div class="mc-sub">' + esc(v.driver.name) + '</div>' +
         '<div class="mc-sub">' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + ' → ' + dest + '</div>' +
         '<div class="mc-hint">Voir le détail</div>' +
@@ -1163,20 +1427,24 @@
         if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); openMissionModal(card.getAttribute('data-mission-vehicle')); }
       });
     });
-
-    var noteEl = document.getElementById('out-of-scope-note');
-    noteEl.textContent = '3 véhicules hors référentiel actif (non affichés ici) : ' + SIM.outOfScope.ids.join(', ') + ' — ' + SIM.outOfScope.note;
   }
 
   // ============================================================
-  // RENDU : Alertes actives (filtrées par véhicule + type)
+  // MODAL : Alertes actives (filtrées par véhicule + type) — décision
+  // fonctionnelle : plus de bloc permanent dans la page ; accessible
+  // uniquement via le KPI « X alertes actives » (data-kpi-list="alerts").
+  // Même rendu qu'avant (groupes de sévérité, détail dépliable,
+  // comparaison des sources, bouton "voir sur la carte"), déplacé dans
+  // #modal-alerts — rien n'a été perdu, seulement retiré de la page
+  // principale comme demandé.
   // ============================================================
   function severityGroupLabel(sev){
     return sev === 'critique' ? '🔴 Critique' : sev === 'important' ? '🟠 Important' : '🟡 À surveiller';
   }
-  function renderAlerts(){
-    var list = alertsFor(STATE.vehicle, STATE.anomalyType);
-    document.getElementById('alerts-count').textContent = list.length + ' en cours' + (STATE.vehicle !== 'all' || STATE.anomalyType !== 'all' ? ' (filtrées)' : '');
+  function renderAlertsModalBody(){
+    var allowedIds = visibleVehicles().map(function(v){ return v.id; });
+    var list = dayHasData() ? alertsFor(STATE.vehicle, STATE.anomalyType).filter(function(a){ return allowedIds.indexOf(a.vehicle_id) !== -1; }) : [];
+    document.getElementById('am-sub').textContent = list.length + ' en cours' + (STATE.vehicle !== 'all' || STATE.anomalyType !== 'all' || STATE.zone !== 'all' || STATE.statut !== 'all' ? ' (filtrées)' : '');
     var groups = { critique: [], important: [], surveiller: [] };
     list.forEach(function(a){ groups[a.severity].push(a); });
 
@@ -1213,14 +1481,41 @@
       html += '</div>';
     });
     if (list.length === 0){ html = '<p class="alert-empty">Aucune alerte active pour ce filtre.</p>'; }
-    var container = document.getElementById('alerts-container');
+    var container = document.getElementById('am-container');
     container.innerHTML = html;
     container.querySelectorAll('.btn-goto-vehicle').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = btn.getAttribute('data-goto-vehicle');
+        closeDialog(document.getElementById('modal-alerts'));
         selectVehicle(id);
+        openVehicleModal(id);
       });
     });
+  }
+
+  function renderAlertsModalFilter(){
+    var el = document.getElementById('am-anomaly-filter-bar');
+    var html = '<button type="button" class="achip' + (STATE.anomalyType === 'all' ? ' on' : '') + '" data-anomaly-filter="all">Tous les types <span class="n">' + SIM.alerts.length + '</span></button>';
+    SIM.alertTypes.forEach(function(t){
+      var n = alertCountForType(t.key);
+      html += '<button type="button" class="achip' + (STATE.anomalyType === t.key ? ' on' : '') + (n === 0 ? ' is-zero' : '') + '" data-anomaly-filter="' + t.key + '">' + esc(t.label) + ' <span class="n">' + n + '</span></button>';
+    });
+    el.innerHTML = html;
+    el.querySelectorAll('[data-anomaly-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        STATE.anomalyType = btn.getAttribute('data-anomaly-filter');
+        renderAlertsModalFilter();
+        renderAlertsModalBody();
+      });
+    });
+  }
+
+  function openAlertsModal(){
+    document.getElementById('am-title').textContent = 'Alertes actives';
+    renderAlertsModalFilter();
+    renderAlertsModalBody();
+    var dlg = document.getElementById('modal-alerts');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
   }
 
   // ============================================================
@@ -1243,24 +1538,40 @@
     var anomaliesHtml = vehicleAlerts.length
       ? vehicleAlerts.map(function(a){ return '<span class="tag-flag ' + (a.severity === 'critique' ? 'critical' : 'warn') + '" style="margin:0 4px 4px 0;">' + esc(a.title) + '</span>'; }).join('')
       : '<span class="tt-dim">Aucune</span>';
+    var containerHtml = v.container
+      ? esc(v.container.code) + (v.container.qrToChange ? ' <span class="tag-flag warn">QR à changer</span>' : '')
+      : '<span class="tt-dim">— (aucun conteneur associé dans le référentiel simulé)</span>';
+
+    // Triple croisement Guérite / iButton / GPS — signale explicitement toute
+    // divergence via l'alerte identite_divergente réelle, jamais un texte recréé.
+    var idAlert = vehicleAlerts.filter(function(a){ return a.types.indexOf('identite_divergente') !== -1; })[0];
+    var idCmp = idAlert && idAlert.detail && idAlert.detail.compare;
+    var identityHtml = idCmp
+      ? ('<div class="td-grid" style="margin-top:4px;">' +
+          '<div class="td-row"><dt>Guérite (déclaré)</dt><dd style="color:var(--st-anomalie);">' + esc(idCmp.guerite) + '</dd></div>' +
+          '<div class="td-row"><dt>iButton</dt><dd style="color:var(--st-anomalie);">' + esc(idCmp.tag) + '</dd></div>' +
+          '<div class="td-row"><dt>GPS (cohérence)</dt><dd style="color:var(--st-validee);">' + esc(idCmp.gps) + '</dd></div>' +
+        '</div><p class="tag-flag critical" style="margin-top:6px;">Divergence — voir File de validation</p>')
+      : ('<span class="proof-row">' +
+          '<span class="proof-badge ' + srcClass(v.sources.guerite) + '" title="Guérite : ' + srcLabel(v.sources.guerite) + '">G</span>' +
+          '<span class="proof-badge ' + srcClass(v.sources.tag) + '" title="Tag / iButton : ' + srcLabel(v.sources.tag) + '">TAG</span>' +
+          '<span class="proof-badge ' + srcClass(v.sources.gps) + '" title="GPS : ' + srcLabel(v.sources.gps) + '">GPS</span>' +
+        '</span>');
+
     return (
       '<div class="td-head"><span class="td-title">' + esc(displayId(v)) + '</span>' +
         '<span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
       '<div class="td-grid">' +
-        '<div class="td-row"><dt>Position</dt><dd>' + derivedPosition(v) + '</dd></div>' +
-        '<div class="td-row"><dt>Dernière position connue</dt><dd>' + esc(lastKnownTime(v)) + '</dd></div>' +
-        '<div class="td-row"><dt>Chauffeur</dt><dd>' + esc(v.driver.name) + '</dd></div>' +
-        '<div class="td-row"><dt>Remorque</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
-        '<div class="td-row"><dt>Mission</dt><dd>' + esc(missionLabel) + '</dd></div>' +
+        '<div class="td-row"><dt>Position / zone</dt><dd>' + derivedPosition(v) + '</dd></div>' +
+        '<div class="td-row"><dt>Dernière info GPS disponible</dt><dd>' + esc(lastKnownTime(v)) + '</dd></div>' +
+        '<div class="td-row"><dt>Remorque(s)</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
+        '<div class="td-row"><dt>Chauffeur</dt><dd>' + esc(v.driver.contested ? 'Identité contestée' : v.driver.name) + '</dd></div>' +
+        '<div class="td-row"><dt>Mission actuelle</dt><dd>' + esc(missionLabel) + '</dd></div>' +
         '<div class="td-row"><dt>Géofence</dt><dd>' + geo + '</dd></div>' +
-        '<div class="td-row"><dt>Vitesse</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
-        '<div class="td-row"><dt>Kilométrage aujourd\'hui</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
-        '<div class="td-row"><dt>Preuves</dt><dd><span class="proof-row">' +
-          '<span class="proof-badge ' + srcClass(v.sources.guerite) + '" title="Guérite : ' + srcLabel(v.sources.guerite) + '">G</span>' +
-          '<span class="proof-badge ' + srcClass(v.sources.tag) + '" title="Tag / iButton : ' + srcLabel(v.sources.tag) + '">TAG</span>' +
-          '<span class="proof-badge ' + srcClass(v.sources.gps) + '" title="GPS : ' + srcLabel(v.sources.gps) + '">GPS</span>' +
-        '</span></dd></div>' +
-        '<div class="td-row" style="grid-column:1 / -1;"><dt>Anomalies actives</dt><dd>' + anomaliesHtml + '</dd></div>' +
+        '<div class="td-row"><dt>Conteneur associé</dt><dd>' + containerHtml + '</dd></div>' +
+        '<div class="td-row"><dt>Vitesse</dt><dd><span class="tt-dim">Non disponible — non suivi par ce référentiel simulé</span></dd></div>' +
+        '<div class="td-row" style="grid-column:1 / -1;"><dt>Identité — Guérite / iButton / GPS</dt><dd>' + identityHtml + '</dd></div>' +
+        '<div class="td-row" style="grid-column:1 / -1;"><dt>Alertes / anomalies liées</dt><dd>' + anomaliesHtml + '</dd></div>' +
       '</div>' +
       '<p class="popover-note" style="margin-top:8px; margin-bottom:0;">' + esc(v.note) + '</p>'
     );
@@ -1319,28 +1630,58 @@
         '</ul>')
       : '<span class="tt-dim">Aucune anomalie active pour ce véhicule.</span>';
     return (
-      '<div class="td-head"><span class="td-title">' + esc(displayId(v)) + ' · ' + esc(m.heure) + '</span>' +
+      '<div class="td-head"><span class="td-title">' + esc(v.trailer_id || '—') + ' · ' + esc(displayId(v)) + ' · ' + esc(m.heure) + '</span>' +
         '<span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
       '<div class="td-grid">' +
+        '<div class="td-row"><dt>Remorque(s)</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
         '<div class="td-row"><dt>Camion</dt><dd>' + esc(displayId(v)) + '</dd></div>' +
         '<div class="td-row"><dt>Chauffeur</dt><dd>' + esc(v.driver.name) + '</dd></div>' +
-        '<div class="td-row"><dt>Remorque(s)</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
         '<div class="td-row"><dt>Type de mission</dt><dd>' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + '</dd></div>' +
         '<div class="td-row"><dt>Client</dt><dd>' + (m.client ? esc(m.client) : '<span class="tt-dim">' + esc(m.to || '—') + '</span>') + '</dd></div>' +
         '<div class="td-row"><dt>Conteneur(s)</dt><dd>' + containerHtml + '</dd></div>' +
         '<div class="td-row"><dt>Départ</dt><dd>' + (m.from ? esc(m.from) : '<span class="tt-dim">—</span>') + '</dd></div>' +
         '<div class="td-row"><dt>Destination</dt><dd>' + (m.to ? esc(m.to) : '<span class="tt-dim">—</span>') + '</dd></div>' +
-        '<div class="td-row"><dt>Heure planifiée départ</dt><dd>' + esc(m.heure) + ' · ' + esc(m.site) + '</dd></div>' +
-        '<div class="td-row"><dt>Heure approchée arrivée</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
+        '<div class="td-row"><dt>Heure de départ</dt><dd>' + esc(m.heure) + ' · ' + esc(m.site) + '</dd></div>' +
+        '<div class="td-row"><dt>Heure d\'arrivée</dt><dd><span class="tt-dim">Non disponible — non suivi par ce référentiel simulé</span></dd></div>' +
         '<div class="td-row"><dt>Preuves</dt><dd>' + proofsHtml + '</dd></div>' +
       '</div>' +
-      '<div class="modal-anomaly"><b>Anomalie</b><br>' + anomalyBody + '</div>'
+      '<div class="modal-anomaly"><b>Anomalie</b><br>' + anomalyBody + '</div>' +
+      '<p class="tt-dim" style="margin:6px 0 0 0; font-size:11.5px;">Rotation, événements et objectif applicable : voir « Voir la rotation » ci-dessous.</p>'
     );
+  }
+
+  // ============================================================
+  // RENDU : étapes de la rotation — dérivées de vehicleHistory() (même
+  // fonction que l'historique du véhicule et le modal Remorques), jamais
+  // des étapes/horaires inventés (ex. "Récupération", "Livraison") : ce
+  // référentiel simulé ne connaît que le début de mission, les entrées/
+  // sorties de géofence et les alertes réellement horodatées. La
+  // dernière étape connue est marquée « en cours » — c'est la définition
+  // honnête de « étape actuelle » avec les données disponibles.
+  // ============================================================
+  function rotationStepsHTML(v){
+    var entries = vehicleHistory(v);
+    if (!entries.length) return '<p class="tt-dim" style="margin:0;">Aucune étape horodatée connue pour ce véhicule.</p>';
+    var lastIdx = entries.length - 1;
+    var steps = entries.map(function(e, i){
+      var isCurrent = i === lastIdx;
+      return '<div class="rstep' + (isCurrent ? ' is-current' : '') + (e.alert ? ' is-alert' : '') + '">' +
+        '<span class="rstep-marker">' + (i + 1) + '</span>' +
+        '<div class="rstep-body">' +
+          '<span class="rstep-time num">' + esc(e.time) + '</span>' +
+          '<span class="rstep-label">' + esc(e.label) + '</span>' +
+          (isCurrent ? '<span class="tag-flag info" style="margin-left:6px;">Étape actuelle</span>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('<div class="rstep-connector"></div>');
+    return '<div class="rotation-steps">' + steps + '</div>' +
+      '<p class="rotation-next"><b>Étape suivante :</b> <span class="tt-dim">Non disponible — aucune étape planifiée au-delà de celle-ci dans ce référentiel simulé</span></p>';
   }
 
   function openMissionModal(id){
     var v = getVehicle(id);
     if (!v) return;
+    STATE.currentMissionVehicle = id;
     document.getElementById('mm-title').textContent = 'Mission — ' + displayId(v);
     document.getElementById('mm-sub').textContent = (v.mission.type || 'Type non défini') + ' · ' + v.mission.heure;
     document.getElementById('mm-body').innerHTML = missionDetailHTML(v);
@@ -1349,138 +1690,226 @@
   }
 
   // ============================================================
-  // RENDU : Historique du véhicule sélectionné
+  // MODAL : historique — d'un véhicule (bouton "Voir l'historique" du
+  // modal véhicule) ou de toute la journée sélectionnée (bouton près de
+  // la date). Les deux réutilisent vehicleHistory() ; aucune deuxième
+  // source de données, aucun événement recréé. Remplace le grand bloc
+  // permanent "Historique du véhicule" — accessible uniquement au clic.
   // ============================================================
-  function renderHistory(){
-    var panel = document.getElementById('history-panel');
-    var sub = document.getElementById('history-sub');
-    if (STATE.vehicle === 'all'){
-      sub.textContent = 'sélectionnez un véhicule';
-      panel.innerHTML = '<p class="history-empty">Choisissez un véhicule (carte, filtre ou alerte) pour afficher son historique d’événements et de positions simulés.</p>';
-      return;
+  function openHistoryModal(id){
+    var v = getVehicle(id);
+    if (!v) return;
+    document.getElementById('hm-title').textContent = 'Historique — ' + displayId(v);
+    document.getElementById('hm-sub').textContent = dayHasData() ? ('Journée du ' + esc(STATE.date)) : 'Aucune donnée pour cette date';
+    var entries = dayHasData() ? vehicleHistory(v) : [];
+    document.getElementById('hm-body').innerHTML = entries.length
+      ? '<div class="history-timeline">' + entries.map(function(e){
+          return '<div class="history-entry' + (e.alert ? ' h-alert' : '') + '"><span class="h-time num">' + esc(e.time) + '</span><span class="h-label">' + esc(e.label) + '</span></div>';
+        }).join('') + '</div>'
+      : '<p class="history-empty">Aucun événement disponible pour ' + (dayHasData() ? 'ce véhicule' : 'cette date') + ' dans le référentiel simulé.</p>';
+    var dlg = document.getElementById('modal-history');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  // Historique de la journée : agrège vehicleHistory() de tous les
+  // véhicules visibles (référentiel actif filtré) en une seule frise
+  // triée — une composition des mêmes données, jamais une liste séparée.
+  function openDayHistoryModal(){
+    document.getElementById('hm-title').textContent = 'Historique de la journée';
+    document.getElementById('hm-sub').textContent = STATE.date ? ('Journée du ' + STATE.date) : '';
+    var body = document.getElementById('hm-body');
+    if (!dayHasData()){
+      body.innerHTML = '<p class="history-empty">Aucune donnée simulée pour le ' + esc(STATE.date) + '. Ce référentiel ne modélise qu\'un instantané du ' + esc(TODAY_ISO) + ' (10:42) — aucun événement historique n\'est fabriqué pour les autres dates.</p>';
+    } else {
+      var entries = [];
+      SIM.vehicles.forEach(function(v){
+        vehicleHistory(v).forEach(function(e){ entries.push({ time:e.time, label:e.label, alert:e.alert, vehicle:v }); });
+      });
+      entries.sort(function(a,b){ return String(a.time).localeCompare(String(b.time)); });
+      body.innerHTML = '<div class="day-history-list">' + entries.map(function(e){
+        return '<div class="day-history-item' + (e.alert ? ' h-alert' : '') + '"><span class="h-time num">' + esc(e.time) + '</span><span class="h-vehicle">' + esc(displayId(e.vehicle)) + '</span><span class="h-label">' + esc(e.label) + '</span></div>';
+      }).join('') + '</div>';
     }
-    var v = getVehicle(STATE.vehicle);
-    if (!v){ panel.innerHTML = '<p class="history-empty">Véhicule inconnu du référentiel actif.</p>'; return; }
-    sub.textContent = displayId(v);
+    var dlg = document.getElementById('modal-history');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
 
-    // vehicleHistory() vient de _shared/sim-data.js — même dérivation que
-    // le modal remorque de l'écran Remorques (mission + géofence + alertes).
+  // ============================================================
+  // MODAL : rotation dédiée (véhicule → rotation → mission → étapes →
+  // conteneur → remorque → chauffeur → événements → anomalies →
+  // objectif de rotation → écart), avec progression Départ/En route/
+  // Destination. Accessible depuis le modal véhicule ET le modal
+  // mission — un seul point de rendu, jamais deux logiques distinctes.
+  // ============================================================
+  function rotationObjectiveHTML(v){
+    var key = rotationBucketForVehicle(v);
+    if (!key) return '<p class="tt-dim" style="margin:0;">Sans objectif de rotation applicable (famille hors périmètre suivi).</p>';
+    var obj = SIM.rotationObjectives.filter(function(o){ return o.key === key; })[0];
+    if (!obj) return '<p class="tt-dim" style="margin:0;">—</p>';
+    if (typeof obj.target !== 'number') return '<p style="margin:0;"><b>' + esc(obj.label) + '</b> — objectif défini par mission (pas un seuil global).</p>';
+    return '<p style="margin:0;"><b>' + esc(obj.label) + '</b> — objectif ' + obj.target + ' rotation(s)/jour. Écart : <span class="tt-dim">1 mission active dans cet instantané — pas un cumul de rotations clôturées, non comparable directement à l\'objectif journalier.</span></p>';
+  }
+
+  function rotationProgressHTML(v){
+    var m = v.mission;
     var entries = vehicleHistory(v);
-
-    panel.innerHTML = '<div class="history-timeline">' + entries.map(function(e){
-      return '<div class="history-entry' + (e.alert ? ' h-alert' : '') + '"><span class="h-time num">' + esc(e.time) + '</span><span class="h-label">' + esc(e.label) + '</span></div>';
+    var hasArrival = false; // aucune heure d'arrivée n'est modélisée dans SIM
+    var steps = [
+      { key:'depart', lbl:'Départ', time: m.heure, done:true },
+      { key:'route', lbl:'En route', time: entries.length > 1 ? entries[entries.length-1].time : null, done: entries.length > 1 },
+      { key:'destination', lbl:'Destination', time: hasArrival ? null : null, done:false }
+    ];
+    var currentIdx = steps[1].done ? 1 : 0;
+    return '<div class="rprog">' + steps.map(function(s, i){
+      var cls = i < currentIdx ? 'is-done' : (i === currentIdx ? 'is-current' : '');
+      var line = i > 0 ? '<div class="rprog-line' + (i <= currentIdx ? ' is-done' : '') + '"></div>' : '';
+      return line + '<div class="rprog-step ' + cls + '"><div class="rprog-dot">' + (i < currentIdx ? '✓' : (i+1)) + '</div><div class="rprog-lbl">' + s.lbl + '</div><div class="rprog-time num">' + (s.time ? esc(s.time) : 'Non disponible') + '</div></div>';
     }).join('') + '</div>';
   }
 
-  // ============================================================
-  // RENDU : Chauffeurs (référentiel actif, score « à définir »)
-  // ============================================================
-  function renderDrivers(){
-    var byName = {};
-    SIM.vehicles.forEach(function(v){
-      if (!v.driver.confirmed && !v.driver.contested) return; // exclut "Non confirmé" / "Non identifié" : ce ne sont pas des identités
-      var key = v.driver.contested ? 'Fatou Cissé' : v.driver.name;
-      if (!byName[key]) byName[key] = { name:key, vehicles:[], contested:!!v.driver.contested };
-      byName[key].vehicles.push(displayId(v));
-    });
-    // Ibrahim Traoré conduit TR-027 normalement ; son iButton est aussi lu sur TR-021 (anomalie en cours de résolution)
-    if (byName['Fatou Cissé'] && !byName['Ibrahim Traoré']){
-      var trV = getVehicle('TR-027');
-      if (trV) byName['Ibrahim Traoré'] = { name:'Ibrahim Traoré', vehicles:[displayId(trV)], contested:false };
+  function rotationModalHTML(v){
+    var m = v.mission;
+    var vehicleAlerts = alertsForVehicle(v.id);
+    var entries = vehicleHistory(v);
+    var containerHtml = v.container ? esc(v.container.code) + (v.container.qrToChange ? ' <span class="tag-flag warn">QR à changer</span>' : '') : '<span class="tt-dim">—</span>';
+    var etat = containerChargeState(v);
+    var duree = '<span class="tt-dim">Non disponible — aucune heure d\'arrivée dans ce référentiel simulé</span>';
+
+    var html = '<p class="rotation-title" style="margin-bottom:6px;">Progression</p>' + rotationProgressHTML(v);
+
+    html += '<dl class="rotation-meta-grid">' +
+      '<div class="rmeta"><dt>Camion</dt><dd>' + esc(displayId(v)) + '</dd></div>' +
+      '<div class="rmeta"><dt>Remorque</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
+      '<div class="rmeta"><dt>Chauffeur</dt><dd>' + esc(v.driver.contested ? 'Identité contestée' : v.driver.name) + '</dd></div>' +
+      '<div class="rmeta"><dt>Mission</dt><dd>' + (m.type ? esc(m.type) : '<span class="tt-dim">non défini</span>') + '</dd></div>' +
+      '<div class="rmeta"><dt>Départ</dt><dd>' + (m.from ? esc(m.from) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="rmeta"><dt>Destination</dt><dd>' + (m.to ? esc(m.to) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="rmeta"><dt>Heure de départ</dt><dd>' + esc(m.heure) + '</dd></div>' +
+      '<div class="rmeta"><dt>Heure d\'arrivée</dt><dd><span class="tt-dim">Non disponible</span></dd></div>' +
+      '<div class="rmeta"><dt>Durée</dt><dd>' + duree + '</dd></div>' +
+      '<div class="rmeta"><dt>Conteneur</dt><dd>' + containerHtml + '</dd></div>' +
+      '<div class="rmeta"><dt>État conteneur</dt><dd>' + (etat ? esc(etat) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+      '<div class="rmeta"><dt>Statut de la mission</dt><dd><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></dd></div>' +
+    '</dl>';
+
+    html += '<div class="rotation-objective"><b>Objectif de rotation</b><br>' + rotationObjectiveHTML(v) + '</div>';
+
+    html += '<p class="rotation-title" style="margin:14px 0 4px 0;">Événements de la rotation</p>' + rotationStepsHTML(v);
+
+    html += '<p class="rotation-title" style="margin:14px 0 4px 0;">Anomalies et alertes associées</p>';
+    if (v.statut === 'anomalie' || vehicleAlerts.length){
+      html += '<div class="rotation-events">';
+      if (v.statut === 'anomalie') html += '<div class="modal-anomaly">' + esc(v.note) + '</div>';
+      vehicleAlerts.forEach(function(a){ html += '<div class="modal-anomaly"><b>' + esc(a.title) + '</b><br>' + esc(a.description) + '</div>'; });
+      html += '</div>';
+    } else {
+      html += '<span class="tt-dim">Aucune anomalie ni alerte active pour cette rotation.</span>';
     }
-    var list = Object.keys(byName).map(function(k){ return byName[k]; });
-    var el = document.getElementById('driver-list');
-    el.innerHTML = list.map(function(d){
-      return '<div class="driver-row' + (d.contested ? ' is-contested' : '') + '">' +
-        '<div><div class="dr-name">' + esc(d.name) + (d.contested ? ' <span class="tag-flag critical">identité contestée</span>' : '') + '</div>' +
-        '<div class="dr-vehicle">' + esc(d.vehicles.join(', ')) + '</div></div>' +
-        '<div class="dr-score">Score : à définir</div>' +
-      '</div>';
-    }).join('');
+
+    html += '<p class="rotation-note">Règle métier : seules les trajectoires productives (géofence à géofence — livraison, transfert, récupération) comptent comme rotation ; ce référentiel simulé n\'expose qu\'une mission active par véhicule (pas de cumul de rotations réalisées). Structure prête pour un futur modèle <span class="num">véhicule → rotations[] → missions[] → événements[] → alertes[]</span>.</p>';
+
+    return html;
   }
 
-  // ============================================================
-  // RENDU : Données à compléter (interactif, agit sur SIM)
-  // ============================================================
-  function renderComplete(){
-    var vs = SIM.vehicles;
-    var clientsToId = vs.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }).length;
-    var proposees = vs.filter(function(v){ return v.statut === 'proposee'; }).length;
-    var anomalies = vs.filter(function(v){ return v.statut === 'anomalie'; }).length;
-    var qr = vs.filter(function(v){ return v.container && v.container.qrToChange; });
-
-    var el = document.getElementById('complete-chips');
-    var html = '';
-    html += '<div class="complete-chip' + (clientsToId > 0 ? ' info' : '') + '"><span>Clients sans géofence à identifier</span>' +
-      '<span style="display:flex; align-items:center; gap:8px;"><span class="n">' + clientsToId + '</span>' +
-      (clientsToId > 0 ? '<button type="button" class="btn btn-primary" id="btn-complete-client">Compléter</button>' : '') + '</span></div>';
-    html += '<div class="complete-chip"><span>Missions Proposées en attente de validation</span><span class="n">' + proposees + '</span></div>';
-    html += '<div class="complete-chip warn"><span>Anomalies à résoudre (File de validation)</span><span class="n">' + anomalies + '</span></div>';
-    qr.forEach(function(v){
-      html += '<div class="complete-chip info" data-qr-vehicle="' + v.id + '"><span>QR code à changer — ' + esc(displayId(v)) + ' · ' + esc(v.container.code) + '</span>' +
-        '<span style="display:flex; align-items:center; gap:8px;"><span class="n">1</span>' +
-        '<button type="button" class="btn btn-ghost btn-qr-resolve" data-qr-resolve="' + v.id + '">Marquer changé</button></span></div>';
-    });
-    el.innerHTML = html;
-
-    var btn = document.getElementById('btn-complete-client');
-    if (btn) btn.addEventListener('click', openCompleteClientModal);
-    el.querySelectorAll('.btn-qr-resolve').forEach(function(b){
-      b.addEventListener('click', function(){
-        var vid = b.getAttribute('data-qr-resolve');
-        var v = getVehicle(vid);
-        if (v && v.container) v.container.qrToChange = false;
-        renderAll(); // le référentiel a changé : toutes les vues se remettent à jour
-      });
-    });
-  }
-
-  // ---------- modale « compléter le client » (démo locale) ----------
-  function openCompleteClientModal(){
-    var v = SIM.vehicles.filter(function(vv){ return vv.mission && !vv.mission.client && vv.mission.to === "« Client non identifié »"; })[0];
+  function openRotationModal(id){
+    var v = getVehicle(id);
     if (!v) return;
-    document.getElementById('cm-title').textContent = 'Identifier le client — ' + displayId(v);
-    document.getElementById('cm-sub').textContent = 'Le nom affiché par défaut vient de la déclaration guérite. Cette confirmation met à jour le référentiel de la simulation.';
-    var body = document.getElementById('cm-body');
-    body.innerHTML =
-      '<div><label for="cm-client-select">Client réel</label>' +
-      '<select id="cm-client-select"><option value="" selected disabled>— à identifier —</option>' +
-      SIM.clientOptions.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('') +
-      '</select></div>' +
-      '<div><label for="cm-comment">Commentaire (démo, non persistant)</label><textarea id="cm-comment" placeholder="Ex. : client confirmé par téléphone avec le chauffeur."></textarea></div>';
-    var dlg = document.getElementById('modal-complete');
+    document.getElementById('rm-title').textContent = 'Rotation — ' + (v.trailer_id ? v.trailer_id + ' · ' : '') + displayId(v);
+    document.getElementById('rm-sub').textContent = (v.mission.type || 'Type non défini') + ' · ' + v.driver.name;
+    document.getElementById('rm-body').innerHTML = rotationModalHTML(v);
+    document.getElementById('rm-goto-validation').href = 'file-validation.html?vehicle=' + encodeURIComponent(v.id);
+    var dlg = document.getElementById('modal-rotation');
     if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
-    document.getElementById('cm-confirm').onclick = function(){
-      var sel = document.getElementById('cm-client-select');
-      if (!sel.value) { sel.focus(); return; }
-      v.mission.client = sel.value;
-      v.mission.to = sel.value;
-      v.map.shortLabel = v.map.shortLabel.split(' →')[0] + ' → ' + sel.value;
-      closeDialog(dlg);
-      renderAll(); // référentiel modifié localement : toutes les vues se remettent à jour
+  }
+
+
+  // ============================================================
+  // RENDU : « À traiter » — résumé compact, lecture seule. Le
+  // traitement (identifier un client, valider, résoudre une anomalie,
+  // marquer un QR changé) reste dans File de validation : Live Tracking
+  // ne réinvente pas cette logique, il ne fait que renvoyer vers elle.
+  // ============================================================
+  function toTreatCategories(){
+    var vs = dayHasData() ? SIM.vehicles : [];
+    return {
+      client: vs.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }),
+      proposees: vs.filter(function(v){ return v.statut === 'proposee'; }),
+      anomalies: vs.filter(function(v){ return v.statut === 'anomalie'; }),
+      qr: vs.filter(function(v){ return v.container && v.container.qrToChange; })
     };
   }
+
+  function renderToTreat(){
+    var cat = toTreatCategories();
+    var total = cat.client.length + cat.proposees.length + cat.anomalies.length + cat.qr.length;
+    document.getElementById('totreat-count').textContent = total;
+  }
+
+  function openToTreatModal(){
+    var cat = toTreatCategories();
+    var defs = [
+      { key:'client', label:'Clients sans géofence à identifier', list: cat.client },
+      { key:'proposees', label:'Missions proposées en attente de validation', list: cat.proposees },
+      { key:'anomalies', label:'Anomalies à résoudre', list: cat.anomalies },
+      { key:'qr', label:'QR code à changer', list: cat.qr }
+    ];
+    document.getElementById('totreat-body').innerHTML = defs.map(function(d){
+      return '<div class="totreat-item"><span>' + d.label + '</span><span style="display:flex;align-items:center;gap:10px;"><span class="n">' + d.list.length + '</span>' +
+        (d.list.length ? '<a class="btn btn-ghost" href="file-validation.html' + (d.list.length === 1 ? ('?vehicle=' + encodeURIComponent(d.list[0].id)) : '') + '">Ouvrir dans File de validation</a>' : '') +
+      '</span></div>';
+    }).join('');
+    var dlg = document.getElementById('modal-totreat');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
   function closeDialog(dlg){ if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
-  document.getElementById('cm-cancel').addEventListener('click', function(){ closeDialog(document.getElementById('modal-complete')); });
   document.getElementById('vm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-vehicle')); });
   document.getElementById('mm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-mission')); });
+  document.getElementById('rm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-rotation')); });
+  document.getElementById('hm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-history')); });
+  document.getElementById('lm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-list')); });
+  document.getElementById('totreat-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-totreat')); });
+  document.getElementById('am-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-alerts')); });
+  document.getElementById('btn-totreat-open').addEventListener('click', openToTreatModal);
+  document.getElementById('btn-day-history').addEventListener('click', openDayHistoryModal);
+  document.getElementById('vm-rotation').addEventListener('click', function(){ if (STATE.vehicle !== 'all') openRotationModal(STATE.vehicle); });
+  document.getElementById('vm-history').addEventListener('click', function(){ if (STATE.vehicle !== 'all') openHistoryModal(STATE.vehicle); });
+  document.getElementById('mm-rotation').addEventListener('click', function(){ if (STATE.currentMissionVehicle) openRotationModal(STATE.currentMissionVehicle); });
 
   // ============================================================
   // RENDU : bandeau de statistiques (calculé depuis SIM)
   // ============================================================
   function renderTopStats(){
-    var missions = SIM.vehicles.length;
-    var clientsToId = SIM.vehicles.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }).length;
-    var anomalies = SIM.vehicles.filter(function(v){ return v.statut === 'anomalie'; }).length;
-    var alertsN = SIM.alerts.length;
-    var qr = SIM.vehicles.filter(function(v){ return v.container && v.container.qrToChange; }).length;
+    var vs = dayHasData() ? SIM.vehicles : [];
+    var missionIds = vs.map(function(v){ return v.id; });
+    var clientIds = vs.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }).map(function(v){ return v.id; });
+    var anomalieIds = vs.filter(function(v){ return v.statut === 'anomalie'; }).map(function(v){ return v.id; });
+    var alertVehicleIds = dayHasData() ? SIM.alerts.map(function(a){ return a.vehicle_id; }).filter(function(v,i,arr){ return arr.indexOf(v) === i; }) : [];
+    var qrIds = vs.filter(function(v){ return v.container && v.container.qrToChange; }).map(function(v){ return v.id; });
+    var alertsN = dayHasData() ? SIM.alerts.length : 0;
+
     var el = document.getElementById('top-stat-chips');
-    var html = '<div class="chip"><span class="n num">' + missions + '</span><span class="lbl">missions en cours</span></div>';
-    if (clientsToId > 0) html += '<div class="chip info"><span class="n num">' + clientsToId + '</span><span class="lbl">client à identifier</span></div>';
-    if (anomalies > 0) html += '<div class="chip warn"><span class="n num">' + anomalies + '</span><span class="lbl">anomalie</span></div>';
-    html += '<div class="chip"><span class="n num">' + alertsN + '</span><span class="lbl">alertes actives</span></div>';
-    if (qr > 0) html += '<div class="chip info"><span class="n num">' + qr + '</span><span class="lbl">QR code à changer</span></div>';
+    var html = '<button type="button" class="chip" data-kpi-list="missions"><span class="n num">' + missionIds.length + '</span><span class="lbl">missions en cours</span></button>';
+    if (clientIds.length) html += '<button type="button" class="chip info" data-kpi-list="client"><span class="n num">' + clientIds.length + '</span><span class="lbl">client à identifier</span></button>';
+    if (anomalieIds.length) html += '<button type="button" class="chip warn" data-kpi-list="anomalies"><span class="n num">' + anomalieIds.length + '</span><span class="lbl">anomalie</span></button>';
+    html += '<button type="button" class="chip" data-kpi-list="alerts"><span class="n num">' + alertsN + '</span><span class="lbl">alertes actives</span></button>';
+    if (qrIds.length) html += '<button type="button" class="chip info" data-kpi-list="qr"><span class="n num">' + qrIds.length + '</span><span class="lbl">QR code à changer</span></button>';
     el.innerHTML = html;
+    bindKpiListButtons(el, { missions: missionIds, client: clientIds, anomalies: anomalieIds, alerts: alertVehicleIds, qr: qrIds });
+  }
+
+  // ============================================================
+  // DATE — bannière honnête quand la date sélectionnée n'a pas de
+  // données dans ce référentiel simulé (SIM ne modélise que TODAY_ISO).
+  // ============================================================
+  function renderDateBanner(){
+    var banner = document.getElementById('date-empty-banner');
+    if (dayHasData()){
+      banner.hidden = true;
+      return;
+    }
+    banner.hidden = false;
+    banner.textContent = '⚠ Aucune donnée simulée pour le ' + STATE.date + '. Ce référentiel ne modélise qu\'un instantané du ' + TODAY_ISO + ' (10:42) — rien n\'est fabriqué pour combler les autres dates. Sélectionnez ' + TODAY_ISO + ' pour retrouver l\'activité simulée.';
   }
 
   // ---------- sélection d'un véhicule (carte, filtre, alerte) ----------
@@ -1491,17 +1920,17 @@
   }
 
   function onFilterChange(){
-    renderVehicleFilter();
+    renderVehiclePickerLabel();
+    renderTopStats();
+    renderFleet();
     renderMap();
-    renderMissions();
     renderGeofenceList();
-    renderAlerts();
-    renderHistory();
     renderPlanningCards();
+    renderToTreat();
     if (STATE.vehicle === 'all'){
       var td = document.getElementById('truck-detail');
       td.classList.add('is-empty');
-      td.textContent = 'Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le filtre ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).';
+      td.textContent = 'Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le sélecteur ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).';
     } else {
       renderTruckDetail(STATE.vehicle);
     }
@@ -1510,16 +1939,12 @@
   function renderAll(){
     renderTopStats();
     renderFleet();
-    renderVehicleFilter();
-    renderAnomalyFilter();
+    renderVehiclePickerLabel();
     renderMap();
     renderGeofenceList();
-    renderMissions();
-    renderAlerts();
-    renderHistory();
-    renderDrivers();
-    renderComplete();
+    renderToTreat();
     renderPlanningCards();
+    renderDateBanner();
     if (STATE.vehicle !== 'all') renderTruckDetail(STATE.vehicle);
   }
 
@@ -1542,7 +1967,49 @@
       if (!el) return;
       var parts = el.getAttribute('data-map-id').split(':');
       if (parts[0] === 'truck'){ selectVehicle(parts[1]); openVehicleModal(parts[1]); }
-      else if (parts[0] === 'client') renderClientDetail(parts[1]);
+      else if (parts[0] === 'client'){ selectZone('CFAO'); renderClientDetail(parts[1]); }
+      else if (parts[0] === 'zone'){ selectZone(parts[1]); }
+    });
+  }
+
+  // ---------- sélection de zone (carte, légende, segmented Site) — un
+  // seul état, plusieurs déclencheurs synchronisés. Cliquer une zone déjà
+  // active la désélectionne (retour à "Tous"). ----------
+  function selectZone(zone){
+    STATE.zone = (STATE.zone === zone) ? 'all' : zone;
+    syncZoneControls();
+    onFilterChange();
+  }
+  function selectStatut(statut){
+    STATE.statut = (STATE.statut === statut) ? 'all' : statut;
+    syncZoneControls();
+    onFilterChange();
+  }
+  function syncZoneControls(){
+    document.querySelectorAll('#f-site [data-zone-filter]').forEach(function(btn){
+      btn.classList.toggle('on', btn.getAttribute('data-zone-filter') === STATE.zone || (STATE.zone === 'all' && btn.getAttribute('data-zone-filter') === 'all'));
+    });
+    document.querySelectorAll('#map-legend-inline [data-zone-filter]').forEach(function(btn){
+      btn.classList.toggle('on', btn.getAttribute('data-zone-filter') === STATE.zone);
+    });
+    document.querySelectorAll('#map-legend-inline [data-statut-filter]').forEach(function(btn){
+      btn.classList.toggle('on', btn.getAttribute('data-statut-filter') === STATE.statut);
+    });
+  }
+  function initZoneFilters(){
+    document.querySelectorAll('#f-site [data-zone-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var zone = btn.getAttribute('data-zone-filter');
+        STATE.zone = zone === 'all' ? 'all' : zone;
+        syncZoneControls();
+        onFilterChange();
+      });
+    });
+    document.querySelectorAll('#map-legend-inline [data-zone-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){ selectZone(btn.getAttribute('data-zone-filter')); });
+    });
+    document.querySelectorAll('#map-legend-inline [data-statut-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){ selectStatut(btn.getAttribute('data-statut-filter')); });
     });
   }
 
@@ -1553,9 +2020,15 @@
     if (!svg) return;
     var BASE = { x:0, y:0, w:700, h:336 };
     var view = { x:0, y:0, w:700, h:336 };
+    // Le zoom arrière ("−") était plafonné à la vue de base (impossible de
+    // dézoomer réellement, seulement de revenir à 100%). MAX_W autorise
+    // maintenant à voir plus large que la vue de base ; MIN_W borne
+    // toujours le zoom avant.
+    var MIN_W = BASE.w * 0.45;
+    var MAX_W = BASE.w * 2.4;
     function apply(){ svg.setAttribute('viewBox', view.x + ' ' + view.y + ' ' + view.w + ' ' + view.h); }
     function zoom(factor){
-      var newW = Math.min(BASE.w, Math.max(BASE.w * 0.45, view.w * factor));
+      var newW = Math.min(MAX_W, Math.max(MIN_W, view.w * factor));
       var newH = newW * (BASE.h / BASE.w);
       var cx = view.x + view.w / 2, cy = view.y + view.h / 2;
       view = { x:cx - newW / 2, y:cy - newH / 2, w:newW, h:newH };
@@ -1581,10 +2054,52 @@
     else openVehicleModal(vehicleId);
   }
 
+  // ---------- date : valeur par défaut = date réelle du poste (jamais
+  // une chaîne écrite en dur), changement -> tout l'écran change de
+  // contexte temporel (règle absolue de cette étape). ----------
+  function initDate(){
+    var input = document.getElementById('f-date');
+    input.value = TODAY_ISO;
+    STATE.date = TODAY_ISO;
+    input.addEventListener('change', function(){
+      STATE.date = input.value || TODAY_ISO;
+      onFilterChange();
+      renderDateBanner();
+    });
+  }
+
+  // ---------- « Légende & règles » : menu compact fermé par défaut ----------
+  function initLegendToggle(){
+    var btn = document.getElementById('legend-toggle');
+    var panel = document.getElementById('legend-panel');
+    btn.addEventListener('click', function(){
+      var open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  // « Notes de conception » : même menu compact replié par défaut que
+  // « Légende & règles ».
+  function initFootnoteToggle(){
+    var btn = document.getElementById('footnote-toggle');
+    var panel = document.getElementById('footnote-panel');
+    btn.addEventListener('click', function(){
+      var open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  }
+
+  initDate();
   renderAll();
   renderRuleDemo();
   initMapClicks();
   initMapZoom();
+  initZoneFilters();
+  initVehiclePicker();
+  initLegendToggle();
+  initFootnoteToggle();
   initDeepLink();
 
 })();

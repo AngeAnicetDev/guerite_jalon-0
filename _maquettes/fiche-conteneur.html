@@ -1,115 +1,55 @@
 <title>Demo Logistics — Maquettes V0</title>
-<meta name="description" content="Jalon 0 — maquette Fiche conteneur : identité, historique des séjours et chronologie du séjour courant avec double preuve.">
+<meta name="description" content="Jalon 0 — maquette Fiche conteneur : identité, chronologie et associations (remorque, camion, chauffeur, mission) — même référentiel central que Live Tracking, Remorques et Dashboard.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+  /* Identité visuelle strictement identique à Live Tracking / Remorques /
+     Dashboard / File de validation — thème sombre par défaut. */
   :root{
-    --bg:#eef1ef;
-    --surface:#ffffff;
-    --surface-2:#e3e8e5;
-    --surface-3:#d8ded9;
-    --ink:#1a211f;
-    --ink-dim:#59635f;
-    --ink-faint:#8a938e;
-    --border:#c7cfca;
-    --border-strong:#aab3ad;
-    --accent:#b97a17;
-    --accent-ink:#5a3c0a;
-    --accent-soft:#f3e2c2;
+    --bg:#0a0e17; --surface:#121826; --surface-2:#1a2233; --surface-3:#232c40;
+    --ink:#eef1f7; --ink-dim:#9aa5bc; --ink-faint:#67718c;
+    --border:#232c40; --border-strong:#354061;
+    --accent:#e0a13c; --accent-ink:#1c1305; --accent-soft:#3a2c11;
 
-    --st-planifiee:#6b746f;
-    --st-planifiee-bg:#e4e7e5;
-    --st-detectee:#3a6ea8;
-    --st-detectee-bg:#dde8f3;
-    --st-rapprochee:#2f8f7a;
-    --st-rapprochee-bg:#dcefea;
-    --st-proposee:#7a5cb0;
-    --st-proposee-bg:#e9e2f5;
-    --st-validee:#3f8b52;
-    --st-validee-bg:#e0f0e3;
-    --st-anomalie:#c23b3b;
-    --st-anomalie-bg:#f8dede;
+    --st-planifiee:#93a0ba; --st-planifiee-bg:#1b2233;
+    --st-detectee:#b09aef; --st-detectee-bg:#241d3d;
+    --st-rapprochee:#5fa8f5; --st-rapprochee-bg:#16233d;
+    --st-proposee:#f2bf4c; --st-proposee-bg:#332711;
+    --st-validee:#52d489; --st-validee-bg:#123423;
+    --st-anomalie:#f37272; --st-anomalie-bg:#3a1717;
 
-    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
-    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
-    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
-
-    --radius-sm:7px;
-    --radius-md:10px;
-    --radius-lg:14px;
-  }
-
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#121613;
-      --surface:#181e1a;
-      --surface-2:#202722;
-      --surface-3:#2a322b;
-      --ink:#e8ece9;
-      --ink-dim:#a3aca6;
-      --ink-faint:#707972;
-      --border:#323b34;
-      --border-strong:#454f47;
-      --accent:#e0a13c;
-      --accent-ink:#1c1305;
-      --accent-soft:#3a2c11;
-
-      --st-planifiee:#a3aca6;
-      --st-planifiee-bg:#242b26;
-      --st-detectee:#7ba7d8;
-      --st-detectee-bg:#1c2a38;
-      --st-rapprochee:#6fc4ac;
-      --st-rapprochee-bg:#16302a;
-      --st-proposee:#b39cdd;
-      --st-proposee-bg:#291f3a;
-      --st-validee:#7bc492;
-      --st-validee-bg:#17301e;
-      --st-anomalie:#e58080;
-      --st-anomalie-bg:#3a1a1a;
-
-      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
-      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#121613;
-    --surface:#181e1a;
-    --surface-2:#202722;
-    --surface-3:#2a322b;
-    --ink:#e8ece9;
-    --ink-dim:#a3aca6;
-    --ink-faint:#707972;
-    --border:#323b34;
-    --border-strong:#454f47;
-    --accent:#e0a13c;
-    --accent-ink:#1c1305;
-    --accent-soft:#3a2c11;
-
-    --st-planifiee:#a3aca6;
-    --st-planifiee-bg:#242b26;
-    --st-detectee:#7ba7d8;
-    --st-detectee-bg:#1c2a38;
-    --st-rapprochee:#6fc4ac;
-    --st-rapprochee-bg:#16302a;
-    --st-proposee:#b39cdd;
-    --st-proposee-bg:#291f3a;
-    --st-validee:#7bc492;
-    --st-validee-bg:#17301e;
-    --st-anomalie:#e58080;
-    --st-anomalie-bg:#3a1a1a;
+    --zone-nord:#4ade80; --zone-nord-bg:rgba(74,222,128,0.12);
+    --zone-sud:#5fa8f5; --zone-sud-bg:rgba(95,168,245,0.12);
+    --zone-port:#f2a13c; --zone-port-bg:rgba(242,161,60,0.08);
 
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
     --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
     --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ef; --surface:#ffffff; --surface-2:#e3e8e5; --surface-3:#d8ded9;
+    --ink:#1a211f; --ink-dim:#59635f; --ink-faint:#8a938e;
+    --border:#c7cfca; --border-strong:#aab3ad;
+    --accent:#b97a17; --accent-ink:#5a3c0a; --accent-soft:#f3e2c2;
+    --st-planifiee:#6b746f; --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#7a5cb0; --st-detectee-bg:#e9e2f5;
+    --st-rapprochee:#3a6ea8; --st-rapprochee-bg:#dde8f3;
+    --st-proposee:#a8791b; --st-proposee-bg:#f3e6c8;
+    --st-validee:#3f8b52; --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b; --st-anomalie-bg:#f8dede;
+    --zone-nord:#3f8b52; --zone-nord-bg:#e0f0e3;
+    --zone-sud:#3a6ea8; --zone-sud-bg:#dde8f3;
+    --zone-port:#b97a17; --zone-port-bg:#f3e2c2;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
   }
 
   *{ box-sizing:border-box; }
@@ -118,36 +58,18 @@
     background:
       radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
       var(--bg);
-    color:var(--ink);
-    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    font-size:14px;
-    line-height:1.45;
-    -webkit-font-smoothing:antialiased;
+    color:var(--ink); font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased;
   }
   ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
   .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
-  a{ color:inherit; }
-  button{ font:inherit; }
+  a{ color:inherit; } button{ font:inherit; }
 
-  /* ---------- maquette banner ---------- */
-  .maquette-banner{
-    display:flex; align-items:center; justify-content:center; gap:9px;
-    background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
-    padding:8px 16px; border-bottom:1px solid var(--border);
-  }
-  .mb-tag{
-    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--accent-ink); background:var(--accent-soft);
-    border-radius:999px; padding:3px 9px;
-  }
+  .maquette-banner{ display:flex; align-items:center; justify-content:center; gap:9px; background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center; padding:8px 16px; border-bottom:1px solid var(--border); }
+  .mb-tag{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft); border-radius:999px; padding:3px 9px; }
 
-  /* ---------- shell header / tabs ---------- */
   .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
-  .brand-row{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto;
-  }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto; }
   .brand{ display:flex; align-items:center; gap:12px; }
   .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
   .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
@@ -156,40 +78,40 @@
   .brand-text{ display:flex; flex-direction:column; gap:1px; }
   .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
   .brand-sub{ color:var(--ink-faint); font-size:12px; }
-  .jalon-tag{
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
-    letter-spacing:.06em; text-transform:uppercase;
-    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:4px 11px;
-  }
-
+  .jalon-tag{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:4px 11px; }
   .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
-  .tab{
-    display:flex; align-items:center; gap:8px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
-    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none;
-  }
+  .tab{ display:flex; align-items:center; gap:8px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em; padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none; }
   a.tab:hover{ background:var(--surface-2); }
   .tab.done{ color:var(--ink-dim); }
   .tab.active{ color:var(--accent-ink); background:var(--accent-soft); cursor:default; }
-  .badge-soon{
-    font-family:"IBM Plex Sans", sans-serif; font-weight:600; font-size:9.5px;
-    letter-spacing:.04em; text-transform:uppercase;
-    color:var(--ink-faint); background:var(--surface-2); border:1px solid var(--border);
-    border-radius:999px; padding:2px 7px;
-  }
 
-  /* ---------- screen header ---------- */
   .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
   .breadcrumb{ font-size:12px; color:var(--ink-faint); margin:0 0 10px 0; }
   .breadcrumb .sep{ margin:0 6px; }
   .breadcrumb .current{ color:var(--ink-dim); }
   .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
   .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
-  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:76ch; margin-top:6px; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:80ch; margin-top:6px; }
 
   .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
   .spacer{ flex:1 1 auto; }
+
+  .controls-bar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:20px 0 20px 0; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md); }
+  .field{ display:flex; flex-direction:column; gap:4px; min-width:0; }
+  .field label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+  select.ctl-select{
+    -webkit-appearance:none; -moz-appearance:none; appearance:none;
+    font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
+    background-color:var(--surface); background-image:var(--chevron); background-repeat:no-repeat; background-position:right 12px center; background-size:10px 7px;
+    border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:7px 30px 7px 10px; min-height:34px; min-width:240px;
+  }
+  select.ctl-select:hover{ border-color:var(--ink-faint); }
+  input:focus-visible, button:focus-visible, select:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+
+  .sim-live-badge{ display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px; }
+  .sim-live-dot{ width:7px; height:7px; border-radius:50%; background:var(--st-validee); flex:none; animation:sim-live-pulse 2s ease-in-out infinite; }
+  @keyframes sim-live-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+  @media (prefers-reduced-motion: reduce){ .sim-live-dot{ animation:none; } }
 
   .stat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
   .chip{ display:flex; align-items:baseline; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 13px 6px 11px; }
@@ -197,32 +119,27 @@
   .chip .lbl{ font-size:11.5px; color:var(--ink-dim); }
   .chip.warn{ background:var(--st-anomalie-bg); border-color:transparent; }
   .chip.warn .n, .chip.warn .lbl{ color:var(--st-anomalie); }
+  .chip.ok{ background:var(--st-validee-bg); border-color:transparent; }
+  .chip.ok .n, .chip.ok .lbl{ color:var(--st-validee); }
 
-  /* ---------- identity bar ---------- */
-  .identity-bar{
-    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
-    margin:20px 0 20px 0; padding:16px 18px;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
-  }
+  .identity-bar{ display:flex; align-items:center; gap:24px; flex-wrap:wrap; margin:20px 0 20px 0; padding:16px 18px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md); }
   .id-field{ display:flex; flex-direction:column; gap:4px; }
   .id-label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
   .id-value{ font-size:13.5px; font-weight:600; color:var(--ink); }
   .id-value.big{ font-size:18px; }
-  .iso-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--st-validee); margin-top:2px; }
-  .iso-badge .glyph{ width:13px; height:13px; border-radius:50%; background:var(--st-validee-bg); display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; }
+  .id-value.dim{ color:var(--ink-faint); font-style:italic; font-weight:500; font-size:12.5px; }
+  .iso-badge{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; margin-top:2px; }
+  .iso-badge.good{ color:var(--st-validee); }
+  .iso-badge.bad{ color:var(--st-proposee); }
+  .iso-badge .glyph{ width:13px; height:13px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:8px; font-weight:700; }
+  .iso-badge.good .glyph{ background:var(--st-validee-bg); }
+  .iso-badge.bad .glyph{ background:var(--st-proposee-bg); }
 
-  .charge-chip{
-    display:inline-flex; align-items:center; font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px;
-    letter-spacing:.04em; text-transform:uppercase; padding:4px 11px; border-radius:999px;
-    background:var(--surface-2); color:var(--ink-dim); border:1px solid var(--border-strong);
-  }
+  .charge-chip{ display:inline-flex; align-items:center; font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; padding:4px 11px; border-radius:999px; background:var(--surface-2); color:var(--ink-dim); border:1px solid var(--border-strong); }
   .charge-chip.plein{ background:var(--accent-soft); color:var(--accent-ink); border-color:transparent; }
+  .charge-chip.vide{ background:var(--st-rapprochee-bg); color:var(--st-rapprochee); border-color:transparent; }
 
-  .statut-chip{
-    display:inline-flex; align-items:center; gap:6px;
-    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
-    letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:4px 10px; white-space:nowrap;
-  }
+  .statut-chip{ display:inline-flex; align-items:center; gap:6px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:4px 10px; white-space:nowrap; }
   .statut-chip .dot{ width:6px; height:6px; border-radius:50%; flex:none; }
   .statut-chip.st-planifiee{ background:var(--st-planifiee-bg); color:var(--st-planifiee); }
   .statut-chip.st-planifiee .dot{ background:var(--st-planifiee); }
@@ -237,29 +154,22 @@
   .statut-chip.st-anomalie{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
   .statut-chip.st-anomalie .dot{ background:var(--st-anomalie); }
 
-  /* ---------- layout ---------- */
   .fc-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start; }
   @media (max-width:980px){ .fc-grid{ grid-template-columns:1fr; } }
   .col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 
   .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); }
-  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; flex-wrap:wrap; }
   .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
   .panel-sub{ font-size:11px; color:var(--ink-faint); }
   .panel-lede{ font-size:12.5px; color:var(--ink-dim); margin:8px 18px 0 18px; max-width:78ch; }
   .panel-body{ padding:14px 18px 18px 18px; }
 
-  /* ---------- timeline ---------- */
   .timeline{ position:relative; padding-left:26px; }
   .timeline::before{ content:""; position:absolute; left:9px; top:8px; bottom:8px; width:2px; background:var(--border); }
   .timeline-step{ position:relative; padding-bottom:20px; }
   .timeline-step:last-child{ padding-bottom:0; }
-  .timeline-dot{
-    position:absolute; left:-26px; top:0; width:20px; height:20px; border-radius:50%;
-    background:var(--surface); border:2px solid var(--border-strong);
-    display:flex; align-items:center; justify-content:center;
-    font-family:"IBM Plex Mono", monospace; font-size:9px; font-weight:700; color:var(--ink-faint);
-  }
+  .timeline-dot{ position:absolute; left:-26px; top:0; width:20px; height:20px; border-radius:50%; background:var(--surface); border:2px solid var(--border-strong); display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono", monospace; font-size:9px; font-weight:700; color:var(--ink-faint); }
   .timeline-dot.st-anomalie{ border-color:var(--st-anomalie); color:var(--st-anomalie); background:var(--st-anomalie-bg); }
   .timeline-step-head{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; margin-bottom:9px; }
   .timeline-date{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; color:var(--ink-dim); }
@@ -276,31 +186,30 @@
   .proof-item .val{ font-size:12.5px; font-weight:600; margin:4px 0 3px 0; }
   .proof-item .meta{ font-size:11px; color:var(--ink-dim); }
 
-  /* ---------- historique des séjours ---------- */
+  .td-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; }
+  .td-row dt{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0; }
+  .td-row dd{ margin:2px 0 0 0; font-size:12.5px; }
+  .assoc-chain{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:4px; }
+  .assoc-node{ display:inline-flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px; font-size:12px; text-decoration:none; color:var(--ink); }
+  .assoc-node:hover{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-ink); }
+  .assoc-node b{ font-weight:700; }
+  .assoc-arrow{ color:var(--ink-faint); }
+
   .sejour-list{ display:flex; flex-direction:column; gap:10px; }
   .sejour-item{ padding:11px 13px; border-radius:var(--radius-md); background:var(--surface-2); border:1px solid var(--border); }
-  .sejour-item.is-current{ background:var(--st-anomalie-bg); border-color:color-mix(in srgb, var(--st-anomalie) 35%, var(--border)); }
+  .sejour-item.is-current{ background:color-mix(in srgb, var(--st-rapprochee) 12%, var(--surface-2)); border-color:color-mix(in srgb, var(--st-rapprochee) 35%, var(--border)); }
   .sejour-dates{ font-family:"IBM Plex Mono", monospace; font-size:11.5px; color:var(--ink-dim); }
   .sejour-client{ font-weight:600; font-size:13px; margin:3px 0 6px 0; }
+  .sejour-limit{ font-size:11px; color:var(--ink-faint); font-style:italic; margin-top:8px; }
 
-  /* ---------- alerte active ---------- */
   .alert-card{ display:flex; gap:10px; padding:12px 13px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-2); }
   .alert-card.sev-critical{ background:var(--st-anomalie-bg); border-color:color-mix(in srgb, var(--st-anomalie) 40%, var(--border)); }
-  .alert-badge{
-    flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:11px; margin-top:1px;
-    background:var(--surface); color:var(--st-anomalie);
-  }
+  .alert-badge{ flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:11px; margin-top:1px; background:var(--surface); color:var(--st-anomalie); }
   .alert-title{ font-weight:600; font-size:12.5px; margin:0 0 2px 0; }
   .alert-desc{ font-size:11.5px; color:var(--ink-dim); margin:0; }
   .alert-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:6px; font-style:italic; }
 
-  /* ---------- legend & footnote ---------- */
-  .legend{
-    margin-top:20px; display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;
-    padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md);
-    box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim);
-  }
+  .legend{ margin-top:20px; display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap; padding:14px 16px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); font-size:12px; color:var(--ink-dim); }
   .legend-group{ display:flex; flex-direction:column; gap:8px; min-width:0; }
   .legend-row{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
   .legend-title{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); }
@@ -308,22 +217,18 @@
   .alert-ref-list li{ list-style:none; }
   .alert-ref-list b{ color:var(--ink); font-weight:600; }
 
-  .footnote{
-    margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
-    color:var(--ink-dim); font-size:12.5px; max-width:92ch;
-  }
-  .footnote .fn-badge{
-    flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
-  }
+  .footnote{ margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md); color:var(--ink-dim); font-size:12.5px; max-width:96ch; }
+  .footnote .fn-badge{ flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px; }
   .footnote b{ color:var(--ink); }
   .footnote p{ margin:0 0 8px 0; }
   .footnote p:last-child{ margin-bottom:0; }
 
+  .empty-state{ padding:40px 20px; text-align:center; color:var(--ink-faint); font-style:italic; }
+
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
-<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — données fictives, wireframe à valider avant tout développement.</div>
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — prototype de démonstration, simulateur local d'API Trace In (données fictives, aucune connexion réelle).</div>
 
 <header class="shell-header">
   <div class="brand-row">
@@ -342,215 +247,209 @@
     <a class="tab done" href="file-validation.html">File de validation</a>
     <a class="tab done" href="live-tracking.html">Live tracking</a>
     <div class="tab active" aria-current="page">Fiche conteneur</div>
-    <a class="tab" href="rapport-shift.html">Rapport de shift</a>
-    <a class="tab" href="parametres.html">Paramètres</a>
+    <a class="tab done" href="rapport-shift.html">Rapport de shift</a>
+    <a class="tab done" href="parametres.html">Paramètres</a>
   </nav>
 </header>
 
 <main class="screen">
-  <p class="breadcrumb">Conteneurs <span class="sep">›</span> <span class="current">MSCU 445566-1</span></p>
+  <p class="breadcrumb">Conteneurs <span class="sep">›</span> <span class="current" id="bc-current">—</span></p>
 
   <div class="screen-title-row">
     <div>
       <h1 class="screen-title">Fiche conteneur</h1>
-      <p class="screen-caption">Identité, historique des séjours et chronologie complète du séjour courant — chaque événement avec sa source, sa mission porteuse et son client. <strong>Couche 2 (traitement) + couche 3 (restitution)</strong> : le conteneur est une donnée interprétée, référencée à ses événements sources ; cet écran affiche, il ne recalcule rien.</p>
+      <p class="screen-caption">Identité, chronologie et associations (remorque, camion, chauffeur, mission) — <strong>même référentiel central</strong> que Live Tracking, Remorques et Dashboard (<code>_shared/sim-data.js</code>). <strong>Couche 2 (traitement) + couche 3 (restitution)</strong> : le conteneur est une donnée interprétée, référencée à ses événements sources ; cet écran affiche, il ne recalcule rien.</p>
     </div>
   </div>
 
-  <div class="identity-bar">
-    <div class="id-field">
-      <span class="id-label">Numéro ISO 6346</span>
-      <span class="id-value big num">MSCU 445566-1</span>
-      <span class="iso-badge"><span class="glyph">✓</span>Chiffre de contrôle validé</span>
-    </div>
-    <div class="v-divider" style="height:44px;"></div>
-    <div class="id-field">
-      <span class="id-label">Armateur</span>
-      <span class="id-value">MSC</span>
-    </div>
-    <div class="id-field">
-      <span class="id-label">Type</span>
-      <span class="id-value">20' · Dry</span>
-    </div>
-    <div class="id-field">
-      <span class="id-label">État de charge</span>
-      <span class="charge-chip plein">Plein</span>
-    </div>
-    <div class="id-field">
-      <span class="id-label">Statut</span>
-      <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
-    </div>
-    <div class="id-field">
-      <span class="id-label">Dernier statut cohérent</span>
-      <span class="id-value">En stock — Site Sud</span>
-    </div>
-    <div class="id-field">
-      <span class="id-label">Âge du séjour en cours</span>
-      <span class="id-value num">5 jours (depuis 20/08/2026)</span>
+  <div class="controls-bar">
+    <div class="field">
+      <label for="f-container">Conteneur</label>
+      <select class="ctl-select" id="f-container"></select>
     </div>
     <div class="spacer"></div>
-    <div class="stat-chips">
-      <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie active</span></div>
-    </div>
+    <span class="sim-live-badge" title="Aperçu figé du simulateur local, pas un flux temps réel"><span class="sim-live-dot"></span>Simulateur local · aperçu 10:42</span>
   </div>
 
-  <div class="fc-grid">
-
-    <div class="col">
-
-      <!-- Chronologie -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Chronologie du séjour courant</h2>
-          <span class="panel-sub">séjour depuis le 20/08/2026</span>
-        </div>
-        <p class="panel-lede">Règle de double preuve : chaque étape affiche ensemble la dernière trace guérite et la dernière trace mission/GPS, datées et sourcées, jamais l'une sans l'autre.</p>
-        <div class="panel-body">
-          <div class="timeline">
-
-            <div class="timeline-step">
-              <span class="timeline-dot">1</span>
-              <div class="timeline-step-head">
-                <span class="timeline-date">20/08/2026 · 14:20</span>
-                <span class="timeline-title">Enlevé port</span>
-              </div>
-              <div class="proof-list">
-                <div class="proof-item">
-                  <div class="src">Trace guérite</div>
-                  <div class="val">Sortie Port d'Abidjan</div>
-                  <div class="meta">Agent guérite · chrono camion TR-032 · mission Transfert</div>
-                </div>
-                <div class="proof-item">
-                  <div class="src">Trace mission / GPS</div>
-                  <div class="val">Sortie géofence Port d'Abidjan</div>
-                  <div class="meta">Télématique camion TR-032 · 14:22</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="timeline-step">
-              <span class="timeline-dot">2</span>
-              <div class="timeline-step-head">
-                <span class="timeline-date">20/08/2026 · 15:05</span>
-                <span class="timeline-title">En stock — Site Sud</span>
-              </div>
-              <div class="proof-list">
-                <div class="proof-item">
-                  <div class="src">Trace guérite</div>
-                  <div class="val">Entrée Site Sud</div>
-                  <div class="meta">Agent guérite Sud, ligne #1032</div>
-                </div>
-                <div class="proof-item">
-                  <div class="src">Trace mission / GPS</div>
-                  <div class="val">Entrée géofence Site Sud</div>
-                  <div class="meta">Télématique camion TR-032 · 15:07</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="timeline-step is-anomalie">
-              <span class="timeline-dot st-anomalie">!</span>
-              <div class="timeline-step-head">
-                <span class="timeline-date">25/08/2026 · 09:12</span>
-                <span class="timeline-title is-anomalie">Incohérence de position</span>
-              </div>
-              <div class="proof-list">
-                <div class="proof-item">
-                  <div class="src">Trace guérite</div>
-                  <div class="val">Entrée Site Nord</div>
-                  <div class="meta">Agent guérite Nord, ligne #781</div>
-                </div>
-                <div class="proof-item gap">
-                  <div class="src">Trace mission / GPS</div>
-                  <div class="val">Aucune sortie de la géofence Sud tracée</div>
-                  <div class="meta">Depuis l'étape 2 (15:07)</div>
-                </div>
-              </div>
-              <p class="timeline-note">Un conteneur ne peut pas être à deux endroits : l'événement est incompatible avec le dernier état connu (en stock Sud, sans sortie tracée). Aucune correction destructive — l'événement s'ajoute ; le dernier statut cohérent (Site Sud) reste affiché jusqu'à résolution par l'agent tracking.</p>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-    </div>
-
-    <div class="col">
-
-      <!-- Anomalie active -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Anomalie active</h2>
-        </div>
-        <div class="panel-body">
-          <div class="alert-card sev-critical">
-            <span class="alert-badge">⚠</span>
-            <div>
-              <p class="alert-title">Incohérence de position</p>
-              <p class="alert-desc">Entrée Site Nord détectée sans sortie tracée du Site Sud, dernier stock connu.</p>
-              <p class="alert-meta">détectée 25/08 09:12 · se résout par la résolution de l'agent tracking (nouvel événement de correction), jamais par écrasement</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Historique des séjours -->
-      <section class="panel">
-        <div class="panel-head">
-          <h2 class="panel-title">Historique des séjours</h2>
-          <span class="panel-sub">2 séjours</span>
-        </div>
-        <div class="panel-body">
-          <p class="panel-lede" style="margin:0 0 12px 0;">Le même numéro peut revenir des mois plus tard pour un autre client — chaque passage est un séjour distinct rattaché à cette identité.</p>
-          <div class="sejour-list">
-            <div class="sejour-item is-current">
-              <div class="sejour-dates num">Depuis le 20/08/2026</div>
-              <div class="sejour-client">SIVAC — Site Nord</div>
-              <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
-            </div>
-            <div class="sejour-item">
-              <div class="sejour-dates num">02/07/2026 → 06/07/2026</div>
-              <div class="sejour-client">Unilever CI</div>
-              <span class="statut-chip st-validee"><span class="dot"></span>Clos</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </div>
-
-  </div>
-
-  <div class="legend">
-    <div class="legend-group">
-      <span class="legend-title">Statuts de séjour</span>
-      <div class="legend-row">
-        <span class="statut-chip st-planifiee"><span class="dot"></span>Annoncé</span>
-        <span class="statut-chip st-detectee"><span class="dot"></span>Enlevé port</span>
-        <span class="statut-chip st-rapprochee"><span class="dot"></span>En transport</span>
-        <span class="statut-chip st-proposee"><span class="dot"></span>En stock site</span>
-        <span class="statut-chip st-validee"><span class="dot"></span>Livré client / Clos</span>
-        <span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>
-      </div>
-    </div>
-    <div class="v-divider" style="height:auto; align-self:stretch;"></div>
-    <div class="legend-group">
-      <span class="legend-title">Les 5 alertes conteneur (seuils de départ, paramétrables)</span>
-      <ul class="alert-ref-list">
-        <li><b>Séjour long sur site</b> — en stock depuis > N jours (seuil par armateur)</li>
-        <li><b>Conteneur « perdu »</b> — aucune trace depuis > N jours, séjour non clos</li>
-        <li><b>Incohérence de position</b> — événement incompatible avec le dernier état connu</li>
-        <li><b>Numéro à vérifier</b> — chiffre de contrôle ISO invalide ou divergence agent/caméra</li>
-        <li><b>Vide non restitué</b> — récupéré vide ou vide en stock depuis > N jours</li>
-      </ul>
-    </div>
-  </div>
+  <div id="fc-content"></div>
 
   <div class="footnote">
     <span class="fn-badge">i</span>
     <div>
-      <p><b>Notes de conception (jalon 0)</b> — Le conteneur est une donnée interprétée (couche 2), référencée à ses événements sources (scan guérite, entrée/sortie de géofence de la mission porteuse) ; les écrans qui le montrent sont de la restitution (couche 3) et ne calculent rien. Aucun événement brut n'est modifié ni supprimé : une correction — comme la résolution de l'anomalie ci-dessus — est un nouvel événement qui s'ajoute, jamais un écrasement.</p>
-      <p>Hors périmètre explicite de ce module (cahier des charges Conteneurs §8) : facturation et refacturation detention/demurrage, gestion technique des reefers (température, branchement), litiges d'avarie — seules les réserves EIR sont conservées en pièce jointe. Aucun seuil d'alerte n'est en dur ; tous sont des paramètres éditables dans l'écran Paramètres (à venir).</p>
+      <p><b>Notes de conception (jalon 0)</b> — Cet écran ne définit aucune donnée propre : il liste les véhicules de <code>SIM.vehicles</code> qui portent un <code>container</code> (2 dans le référentiel simulé actuel) et affiche leurs champs déjà utilisés par Live Tracking, Remorques et File de validation — jamais une seconde association inventée. Le chiffre de contrôle ISO 6346 est <b>calculé</b> (algorithme normalisé, pondération 2ⁿ, modulo 11) à partir du numéro affiché, pas une valeur écrite en dur.</p>
+      <p><b>Cycle de vie du séjour (cahier des charges Conteneurs §3)</b> — ANNONCÉ → ENLEVÉ_PORT → EN_TRANSPORT → EN_STOCK_SITE → LIVRÉ_CLIENT → (RÉCUPÉRÉ_VIDE →) RESTITUÉ_PORT → CLOS n'est <b>pas encore modélisé</b> dans ce référentiel simulé : SIM ne conserve qu'un statut de mission (Détectée/Rapprochée/Proposée/Validée/Anomalie), pas un statut de séjour avec dates d'entrée en stock. Le champ « Statut » ci-dessous est donc explicitement celui de la <b>mission porteuse</b>, jamais renommé en statut de séjour pour « faire plus complet ».</p>
+      <p><b>Hors périmètre explicite de ce module (cahier des charges Conteneurs §8)</b> — facturation et refacturation detention/demurrage, gestion technique des reefers, litiges d'avarie (seules les réserves EIR seraient conservées en pièce jointe). Aucun seuil d'alerte n'est en dur : les 5 alertes conteneur listées ci-dessous sont des paramètres à éditer dans l'écran Paramètres.</p>
     </div>
   </div>
 </main>
+
+<script src="_shared/sim-data.js"></script>
+<script>
+(function(){
+
+  // ============================================================
+  // Fiche conteneur — AUCUNE donnée propre. Chaque conteneur vient de
+  // SIM.vehicles (containersFromVehicles(), _shared/sim-data.js) : seuls
+  // les véhicules qui portent un `container` dans le référentiel actif
+  // sont affichés ici. Pas de conteneur créé pour « remplir » la fiche.
+  // ============================================================
+
+  function containers(){ return containersFromVehicles(); }
+
+  function armateurLabel(code){
+    var a = armateurFromCode(code);
+    return a || ('Non identifié (préfixe ' + (code || '').slice(0,4).toUpperCase() + ')');
+  }
+
+  function isoBadgeHtml(code){
+    var chk = iso6346Check(code);
+    if (!chk.applicable) return '<span class="iso-badge bad"><span class="glyph">?</span>Format non standard — chiffre de contrôle non calculable</span>';
+    return chk.valid
+      ? '<span class="iso-badge good"><span class="glyph">✓</span>Chiffre de contrôle validé</span>'
+      : '<span class="iso-badge bad"><span class="glyph">!</span>Chiffre de contrôle attendu ' + chk.expected + ', trouvé ' + chk.given + ' — à vérifier</span>';
+  }
+
+  function statusDotClass(v){ return 'st-' + v.statut; }
+
+  function renderSelector(){
+    var list = containers();
+    var sel = document.getElementById('f-container');
+    sel.innerHTML = list.map(function(c){ return '<option value="' + esc(c.code) + '">' + esc(c.code) + ' · ' + esc(displayId(c.vehicle)) + '</option>'; }).join('');
+    sel.addEventListener('change', function(){
+      renderContainer(sel.value);
+      try { history.replaceState(null, '', '?code=' + encodeURIComponent(sel.value)); } catch (e) { /* file:// origin may restrict replaceState — non-essential (URL bookmarking only) */ }
+    });
+  }
+
+  function timelineStepIcon(entry, idx){ return entry.alert ? '!' : String(idx + 1); }
+
+  function renderTimeline(v){
+    var entries = vehicleHistory(v);
+    if (!entries.length) return '<p style="color:var(--ink-faint);font-style:italic;">Aucun événement horodaté connu pour ce véhicule dans le référentiel simulé.</p>';
+    return '<div class="timeline">' + entries.map(function(e, idx){
+      var stepCls = 'timeline-step' + (e.alert ? ' is-anomalie' : '');
+      var dotCls = 'timeline-dot' + (e.alert ? ' st-anomalie' : '');
+      return '<div class="' + stepCls + '">' +
+        '<span class="' + dotCls + '">' + timelineStepIcon(e, idx) + '</span>' +
+        '<div class="timeline-step-head"><span class="timeline-date num">' + esc(e.time) + '</span><span class="timeline-title' + (e.alert ? ' is-anomalie' : '') + '">' + esc(e.label) + '</span></div>' +
+        '<div class="proof-list"><div class="proof-item' + (e.alert ? '' : '') + '"><div class="src">Source</div><div class="val">' + (e.alert ? 'Alerte du référentiel' : (e.label.indexOf('géofence') !== -1 ? 'Géofence (GPS)' : 'Mission (guérite / planning)')) + '</div><div class="meta">Véhicule ' + esc(displayId(v)) + ' · dérivé de SIM, pas un horodatage recréé</div></div></div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  function renderContainer(code){
+    var list = containers();
+    var c = list.filter(function(cc){ return cc.code === code; })[0] || list[0];
+    var box = document.getElementById('fc-content');
+    if (!c){
+      box.innerHTML = '<div class="panel"><div class="empty-state">Aucun conteneur dans le référentiel simulé actuel (aucun véhicule de <code>SIM.vehicles</code> ne porte de champ <code>container</code>).</div></div>';
+      document.getElementById('bc-current').textContent = '—';
+      return;
+    }
+    var v = c.vehicle;
+    document.getElementById('bc-current').textContent = c.code;
+    document.getElementById('f-container').value = c.code;
+
+    var vehicleAlerts = alertsForVehicle(v.id);
+    var isAnomalie = v.statut === 'anomalie';
+
+    var identityBar =
+      '<div class="identity-bar">' +
+        '<div class="id-field"><span class="id-label">Numéro ISO 6346</span><span class="id-value big num">' + esc(c.code) + '</span>' + isoBadgeHtml(c.code) + '</div>' +
+        '<div class="v-divider" style="height:44px;"></div>' +
+        '<div class="id-field"><span class="id-label">Armateur (déduit du préfixe)</span><span class="id-value">' + esc(armateurLabel(c.code)) + '</span></div>' +
+        '<div class="id-field"><span class="id-label">Remorque associée</span><span class="id-value">' + (v.trailer_type ? esc(v.trailer_type) : '<span class="id-value dim">non renseignée</span>') + '</span></div>' +
+        '<div class="id-field"><span class="id-label">État de charge</span>' + (c.chargeState ? '<span class="charge-chip ' + c.chargeState.toLowerCase() + '">' + esc(c.chargeState) + '</span>' : '<span class="id-value dim">Non disponible (non déclaré)</span>') + '</div>' +
+        '<div class="id-field"><span class="id-label">Statut de la mission associée</span><span class="statut-chip ' + statusDotClass(v) + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
+        '<div class="id-field"><span class="id-label">Localisation actuelle</span><span class="id-value">' + derivedPosition(v) + '</span></div>' +
+        '<div class="id-field"><span class="id-label">Âge du séjour en cours</span><span class="id-value dim">Non disponible (date d\'entrée en stock non modélisée)</span></div>' +
+        '<div class="spacer"></div>' +
+        '<div class="stat-chips">' + (isAnomalie ? '<div class="chip warn"><span class="n num">' + (1 + vehicleAlerts.filter(function(a){return a.types.indexOf('identite_divergente')===-1;}).length) + '</span><span class="lbl">anomalie active</span></div>' : '<div class="chip ok"><span class="n num">0</span><span class="lbl">anomalie active</span></div>') + '</div>' +
+      '</div>';
+
+    var chronoPanel =
+      '<section class="panel">' +
+        '<div class="panel-head"><h2 class="panel-title">Chronologie du séjour courant</h2><span class="panel-sub">' + esc(vehicleHistory(v).length) + ' événement(s) connus</span></div>' +
+        '<p class="panel-lede">Frise construite depuis les champs déjà présents dans le référentiel (heure de mission, entrées/sorties de géofence, alertes) — aucun événement recréé pour l\'occasion.</p>' +
+        '<div class="panel-body">' + renderTimeline(v) + '</div>' +
+      '</section>';
+
+    var anomalyPanel = (isAnomalie || vehicleAlerts.length)
+      ? '<section class="panel"><div class="panel-head"><h2 class="panel-title">Anomalie' + (vehicleAlerts.length > 1 ? 's' : '') + ' active' + (vehicleAlerts.length > 1 ? 's' : '') + '</h2></div><div class="panel-body">' +
+          (vehicleAlerts.length ? vehicleAlerts.map(function(a){
+            return '<div class="alert-card sev-critical" style="margin-bottom:8px;"><span class="alert-badge">⚠</span><div><p class="alert-title">' + esc(a.title) + '</p><p class="alert-desc">' + esc(a.description) + '</p><p class="alert-meta">' + esc(a.meta || '') + (a.resolveNote ? ' · ' + esc(a.resolveNote) : '') + '</p></div></div>';
+          }).join('') : '<div class="alert-card sev-critical"><span class="alert-badge">⚠</span><div><p class="alert-title">' + esc(v.note || 'Anomalie active') + '</p></div></div>') +
+        '</div></section>'
+      : '<section class="panel"><div class="panel-head"><h2 class="panel-title">Anomalies</h2></div><div class="panel-body"><span style="color:var(--ink-faint);">✓ Aucune anomalie associée à ce conteneur actuellement.</span></div></section>';
+
+    var proofsPanel =
+      '<section class="panel"><div class="panel-head"><h2 class="panel-title">Preuves</h2><span class="panel-sub">double preuve</span></div><div class="panel-body">' +
+        '<div class="proof-list">' +
+          '<div class="proof-item"><div class="src">Guérite</div><div class="val">' + srcLabel(v.sources.guerite) + '</div><div class="meta">Dernière position connue ' + esc(lastKnownTime(v)) + '</div></div>' +
+          '<div class="proof-item"><div class="src">Mission / GPS</div><div class="val">' + derivedPosition(v) + '</div><div class="meta">Tag iButton : ' + srcLabel(v.sources.tag) + '</div></div>' +
+        '</div>' +
+        (c.qrToChange ? '<p style="margin:12px 0 0 0;"><span class="charge-chip" style="background:var(--st-proposee-bg);color:var(--st-proposee);border-color:transparent;">QR code à changer</span></p>' : '') +
+      '</div></section>';
+
+    var assocPanel =
+      '<section class="panel"><div class="panel-head"><h2 class="panel-title">Associations</h2><span class="panel-sub">mêmes données que les autres écrans</span></div><div class="panel-body">' +
+        '<p class="panel-lede" style="margin:0 0 10px 0;">Conteneur → Remorque → Camion → Chauffeur → Mission : la même chaîne, dans le même ordre, que File de validation et Remorques.</p>' +
+        '<div class="assoc-chain">' +
+          '<span class="assoc-node"><b>' + esc(c.code) + '</b></span><span class="assoc-arrow">→</span>' +
+          (v.trailer_id ? '<a class="assoc-node" href="remorques.html?rq=' + encodeURIComponent(v.trailer_id) + '">' + esc(v.trailer_id) + '</a>' : '<span class="assoc-node" style="opacity:.5;">remorque —</span>') + '<span class="assoc-arrow">→</span>' +
+          '<a class="assoc-node" href="live-tracking.html?vehicle=' + encodeURIComponent(v.id) + '">' + esc(displayId(v)) + '</a><span class="assoc-arrow">→</span>' +
+          '<span class="assoc-node">' + esc(v.driver.contested ? 'Identité contestée' : v.driver.name) + '</span><span class="assoc-arrow">→</span>' +
+          '<a class="assoc-node" href="file-validation.html?vehicle=' + encodeURIComponent(v.id) + '">' + esc(v.mission.type || 'Mission') + '</a>' +
+        '</div>' +
+        '<dl class="td-grid" style="margin-top:16px;">' +
+          '<div class="td-row"><dt>Type de mission</dt><dd>' + (v.mission.type ? esc(v.mission.type) : '<span style="color:var(--ink-faint);font-style:italic;">non défini</span>') + '</dd></div>' +
+          '<div class="td-row"><dt>Client</dt><dd>' + (v.mission.client ? esc(v.mission.client) : '<span style="color:var(--ink-faint);font-style:italic;">— (sans client)</span>') + '</dd></div>' +
+          '<div class="td-row"><dt>Trajet</dt><dd>' + (v.mission.from && v.mission.to ? esc(v.mission.from) + ' → ' + esc(v.mission.to) : '<span style="color:var(--ink-faint);">—</span>') + '</dd></div>' +
+          '<div class="td-row"><dt>Guérite / site</dt><dd>' + esc(v.site || '—') + '</dd></div>' +
+        '</dl>' +
+      '</div></section>';
+
+    var sejourPanel =
+      '<section class="panel"><div class="panel-head"><h2 class="panel-title">Historique des séjours</h2><span class="panel-sub">1 séjour connu</span></div><div class="panel-body">' +
+        '<div class="sejour-list">' +
+          '<div class="sejour-item is-current">' +
+            '<div class="sejour-dates num">Séjour en cours</div>' +
+            '<div class="sejour-client">' + (v.mission.client ? esc(v.mission.client) : esc(v.site || '')) + '</div>' +
+            '<span class="statut-chip ' + statusDotClass(v) + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<p class="sejour-limit">Aucun séjour antérieur enregistré : ce référentiel simulé ne conserve qu\'un instantané figé du shift en cours (10:42), pas un historique multi-passages. Un conteneur qui revient des mois plus tard (cahier des charges §1) formera un nouveau séjour distinct le jour où l\'historique sera modélisé — aucun second séjour n\'est inventé ici.</p>' +
+      '</div></section>';
+
+    document.getElementById('fc-content').innerHTML =
+      identityBar +
+      '<div class="fc-grid"><div class="col">' + chronoPanel + assocPanel + '</div><div class="col">' + anomalyPanel + proofsPanel + sejourPanel + '</div></div>' +
+      '<div class="legend">' +
+        '<div class="legend-group"><span class="legend-title">Statuts de mission (référentiel simulé)</span><div class="legend-row">' +
+          '<span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span>' +
+          '<span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span>' +
+          '<span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span>' +
+          '<span class="statut-chip st-validee"><span class="dot"></span>Validée</span>' +
+          '<span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span>' +
+        '</div></div>' +
+        '<div class="v-divider" style="height:auto; align-self:stretch;"></div>' +
+        '<div class="legend-group"><span class="legend-title">Les 5 alertes conteneur (seuils à paramétrer, aucun n\'est en dur)</span>' +
+          '<ul class="alert-ref-list">' +
+            '<li><b>Séjour long sur site</b> — en stock depuis > N jours (seuil par armateur)</li>' +
+            '<li><b>Conteneur « perdu »</b> — aucune trace depuis > N jours, séjour non clos</li>' +
+            '<li><b>Incohérence de position</b> — événement incompatible avec le dernier état connu</li>' +
+            '<li><b>Numéro à vérifier</b> — chiffre de contrôle ISO invalide ou divergence agent/caméra</li>' +
+            '<li><b>Vide non restitué</b> — récupéré vide ou vide en stock depuis > N jours</li>' +
+          '</ul>' +
+        '</div>' +
+      '</div>';
+  }
+
+  renderSelector();
+  var initialCode = new URLSearchParams(location.search).get('code');
+  var initial = containers();
+  var startCode = (initialCode && initial.some(function(c){ return c.code === initialCode; })) ? initialCode : (initial[0] && initial[0].code);
+  renderContainer(startCode);
+
+})();
+</script>
