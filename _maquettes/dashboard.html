@@ -1,0 +1,856 @@
+<title>Demo Logistics — Maquettes V0</title>
+<meta name="description" content="Jalon 0 — maquette Dashboard : vue synthétique de la performance opérationnelle, calculée depuis le référentiel central partagé avec Live Tracking et Remorques.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* Identité visuelle strictement identique à Live Tracking / Remorques. */
+  :root{
+    --bg:#0a0e17;
+    --surface:#121826;
+    --surface-2:#1a2233;
+    --surface-3:#232c40;
+    --ink:#eef1f7;
+    --ink-dim:#9aa5bc;
+    --ink-faint:#67718c;
+    --border:#232c40;
+    --border-strong:#354061;
+    --accent:#e0a13c;
+    --accent-ink:#1c1305;
+    --accent-soft:#3a2c11;
+
+    --st-planifiee:#93a0ba;
+    --st-planifiee-bg:#1b2233;
+    --st-detectee:#b09aef;
+    --st-detectee-bg:#241d3d;
+    --st-rapprochee:#5fa8f5;
+    --st-rapprochee-bg:#16233d;
+    --st-proposee:#f2bf4c;
+    --st-proposee-bg:#332711;
+    --st-validee:#52d489;
+    --st-validee-bg:#123423;
+    --st-anomalie:#f37272;
+    --st-anomalie-bg:#3a1717;
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+    --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+
+    --radius-sm:7px;
+    --radius-md:10px;
+    --radius-lg:14px;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1ef; --surface:#ffffff; --surface-2:#e3e8e5; --surface-3:#d8ded9;
+    --ink:#1a211f; --ink-dim:#59635f; --ink-faint:#8a938e;
+    --border:#c7cfca; --border-strong:#aab3ad;
+    --accent:#b97a17; --accent-ink:#5a3c0a; --accent-soft:#f3e2c2;
+    --st-planifiee:#6b746f; --st-planifiee-bg:#e4e7e5;
+    --st-detectee:#7a5cb0; --st-detectee-bg:#e9e2f5;
+    --st-rapprochee:#3a6ea8; --st-rapprochee-bg:#dde8f3;
+    --st-proposee:#a8791b; --st-proposee-bg:#f3e6c8;
+    --st-validee:#3f8b52; --st-validee-bg:#e0f0e3;
+    --st-anomalie:#c23b3b; --st-anomalie-bg:#f8dede;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
+    --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
+    --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background:
+      radial-gradient(1200px 480px at 12% -8%, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:14px; line-height:1.45; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); color:var(--accent-ink); }
+  .num{ font-family:"IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric:tabular-nums; }
+  a{ color:inherit; }
+  button{ font:inherit; }
+
+  .maquette-banner{
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    background:var(--surface-2); color:var(--ink-dim); font-size:12.5px; text-align:center;
+    padding:8px 16px; border-bottom:1px solid var(--border);
+  }
+  .mb-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11px;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--accent-ink); background:var(--accent-soft);
+    border-radius:999px; padding:3px 9px;
+  }
+
+  .shell-header{ background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20; }
+  .brand-row{ display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px 12px 24px; max-width:1480px; margin:0 auto; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .logo-mark{ position:relative; flex:none; width:30px; height:30px; }
+  .logo-mark::before, .logo-mark::after{ content:""; position:absolute; left:0; width:30px; height:12px; border-radius:4px; }
+  .logo-mark::before{ top:0; background:var(--accent); }
+  .logo-mark::after{ bottom:0; background:var(--ink); opacity:.82; }
+  .brand-text{ display:flex; flex-direction:column; gap:1px; }
+  .brand-mark{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:19px; letter-spacing:.01em; line-height:1.1; }
+  .brand-sub{ color:var(--ink-faint); font-size:12px; }
+  .jalon-tag{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-dim); background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:4px 11px;
+  }
+  .tabs{ display:flex; gap:3px; padding:0 20px 12px 20px; max-width:1480px; margin:0 auto; overflow-x:auto; }
+  .tab{
+    display:flex; align-items:center; gap:8px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:14px; letter-spacing:.01em;
+    padding:8px 14px; border-radius:8px; color:var(--ink-faint); white-space:nowrap; cursor:pointer; text-decoration:none;
+  }
+  a.tab:hover{ background:var(--surface-2); }
+  .tab.done{ color:var(--ink-dim); }
+  .tab.active{ color:var(--accent-ink); background:var(--accent-soft); cursor:default; }
+
+  .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
+  .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
+  .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:80ch; margin-top:6px; }
+
+  .controls-bar{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:20px 0 20px 0; padding:14px 16px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-md);
+  }
+  .field{ display:flex; flex-direction:column; gap:4px; min-width:0; max-width:100%; }
+  #f-vehicle{ max-width:100%; width:auto; }
+  .field label{ font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); }
+  .v-divider{ width:1px; align-self:stretch; background:var(--border); margin:2px 0; }
+  input[type="date"], select.ctl-select{
+    font-family:"IBM Plex Sans", sans-serif; font-size:13.5px; color:var(--ink);
+    background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm);
+    padding:7px 10px; min-height:34px; transition:border-color .12s ease, box-shadow .12s ease;
+  }
+  input[type="date"]:hover, select.ctl-select:hover{ border-color:var(--ink-faint); }
+  input:focus-visible, button:focus-visible, select:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .segmented{ display:flex; gap:2px; padding:3px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); }
+  .segmented button{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    padding:6px 13px; border:none; border-radius:6px; background:transparent; color:var(--ink-dim);
+    cursor:pointer; transition:background .12s ease, color .12s ease, box-shadow .12s ease;
+  }
+  .segmented button.on{ background:var(--surface); color:var(--ink); box-shadow:var(--shadow-sm); }
+  .spacer{ flex:1 1 auto; }
+
+  .sim-live-badge{
+    display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--ink-dim);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px;
+  }
+  .sim-live-dot{ width:7px; height:7px; border-radius:50%; background:var(--st-validee); flex:none; animation:sim-live-pulse 2s ease-in-out infinite; }
+  @keyframes sim-live-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+  @media (prefers-reduced-motion: reduce){ .sim-live-dot{ animation:none; } }
+
+  .statut-chip{
+    display:inline-flex; align-items:center; gap:6px; font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11.5px;
+    letter-spacing:.03em; text-transform:uppercase; border-radius:999px; padding:4px 10px; white-space:nowrap;
+  }
+  .statut-chip .dot{ width:6px; height:6px; border-radius:50%; flex:none; }
+  .statut-chip.st-planifiee{ background:var(--st-planifiee-bg); color:var(--st-planifiee); }
+  .statut-chip.st-planifiee .dot{ background:var(--st-planifiee); }
+  .statut-chip.st-detectee{ background:var(--st-detectee-bg); color:var(--st-detectee); }
+  .statut-chip.st-detectee .dot{ background:var(--st-detectee); }
+  .statut-chip.st-rapprochee{ background:var(--st-rapprochee-bg); color:var(--st-rapprochee); }
+  .statut-chip.st-rapprochee .dot{ background:var(--st-rapprochee); }
+  .statut-chip.st-proposee{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .statut-chip.st-proposee .dot{ background:var(--st-proposee); }
+  .statut-chip.st-validee{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .statut-chip.st-validee .dot{ background:var(--st-validee); }
+  .statut-chip.st-anomalie{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .statut-chip.st-anomalie .dot{ background:var(--st-anomalie); }
+
+  .tag-flag{
+    display:inline-flex; align-items:center; gap:4px; font-size:10px; font-family:"Barlow Condensed",sans-serif; font-weight:600;
+    letter-spacing:.03em; text-transform:uppercase; border-radius:5px; padding:2px 6px; white-space:nowrap;
+  }
+  .tag-flag.info{ color:var(--st-detectee); background:var(--st-detectee-bg); }
+  .tag-flag.warn{ color:var(--st-proposee); background:var(--st-proposee-bg); }
+  .tag-flag.critical{ color:var(--st-anomalie); background:var(--st-anomalie-bg); }
+
+  .btn{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.02em; padding:6px 11px; border-radius:var(--radius-sm); cursor:pointer; border:1px solid transparent; }
+  .btn-primary{ background:var(--accent); color:var(--accent-ink); }
+  .btn-primary:hover{ filter:brightness(1.06); }
+  .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
+  .btn-ghost:hover{ background:var(--surface); color:var(--ink); }
+
+  .proof-row{ display:flex; gap:4px; margin:4px 0 0 0; flex-wrap:wrap; align-items:center; }
+  .proof-badge{
+    min-width:26px; height:18px; padding:0 5px; border-radius:5px; display:inline-flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-size:9.5px; font-weight:700;
+  }
+  .proof-badge.ok{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .proof-badge.attn{ background:var(--st-proposee-bg); color:var(--st-proposee); }
+  .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
+  .proof-badge.missing{ background:var(--surface-3); color:var(--ink-faint); border:1px dashed var(--border-strong); }
+
+  /* ---------- grille KPI ---------- */
+  .kpi-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:12px; margin:0 0 20px 0; }
+  .kpi-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:13px 15px; }
+  .kpi-n{ font-family:"IBM Plex Mono",monospace; font-size:24px; font-weight:600; line-height:1; }
+  .kpi-n.is-na{ font-size:14px; color:var(--ink-faint); font-style:italic; font-weight:500; }
+  .kpi-lbl{ font-size:11px; color:var(--ink-dim); margin-top:5px; }
+  .kpi-sub{ font-size:10px; color:var(--ink-faint); margin-top:2px; }
+  .kpi-card.warn .kpi-n{ color:var(--st-anomalie); }
+  .kpi-card.ok .kpi-n{ color:var(--st-validee); }
+
+  /* ---------- panneaux (identiques à Live Tracking / Remorques) ----------
+     Grille 2 colonnes à plat (pas deux colonnes empilées séparément) :
+     chaque <section class="panel"> est un item de grille, apparié avec son
+     voisin ligne par ligne. align-items:stretch (par défaut) fait que les
+     deux panneaux d'une même ligne ont toujours la même hauteur — plus de
+     grand vide sous une colonne plus courte. Tablette (740–1000px) : grille
+     adaptée avec des colonnes plus étroites, toujours 2 colonnes tant que
+     la largeur le permet. Mobile (<740px) : une seule colonne. */
+  .dash-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:stretch; }
+  @media (max-width:1000px) and (min-width:741px){ .dash-grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; } }
+  @media (max-width:740px){ .dash-grid{ grid-template-columns:1fr; } }
+  /* Blocs qui ont besoin de toute la largeur (contenus les plus denses :
+     16 types d'anomalie, liste complète des points d'attention) — jamais
+     forcés à s'apparier avec un bloc court qui devrait s'étirer pour les
+     égaler. */
+  .panel-full{ grid-column:1 / -1; }
+  .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); min-width:0; display:flex; flex-direction:column; }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; flex-wrap:wrap; }
+  .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
+  .panel-sub{ font-size:11px; color:var(--ink-faint); }
+  .panel-body{ padding:14px 18px 18px 18px; flex:1 1 auto; min-width:0; }
+  .panel-note{ font-size:11.5px; color:var(--ink-faint); margin:0 0 12px 0; }
+
+  /* ---------- graphique en barres verticales (activité horaire) ---------- */
+  .chart-vbars{ display:flex; align-items:flex-end; gap:10px; height:130px; padding-top:10px; }
+  .chart-vbar-col{ flex:1 1 0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:6px; cursor:default; }
+  .chart-vbar-stack{ width:100%; max-width:44px; display:flex; flex-direction:column-reverse; border-radius:6px 6px 0 0; overflow:hidden; }
+  .chart-vbar-seg{ width:100%; }
+  .chart-vbar-seg.missions{ background:var(--st-rapprochee); }
+  .chart-vbar-seg.geofence{ background:var(--st-validee); }
+  .chart-vbar-seg.alerts{ background:var(--st-anomalie); }
+  .chart-vbar-n{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-dim); }
+  .chart-vbar-lbl{ font-size:10.5px; color:var(--ink-faint); }
+  .chart-legend{ display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; font-size:11px; color:var(--ink-dim); }
+  .chart-legend-item{ display:flex; align-items:center; gap:6px; }
+  .chart-legend-dot{ width:8px; height:8px; border-radius:2px; flex:none; }
+
+  /* ---------- graphique en barres horizontales (sites, anomalies) ---------- */
+  .chart-hbar-list{ display:flex; flex-direction:column; gap:9px; }
+  /* Variante compacte pour les listes longues (16 types d'anomalie) :
+     2 colonnes internes dès que le panneau a la largeur — même mécanisme
+     de container query que .attention-list-compact, pour rester apparié
+     proprement avec "Analyse de productivité" sur la même ligne. */
+  .chart-hbar-list.chart-hbar-compact{ display:grid; grid-template-columns:1fr; gap:8px 16px; align-content:start; }
+  @container (min-width: 480px){ .chart-hbar-list.chart-hbar-compact{ grid-template-columns:1fr 1fr; } }
+  @container (min-width: 900px){ .chart-hbar-list.chart-hbar-compact{ grid-template-columns:1fr 1fr 1fr; } }
+  @container (min-width: 1180px){ .chart-hbar-list.chart-hbar-compact{ grid-template-columns:1fr 1fr 1fr 1fr; } }
+  .chart-hbar-row{ display:grid; grid-template-columns:150px 1fr 46px; align-items:center; gap:10px; font-size:12px; }
+  .chart-hbar-label{ color:var(--ink-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:none; border:none; text-align:left; padding:0; cursor:pointer; font:inherit; }
+  .chart-hbar-label:hover{ color:var(--ink); text-decoration:underline; }
+  .chart-hbar-label:disabled{ cursor:default; color:var(--ink-faint); }
+  .chart-hbar-label:disabled:hover{ text-decoration:none; }
+  .chart-hbar-track{ background:var(--surface-2); border-radius:999px; height:10px; overflow:hidden; }
+  .chart-hbar-fill{ height:100%; border-radius:999px; background:var(--accent); }
+  .chart-hbar-fill.is-zero{ background:var(--surface-3); width:2px !important; }
+  .chart-hbar-value{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-dim); text-align:right; }
+
+  /* ---------- rotations objectif vs actif ---------- */
+  .rotation-row{ padding:10px 0; border-bottom:1px solid var(--border); }
+  .rotation-row:last-child{ border-bottom:none; }
+  .rotation-head{ display:flex; justify-content:space-between; align-items:baseline; font-size:12.5px; margin-bottom:6px; }
+  .rotation-head b{ font-weight:600; }
+  .rotation-target{ font-size:11px; color:var(--ink-faint); }
+  .rotation-bars{ display:flex; gap:3px; height:9px; }
+  .rotation-bars .seg{ flex:1; background:var(--surface-2); border-radius:3px; }
+  .rotation-bars .seg.filled{ background:var(--st-validee); }
+  .rotation-bars .seg.filled.anomalie{ background:var(--st-anomalie); }
+  .rotation-note{ font-size:10.5px; color:var(--ink-faint); margin-top:4px; }
+
+  /* ---------- utilisation de la flotte ---------- */
+  .fleet-bar{ display:flex; height:26px; border-radius:999px; overflow:hidden; background:var(--surface-2); }
+  .fleet-bar-seg{ height:100%; }
+  .fleet-bar-seg.used{ background:var(--st-validee); }
+  .fleet-bar-seg.unused{ background:var(--surface-3); }
+  .fleet-bar-legend{ display:flex; gap:16px; margin-top:10px; font-size:11.5px; color:var(--ink-dim); }
+  .fleet-bar-legend-item{ display:flex; align-items:center; gap:6px; }
+  .fleet-bar-legend-dot{ width:9px; height:9px; border-radius:3px; }
+
+  /* ---------- chauffeurs ---------- */
+  .driver-list{ display:flex; flex-direction:column; gap:7px; }
+  .driver-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); }
+  .driver-row .dr-name{ font-weight:600; font-size:12.5px; }
+  .driver-row .dr-vehicle{ font-size:10.5px; color:var(--ink-faint); margin-top:1px; }
+  .driver-row .dr-score{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-faint); font-style:italic; white-space:nowrap; text-align:right; }
+  .driver-row.is-contested{ border-left:3px solid var(--st-anomalie); }
+
+  /* ---------- points d'attention ---------- */
+  .attention-list{ display:flex; flex-direction:column; gap:7px; }
+  /* Présentation compacte : 2 colonnes internes dès que le panneau a la
+     place (celui-ci est déjà dans une colonne de grille, donc le seuil de
+     bascule est plus bas que la largeur d'écran globale). Toutes les
+     alertes restent affichées — seule la disposition change. */
+  .attention-list-compact{ display:grid; grid-template-columns:1fr; gap:7px; align-content:start; }
+  @container (min-width: 480px){ .attention-list-compact{ grid-template-columns:1fr 1fr; } }
+  @container (min-width: 600px){ .attention-list-compact{ grid-template-columns:1fr 1fr 1fr; } }
+  @container (min-width: 1180px){ .attention-list-compact{ grid-template-columns:1fr 1fr 1fr 1fr; } }
+  .panel-body{ container-type:inline-size; }
+  .attention-item{
+    display:flex; gap:10px; align-items:flex-start; padding:9px 11px; border-radius:var(--radius-sm);
+    background:var(--surface-2); border:1px solid var(--border); cursor:pointer; text-align:left; width:100%; color:inherit; font:inherit;
+  }
+  .attention-item:hover{ border-color:var(--border-strong); background:var(--surface-3); }
+  .attention-item.sev-critique{ border-left:3px solid var(--st-anomalie); }
+  .attention-item.sev-important{ border-left:3px solid var(--st-proposee); }
+  .attention-item.sev-surveiller{ border-left:3px solid var(--st-detectee); }
+  .attention-icon{ flex:none; font-size:13px; margin-top:1px; }
+  .attention-body{ flex:1 1 auto; min-width:0; }
+  .attention-title{ font-weight:600; font-size:12.5px; }
+  .attention-desc{ font-size:11.5px; color:var(--ink-dim); margin-top:2px; }
+  .attention-vehicle{ flex:none; font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--ink-faint); align-self:center; }
+
+  .td-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+  .td-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:14.5px; }
+  .td-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; }
+  .td-row dt{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); margin:0; }
+  .td-row dd{ margin:2px 0 0 0; font-size:12.5px; }
+  .popover-note{ font-size:11px; color:var(--ink-dim); margin:0; }
+
+  dialog.detail-modal{ width:min(560px,94vw); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:0; background:var(--surface); color:var(--ink); box-shadow:var(--shadow-lg); }
+  dialog.detail-modal::backdrop{ background:rgba(10,14,12,.55); }
+  .cm-head{ padding:16px 18px; border-bottom:1px solid var(--border); }
+  .cm-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:16px; margin:0; }
+  .cm-sub{ font-size:11.5px; color:var(--ink-dim); margin-top:3px; }
+  .cm-body{ padding:16px 18px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow:auto; }
+  .cm-foot{ padding:12px 18px 16px 18px; display:flex; gap:8px; justify-content:flex-end; border-top:1px solid var(--border); }
+  .type-vehicle-list{ display:flex; flex-wrap:wrap; gap:8px; }
+  .type-vehicle-chip{
+    font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:12.5px; padding:7px 13px; border-radius:999px;
+    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-dim); cursor:pointer;
+  }
+  .type-vehicle-chip:hover{ background:var(--surface-3); color:var(--ink); border-color:var(--accent); }
+
+  .footnote{
+    margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
+    color:var(--ink-dim); font-size:12.5px; max-width:96ch;
+  }
+  .footnote .fn-badge{
+    flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--st-detectee-bg); color:var(--st-detectee); font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px;
+  }
+  .footnote b{ color:var(--ink); }
+  .footnote p{ margin:0 0 8px 0; }
+  .footnote p:last-child{ margin-bottom:0; }
+
+  @media (max-width:640px){
+    .kpi-grid{ grid-template-columns:repeat(2,1fr); }
+    .td-grid{ grid-template-columns:1fr; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
+</style>
+
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — prototype de démonstration, simulateur local d'API Trace In (données fictives, aucune connexion réelle).</div>
+
+<header class="shell-header">
+  <div class="brand-row">
+    <div class="brand">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <div class="brand-text">
+        <span class="brand-mark">Demo Logistics</span>
+        <span class="brand-sub">Console opérations — Transport de conteneurs</span>
+      </div>
+    </div>
+    <span class="jalon-tag">Jalon 0 · Maquettes</span>
+  </div>
+  <nav class="tabs" aria-label="Écrans du jalon 0">
+    <div class="tab active" aria-current="page">Dashboard</div>
+    <a class="tab done" href="remorques.html">Remorques</a>
+    <a class="tab done" href="file-validation.html">File de validation</a>
+    <a class="tab done" href="live-tracking.html">Live tracking</a>
+    <a class="tab" href="fiche-conteneur.html">Fiche conteneur</a>
+    <a class="tab" href="rapport-shift.html">Rapport de shift</a>
+    <a class="tab" href="parametres.html">Paramètres</a>
+  </nav>
+</header>
+
+<main class="screen">
+  <div class="screen-title-row">
+    <div>
+      <h1 class="screen-title">Dashboard</h1>
+      <p class="screen-caption">Vue synthétique de la performance opérationnelle — calculée depuis le <strong>même référentiel central</strong> que Live Tracking et Remorques (<code>_shared/sim-data.js</code>). Ceci n'est pas un second Live Tracking : cet écran n'affiche aucune position terrain, il analyse ce que le référentiel contient déjà pour aider la décision.</p>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="field">
+      <label for="f-date">Date</label>
+      <input type="date" id="f-date" value="2026-08-25">
+    </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label>Shift</label>
+      <div class="segmented" role="group" aria-label="Shift">
+        <button type="button" class="on">Jour · 6h→18h</button>
+        <button type="button">Nuit · 18h→6h</button>
+      </div>
+    </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label>Site</label>
+      <div class="segmented" role="group" aria-label="Site">
+        <button type="button" class="on">Tous</button>
+        <button type="button">Nord</button>
+        <button type="button">Sud</button>
+      </div>
+    </div>
+    <div class="v-divider"></div>
+    <div class="field">
+      <label for="f-vehicle">Véhicule</label>
+      <select class="ctl-select" id="f-vehicle">
+        <option value="">Tous les véhicules</option>
+      </select>
+    </div>
+    <div class="spacer"></div>
+    <span class="sim-live-badge" title="Aperçu figé du simulateur local, pas un flux temps réel"><span class="sim-live-dot"></span>Simulateur local · aperçu 10:42</span>
+  </div>
+
+  <div class="kpi-grid" id="kpi-grid"></div>
+
+  <!-- Grille 2 colonnes en flux direct (auto-placement) : chaque section
+       est un item de grille indépendant, apparié ligne par ligne avec son
+       voisin. Contrairement à deux colonnes empilées séparément, la
+       hauteur de CHAQUE LIGNE ne dépend que de sa propre paire de blocs —
+       ça évite qu'une colonne entière (ex. Anomalies + Attention +
+       Productivité + Chauffeurs empilés) distende la page pendant que
+       l'autre colonne s'arrête tôt et laisse un grand vide en dessous. -->
+  <div class="dash-grid">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Activité du shift (par heure)</h2>
+        <span class="panel-sub">événements horodatés connus</span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Répartition horaire des événements réellement horodatés dans le référentiel (débuts de mission, entrées/sorties de géofence, déclenchements d'alerte). SIM ne conserve qu'un instantané de ce shift — aucune tendance multi-jours n'est représentée ici.</p>
+        <div class="chart-vbars" id="chart-hourly"></div>
+        <div class="chart-legend">
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--st-rapprochee);"></span>Débuts de mission</span>
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--st-validee);"></span>Événements géofence</span>
+          <span class="chart-legend-item"><span class="chart-legend-dot" style="background:var(--st-anomalie);"></span>Alertes déclenchées</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Temps de présence par site</h2>
+        <span class="panel-sub" id="dwell-sub"></span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Proxy calculé à partir de la présence en géofence (règle des 15 minutes) — le « temps d'attente » n'a pas de définition métier formelle dans les README à ce jour ; cette mesure décrit une présence continue, pas nécessairement une attente improductive. Cliquer un site affiche les véhicules concernés.</p>
+        <div class="chart-hbar-list" id="chart-dwell"></div>
+        <p class="panel-note" id="dwell-constat" style="margin:12px 0 0 0;"></p>
+      </div>
+    </section>
+
+    <!-- Rotations et Chauffeurs : contenus de longueur proche (4 objectifs
+         détaillés / 5 chauffeurs). -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Rotations — objectif vs missions actives</h2>
+        <span class="panel-sub">objectifs SPEC_PRESET_TRANSPORT §6</span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Comparaison entre l'objectif de rotations par jour (préset validé) et les missions actuellement actives dans cet instantané du shift — pas un cumul de rotations sur la journée complète : SIM ne stocke qu'une mission par véhicule à la fois.</p>
+        <div id="rotation-list"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Chauffeurs</h2>
+        <span class="panel-sub">référentiel actif</span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Score de notation : pondération non validée (question ouverte, cahier des charges Missions §9.3) — affiché « à définir », aucune formule inventée.</p>
+        <div class="driver-list" id="driver-list"></div>
+      </div>
+    </section>
+
+    <!-- Utilisation de la flotte et Analyse de productivité : nos deux blocs
+         les plus courts, appariés pour la même raison d'équilibre. -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Utilisation de la flotte</h2>
+        <span class="panel-sub" id="fleet-util-sub"></span>
+      </div>
+      <div class="panel-body">
+        <div class="fleet-bar" id="fleet-bar"></div>
+        <div class="fleet-bar-legend" id="fleet-bar-legend"></div>
+        <p class="panel-note" id="fleet-unused-note" style="margin-top:10px;"></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">Analyse de productivité</h2>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Situations pouvant avoir un <strong>impact potentiel sur la productivité</strong> — aucune donnée de coût n'existe dans SIM ni dans les README à ce jour, donc aucun montant n'est affiché ici. Une analyse financière réelle nécessitera des paramètres de coût à définir plus tard.</p>
+        <div class="attention-list attention-list-compact" id="productivity-list"></div>
+      </div>
+    </section>
+
+    <!-- Anomalies par type et Points d'attention sont nos deux blocs les
+         plus denses (16 catégories / liste complète des alertes) : plutôt
+         que de forcer un partenaire à s'étirer pour les égaler, ils
+         occupent toute la largeur et utilisent leur propre grille interne
+         à plusieurs colonnes pour rester compacts en hauteur. -->
+    <section class="panel panel-full">
+      <div class="panel-head">
+        <h2 class="panel-title">Anomalies par type</h2>
+        <span class="panel-sub" id="anomalies-sub"></span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Types définis dans <code>SIM.alertTypes</code> — aucun type ajouté pour ce Dashboard. Cliquer un type avec au moins une occurrence affiche les véhicules concernés.</p>
+        <div class="chart-hbar-list chart-hbar-compact" id="chart-anomalies"></div>
+      </div>
+    </section>
+
+    <section class="panel panel-full">
+      <div class="panel-head">
+        <h2 class="panel-title">Points d'attention</h2>
+        <span class="panel-sub" id="attention-sub"></span>
+      </div>
+      <div class="panel-body">
+        <p class="panel-note">Chaque point référence une donnée réelle du simulateur (alerte active ou présence prolongée en géofence) — cliquer un point ouvre le détail du véhicule concerné. Aucune alerte n'est omise : présentation en colonnes pour rester compacte.</p>
+        <div class="attention-list attention-list-compact" id="attention-list"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footnote">
+    <span class="fn-badge">i</span>
+    <div>
+      <p><b>Notes de conception (jalon 0)</b> — Ce Dashboard ne définit aucune donnée propre : tous les chiffres viennent de fonctions de calcul pures (<code>fleetStats</code>, <code>alertsByType</code>, <code>rotationsSnapshot</code>, <code>dwellBySite</code>, <code>hourlyActivity</code>, <code>attentionPoints</code>, <code>driverRoster</code>) ajoutées à <code>_shared/sim-data.js</code>, lues aussi bien ici que, potentiellement, par un futur écran. Le référentiel véhicules est exactement celui de la carte Live Tracking (7 véhicules actifs) — TR-009, TR-032 et TR-018 restent hors périmètre actif partout, y compris ici.</p>
+      <p><b>Kilomètres parcourus</b> : aucune donnée de distance n'existe dans SIM — affiché « Non disponible » plutôt qu'un chiffre inventé. <b>Rotations</b> : SIM ne stocke qu'une mission par véhicule (un instantané), pas un cumul de la journée — les valeurs affichées sont donc des « missions actives ce shift », jamais présentées comme des rotations réalisées sur la journée complète.</p>
+    </div>
+  </div>
+</main>
+
+<dialog class="detail-modal" id="modal-vehicle">
+  <div class="cm-head">
+    <h3 class="cm-title" id="vm-title">Véhicule</h3>
+    <p class="cm-sub">Mêmes données que Live Tracking et Remorques — référentiel central.</p>
+  </div>
+  <div class="cm-body" id="vm-body"></div>
+  <div class="cm-foot">
+    <a class="btn btn-ghost" id="vm-goto-live" href="#">Voir dans Live Tracking</a>
+    <span class="spacer"></span>
+    <button type="button" class="btn btn-primary" id="vm-close">Fermer</button>
+  </div>
+</dialog>
+
+<dialog class="detail-modal" id="modal-type">
+  <div class="cm-head">
+    <h3 class="cm-title" id="tp-title">Véhicules concernés</h3>
+    <p class="cm-sub" id="tp-sub"></p>
+  </div>
+  <div class="cm-body"><div class="type-vehicle-list" id="tp-body"></div></div>
+  <div class="cm-foot"><button type="button" class="btn btn-primary" id="tp-close">Fermer</button></div>
+</dialog>
+
+<script src="_shared/sim-data.js"></script>
+<script>
+(function(){
+
+  // ============================================================
+  // dashboard.html ne définit AUCUNE donnée propre. Toutes les valeurs
+  // viennent des fonctions pures de _shared/sim-data.js. Ce fichier ne
+  // contient que du RENDU (HTML/DOM) et l'orchestration des interactions
+  // — la séparation calcul/rendu demandée (§20) vit dans sim-data.js.
+  // ============================================================
+
+  function closeDialog(dlg){ if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+
+  // ---------- KPI ----------
+  function renderKPIs(){
+    var fs = fleetStats();
+    var missionsDefinies = SIM.vehicles.filter(function(v){ return v.mission && v.mission.type; }).length;
+    var rot = rotationsSnapshot();
+    var rotActive = rot.reduce(function(s,r){ return s + r.active; }, 0);
+    var rotObjectifCumule = rot.reduce(function(s,r){ return s + (typeof r.target === 'number' ? r.target : 0); }, 0);
+    var alertsN = SIM.alerts.length;
+    var dwellTotal = dwellBySite().reduce(function(s,z){ return s + z.totalMin; }, 0);
+
+    var cards = [
+      { n: fs.total, lbl: 'Total flotte', sub: 'référentiel simulé' },
+      { n: fs.used, lbl: 'Véhicules utilisés', sub: fs.total ? Math.round(fs.used/fs.total*1000)/10 + '%' : '—', cls:'ok' },
+      { n: fs.unused, lbl: 'Véhicules non utilisés', sub: fs.total ? Math.round(fs.unused/fs.total*1000)/10 + '%' : '—' },
+      { n: missionsDefinies, lbl: 'Missions avec type défini', sub: 'sur ' + fs.total + ' véhicules' },
+      { n: rotActive, lbl: 'Rotations actives ce shift', sub: 'objectif cumulé : ' + rotObjectifCumule + '+' },
+      { n: alertsN, lbl: 'Anomalies actives', sub: SIM.alertTypes.length + ' types suivis', cls: alertsN > 0 ? 'warn' : '' },
+      { n: formatDwell(dwellTotal), lbl: 'Temps en géofence cumulé', sub: 'proxy temps d\'attente', isText:true },
+      { n: 'Non disponible', lbl: 'Kilomètres parcourus', sub: 'non suivi par ce référentiel', isText:true }
+    ];
+    document.getElementById('kpi-grid').innerHTML = cards.map(function(c){
+      return '<div class="kpi-card' + (c.cls ? ' ' + c.cls : '') + '">' +
+        '<div class="kpi-n' + (c.isText ? ' is-na' : '') + ' num">' + c.n + '</div>' +
+        '<div class="kpi-lbl">' + c.lbl + '</div>' +
+        '<div class="kpi-sub">' + c.sub + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ---------- activité horaire ----------
+  function renderHourly(){
+    var data = hourlyActivity();
+    var maxTotal = Math.max(1, Math.max.apply(null, data.map(function(d){ return d.total; })));
+    document.getElementById('chart-hourly').innerHTML = data.map(function(d){
+      var h = function(n){ return Math.round((n / maxTotal) * 100); };
+      return '<div class="chart-vbar-col" title="' + d.hour + ' — ' + d.total + ' événement(s) : ' + d.missions + ' mission(s), ' + d.geofence + ' géofence, ' + d.alerts + ' alerte(s)">' +
+        '<span class="chart-vbar-n">' + d.total + '</span>' +
+        '<div class="chart-vbar-stack" style="height:' + Math.max(4, h(d.total)) + '%;">' +
+          (d.alerts ? '<div class="chart-vbar-seg alerts" style="height:' + (d.alerts/d.total*100) + '%;"></div>' : '') +
+          (d.geofence ? '<div class="chart-vbar-seg geofence" style="height:' + (d.geofence/d.total*100) + '%;"></div>' : '') +
+          (d.missions ? '<div class="chart-vbar-seg missions" style="height:' + (d.missions/d.total*100) + '%;"></div>' : '') +
+        '</div>' +
+        '<span class="chart-vbar-lbl">' + d.hour + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ---------- présence par site ----------
+  function renderDwell(){
+    var zones = dwellBySite();
+    document.getElementById('dwell-sub').textContent = zones.length + ' zone' + (zones.length > 1 ? 's' : '') + ' avec présence connue';
+    var max = Math.max(1, Math.max.apply(null, zones.map(function(z){ return z.totalMin; })));
+    document.getElementById('chart-dwell').innerHTML = zones.map(function(z){
+      var pct = Math.max(2, Math.round((z.totalMin / max) * 100));
+      return '<div class="chart-hbar-row">' +
+        '<button type="button" class="chart-hbar-label" data-dwell-zone="' + esc(z.zone) + '">' + esc(z.zone) + '</button>' +
+        '<div class="chart-hbar-track"><div class="chart-hbar-fill" style="width:' + pct + '%;"></div></div>' +
+        '<span class="chart-hbar-value">' + formatDwell(z.totalMin) + '</span>' +
+      '</div>';
+    }).join('') || '<p class="panel-note">Aucune présence en géofence connue actuellement.</p>';
+
+    document.querySelectorAll('[data-dwell-zone]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var zone = btn.getAttribute('data-dwell-zone');
+        var z = zones.filter(function(zz){ return zz.zone === zone; })[0];
+        if (!z) return;
+        openTypeModal('Présence en géofence — ' + zone, z.vehicles.length + ' véhicule(s), ' + formatDwell(z.totalMin) + ' cumulé', z.vehicles.map(function(vv){ return vv.id; }));
+      });
+    });
+
+    var over20 = dwellThresholdVehicles(20);
+    var constat = document.getElementById('dwell-constat');
+    if (zones.length === 0){
+      constat.textContent = '';
+    } else {
+      var top = zones[0];
+      constat.innerHTML = '<b>' + esc(top.zone) + '</b> cumule le temps de présence le plus élevé (' + formatDwell(top.totalMin) + ' sur ' + top.vehicles.length + ' véhicule(s)). ' +
+        (over20.length ? over20.length + ' véhicule(s) dépassent 20 minutes de présence continue (seuil de la catégorie « Temps d\'attente > 20 min »).' : 'Aucun véhicule ne dépasse 20 minutes de présence continue.');
+    }
+  }
+
+  // ---------- rotations ----------
+  function renderRotations(){
+    var rows = rotationsSnapshot();
+    document.getElementById('rotation-list').innerHTML = rows.map(function(r){
+      var target = r.target;
+      var segCount = typeof target === 'number' ? target : Math.max(r.active, 1);
+      var segsHtml = '';
+      for (var i = 0; i < segCount; i++){
+        var filled = i < r.active;
+        var isAnomalie = filled && i >= (r.active - r.anomalie);
+        segsHtml += '<div class="seg' + (filled ? ' filled' : '') + (isAnomalie ? ' anomalie' : '') + '"></div>';
+      }
+      return '<div class="rotation-row">' +
+        '<div class="rotation-head"><b>' + esc(r.label) + '</b><span class="rotation-target">' + (typeof target === 'number' ? (r.active + ' actives / objectif ' + target + '/jour') : (r.active + ' active(s) · objectif par mission')) + '</span></div>' +
+        '<div class="rotation-bars">' + segsHtml + '</div>' +
+        (r.anomalie ? '<div class="rotation-note">⚠ ' + r.anomalie + ' en anomalie (' + r.anomalieVehicleIds.join(', ') + ')</div>' : '') +
+      '</div>';
+    }).join('');
+  }
+
+  // ---------- utilisation flotte ----------
+  function renderFleetUtil(){
+    var fs = fleetStats();
+    document.getElementById('fleet-util-sub').textContent = fs.total + ' véhicule(s) au total';
+    var usedPct = fs.total ? (fs.used / fs.total * 100) : 0;
+    var unusedPct = 100 - usedPct;
+    document.getElementById('fleet-bar').innerHTML =
+      (fs.used ? '<div class="fleet-bar-seg used" style="width:' + usedPct + '%;" title="Utilisés : ' + fs.used + '"></div>' : '') +
+      (fs.unused ? '<div class="fleet-bar-seg unused" style="width:' + unusedPct + '%;" title="Non utilisés : ' + fs.unused + '"></div>' : '');
+    document.getElementById('fleet-bar-legend').innerHTML =
+      '<span class="fleet-bar-legend-item"><span class="fleet-bar-legend-dot" style="background:var(--st-validee);"></span>Utilisés (' + fs.used + ')</span>' +
+      '<span class="fleet-bar-legend-item"><span class="fleet-bar-legend-dot" style="background:var(--surface-3);"></span>Non utilisés (' + fs.unused + ')</span>';
+    document.getElementById('fleet-unused-note').textContent = fs.unused === 0
+      ? 'Aucun véhicule non utilisé actuellement dans le référentiel simulé.'
+      : fs.unused + ' véhicule(s) sans mission active.';
+  }
+
+  // ---------- anomalies par type ----------
+  function renderAnomalyTypes(){
+    var types = alertsByType().slice().sort(function(a,b){ return b.count - a.count; });
+    document.getElementById('anomalies-sub').textContent = SIM.alerts.length + ' alerte(s) active(s)';
+    var max = Math.max(1, Math.max.apply(null, types.map(function(t){ return t.count; })));
+    document.getElementById('chart-anomalies').innerHTML = types.map(function(t){
+      var pct = t.count ? Math.max(3, Math.round((t.count / max) * 100)) : 0;
+      return '<div class="chart-hbar-row">' +
+        '<button type="button" class="chart-hbar-label"' + (t.count ? ' data-anomaly-type="' + t.key + '"' : ' disabled') + '>' + esc(t.label) + '</button>' +
+        '<div class="chart-hbar-track"><div class="chart-hbar-fill' + (t.count ? '' : ' is-zero') + '" style="width:' + (t.count ? pct : 0.5) + '%;"></div></div>' +
+        '<span class="chart-hbar-value">' + t.count + '</span>' +
+      '</div>';
+    }).join('');
+    document.querySelectorAll('[data-anomaly-type]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var key = btn.getAttribute('data-anomaly-type');
+        var def = SIM.alertTypes.filter(function(t){ return t.key === key; })[0];
+        var alerts = SIM.alerts.filter(function(a){ return a.types.indexOf(key) !== -1; });
+        var vehicleIds = alerts.map(function(a){ return a.vehicle_id; }).filter(function(v,i,arr){ return arr.indexOf(v) === i; });
+        openTypeModal('Anomalie — ' + (def ? def.label : key), alerts.length + ' alerte(s), ' + vehicleIds.length + ' véhicule(s) concerné(s)', vehicleIds);
+      });
+    });
+  }
+
+  // ---------- points d'attention / productivité ----------
+  function severityIcon(sev){ return sev === 'critique' ? '⚠' : sev === 'important' ? '!' : 'i'; }
+
+  function renderAttention(){
+    var points = attentionPoints();
+    document.getElementById('attention-sub').textContent = points.length + ' point(s)';
+    document.getElementById('attention-list').innerHTML = points.map(function(p){
+      var v = getVehicle(p.vehicle_id);
+      return '<button type="button" class="attention-item sev-' + p.severity + '" data-attention-vehicle="' + p.vehicle_id + '">' +
+        '<span class="attention-icon">' + severityIcon(p.severity) + '</span>' +
+        '<span class="attention-body"><span class="attention-title">' + esc(p.title) + '</span><div class="attention-desc">' + esc(p.description) + '</div></span>' +
+        '<span class="attention-vehicle">' + esc(displayId(v)) + '</span>' +
+      '</button>';
+    }).join('') || '<p class="panel-note">Aucun point d\'attention actif.</p>';
+
+    document.querySelectorAll('[data-attention-vehicle]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openVehicleModal(btn.getAttribute('data-attention-vehicle')); });
+    });
+  }
+
+  // Analyse de productivité : sous-ensemble des points d'attention qui
+  // représentent un risque opérationnel (véhicule non tracé, immobilisé,
+  // anomalies cumulées) — jamais un montant financier, cf. §9 de la
+  // demande (aucune donnée de coût n'existe dans SIM ni les README).
+  function renderProductivity(){
+    var byVehicle = {};
+    SIM.alerts.forEach(function(a){
+      if (!byVehicle[a.vehicle_id]) byVehicle[a.vehicle_id] = [];
+      byVehicle[a.vehicle_id].push(a);
+    });
+    var cases = [];
+    Object.keys(byVehicle).forEach(function(vid){
+      var alerts = byVehicle[vid];
+      var v = getVehicle(vid);
+      if (alerts.length >= 2){
+        cases.push({ severity:'important', vehicle_id: vid, title:'Anomalies cumulées (' + alerts.length + ')',
+          description: displayId(v) + ' cumule ' + alerts.length + ' alertes actives simultanées — impact potentiel sur la productivité.' });
+      }
+      if (alerts.some(function(a){ return a.types.indexOf('gps_silencieux') !== -1; })){
+        cases.push({ severity:'critique', vehicle_id: vid, title:'Visibilité perdue (GPS silencieux)',
+          description: displayId(v) + ' — plus de position connue depuis un délai prolongé ; impact potentiel sur la productivité (véhicule non localisable).' });
+      }
+      if (alerts.some(function(a){ return a.types.indexOf('sans_mission') !== -1 || a.types.indexOf('sans_chauffeur') !== -1; })){
+        cases.push({ severity:'critique', vehicle_id: vid, title:'Activité non rattachée',
+          description: displayId(v) + ' est en mouvement sans mission ni chauffeur confirmé — impact potentiel sur la productivité (usage non tracé).' });
+      }
+    });
+    document.getElementById('productivity-list').innerHTML = cases.map(function(c){
+      return '<button type="button" class="attention-item sev-' + c.severity + '" data-attention-vehicle="' + c.vehicle_id + '">' +
+        '<span class="attention-icon">' + severityIcon(c.severity) + '</span>' +
+        '<span class="attention-body"><span class="attention-title">' + esc(c.title) + '</span><div class="attention-desc">' + esc(c.description) + '</div></span>' +
+        '<span class="attention-vehicle">' + esc(displayId(getVehicle(c.vehicle_id))) + '</span>' +
+      '</button>';
+    }).join('') || '<p class="panel-note">Aucune situation à risque détectée actuellement.</p>';
+
+    document.querySelectorAll('#productivity-list [data-attention-vehicle]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openVehicleModal(btn.getAttribute('data-attention-vehicle')); });
+    });
+  }
+
+  // ---------- chauffeurs ----------
+  function renderDrivers(){
+    var list = driverRoster();
+    document.getElementById('driver-list').innerHTML = list.map(function(d){
+      return '<div class="driver-row' + (d.contested ? ' is-contested' : '') + '">' +
+        '<div><div class="dr-name">' + esc(d.name) + (d.contested ? ' <span class="tag-flag critical">identité contestée</span>' : '') + '</div>' +
+        '<div class="dr-vehicle">' + esc(d.vehicles.join(', ')) + '</div></div>' +
+        '<div class="dr-score">Score : à définir</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ---------- modal véhicule (fonction partagée) ----------
+  function openVehicleModal(id){
+    var v = getVehicle(id);
+    if (!v) return;
+    document.getElementById('vm-title').textContent = displayId(v) + ' — détail véhicule';
+    document.getElementById('vm-body').innerHTML = vehicleDetailHTML(v);
+    document.getElementById('vm-goto-live').href = 'live-tracking.html?vehicle=' + encodeURIComponent(v.id);
+    var dlg = document.getElementById('modal-vehicle');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  document.getElementById('vm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-vehicle')); });
+
+  // ---------- modal "véhicules concernés" (anomalie / site) ----------
+  function openTypeModal(title, sub, vehicleIds){
+    document.getElementById('tp-title').textContent = title;
+    document.getElementById('tp-sub').textContent = sub;
+    document.getElementById('tp-body').innerHTML = vehicleIds.map(function(vid){
+      var v = getVehicle(vid);
+      return '<button type="button" class="type-vehicle-chip" data-goto-vehicle="' + vid + '">' + esc(displayId(v)) + (v ? ' · ' + esc(v.driver.name) : '') + '</button>';
+    }).join('') || '<p class="panel-note">Aucun véhicule du référentiel actif concerné.</p>';
+    document.querySelectorAll('#tp-body [data-goto-vehicle]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        closeDialog(document.getElementById('modal-type'));
+        openVehicleModal(btn.getAttribute('data-goto-vehicle'));
+      });
+    });
+    var dlg = document.getElementById('modal-type');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  document.getElementById('tp-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-type')); });
+
+  // ---------- filtre véhicule (accès rapide au modal) ----------
+  function initVehicleFilter(){
+    var sel = document.getElementById('f-vehicle');
+    SIM.vehicles.forEach(function(v){
+      var opt = document.createElement('option');
+      opt.value = v.id;
+      // Libellé court : le nom contesté complet (ex. TR-021) rendrait le
+      // menu illisible et fait déborder le champ sur petit écran.
+      var driverLabel = v.driver.contested ? 'identité contestée' : (v.driver.confirmed ? v.driver.name : 'chauffeur non confirmé');
+      opt.textContent = displayId(v) + ' · ' + driverLabel;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function(){
+      if (sel.value) openVehicleModal(sel.value);
+      sel.value = '';
+    });
+  }
+
+  function renderAll(){
+    renderKPIs();
+    renderHourly();
+    renderDwell();
+    renderRotations();
+    renderFleetUtil();
+    renderAnomalyTypes();
+    renderAttention();
+    renderProductivity();
+    renderDrivers();
+  }
+
+  renderAll();
+  initVehicleFilter();
+
+})();
+</script>

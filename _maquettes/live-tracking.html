@@ -1,11 +1,66 @@
 <title>Demo Logistics — Maquettes V0</title>
-<meta name="description" content="Jalon 0 — maquette Live tracking : carte des zones, missions en cours et alertes actives pour l'agent tracking.">
+<meta name="description" content="Jalon 0 — maquette Live tracking : carte des zones, missions en cours et alertes actives pour l'agent tracking. Simulateur local d'API Trace In — source de données unique.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
+  /* Fond sombre par défaut sur cet écran (référence visuelle fournie le
+     30/08/2026) : Live Tracking est une console de suivi temps réel, un
+     usage où le sombre reste lisible en continu (salle d'exploitation,
+     écran allumé toute la journée) — contrairement aux autres maquettes
+     du jalon 0 qui restent en thème clair. --accent reste l'ambre de la
+     marque Demo Logistics (cohérence avec les 5 autres écrans) plutôt que
+     le bleu de l'image de référence, qui n'est qu'une palette d'exemple. */
   :root{
+    --bg:#0a0e17;
+    --surface:#121826;
+    --surface-2:#1a2233;
+    --surface-3:#232c40;
+    --ink:#eef1f7;
+    --ink-dim:#9aa5bc;
+    --ink-faint:#67718c;
+    --border:#232c40;
+    --border-strong:#354061;
+    --accent:#e0a13c;
+    --accent-ink:#1c1305;
+    --accent-soft:#3a2c11;
+
+    --st-planifiee:#93a0ba;
+    --st-planifiee-bg:#1b2233;
+    --st-detectee:#b09aef;
+    --st-detectee-bg:#241d3d;
+    --st-rapprochee:#5fa8f5;
+    --st-rapprochee-bg:#16233d;
+    --st-proposee:#f2bf4c;
+    --st-proposee-bg:#332711;
+    --st-validee:#52d489;
+    --st-validee-bg:#123423;
+    --st-anomalie:#f37272;
+    --st-anomalie-bg:#3a1717;
+
+    --zone-nord:#4ade80;
+    --zone-nord-bg:rgba(74,222,128,0.12);
+    --zone-sud:#5fa8f5;
+    --zone-sud-bg:rgba(95,168,245,0.12);
+    --zone-port:#f2a13c;
+    --zone-port-bg:rgba(242,161,60,0.08);
+
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+    --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
+    --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
+
+    --radius-sm:7px;
+    --radius-md:10px;
+    --radius-lg:14px;
+  }
+
+  /* Variante claire disponible via data-theme="light" (non activée par
+     défaut sur cet écran) — conserve les tokens d'origine des 5 autres
+     maquettes, pour ne pas fermer la porte à un choix de thème plus tard. */
+  :root[data-theme="light"]{
     --bg:#eef1ef;
     --surface:#ffffff;
     --surface-2:#e3e8e5;
@@ -21,95 +76,29 @@
 
     --st-planifiee:#6b746f;
     --st-planifiee-bg:#e4e7e5;
-    --st-detectee:#3a6ea8;
-    --st-detectee-bg:#dde8f3;
-    --st-rapprochee:#2f8f7a;
-    --st-rapprochee-bg:#dcefea;
-    --st-proposee:#7a5cb0;
-    --st-proposee-bg:#e9e2f5;
+    --st-detectee:#7a5cb0;
+    --st-detectee-bg:#e9e2f5;
+    --st-rapprochee:#3a6ea8;
+    --st-rapprochee-bg:#dde8f3;
+    --st-proposee:#a8791b;
+    --st-proposee-bg:#f3e6c8;
     --st-validee:#3f8b52;
     --st-validee-bg:#e0f0e3;
     --st-anomalie:#c23b3b;
     --st-anomalie-bg:#f8dede;
+
+    --zone-nord:#3f8b52;
+    --zone-nord-bg:#e0f0e3;
+    --zone-sud:#3a6ea8;
+    --zone-sud-bg:#dde8f3;
+    --zone-port:#b97a17;
+    --zone-port-bg:#f3e2c2;
 
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%237b857f' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 
     --shadow-sm: 0 1px 2px rgba(20,26,24,0.07);
     --shadow-md: 0 1px 2px rgba(20,26,24,0.05), 0 10px 22px -12px rgba(20,26,24,0.16);
     --shadow-lg: 0 10px 28px -10px rgba(20,26,24,0.22), 0 2px 6px rgba(20,26,24,0.08);
-
-    --radius-sm:7px;
-    --radius-md:10px;
-    --radius-lg:14px;
-  }
-
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#121613;
-      --surface:#181e1a;
-      --surface-2:#202722;
-      --surface-3:#2a322b;
-      --ink:#e8ece9;
-      --ink-dim:#a3aca6;
-      --ink-faint:#707972;
-      --border:#323b34;
-      --border-strong:#454f47;
-      --accent:#e0a13c;
-      --accent-ink:#1c1305;
-      --accent-soft:#3a2c11;
-
-      --st-planifiee:#a3aca6;
-      --st-planifiee-bg:#242b26;
-      --st-detectee:#7ba7d8;
-      --st-detectee-bg:#1c2a38;
-      --st-rapprochee:#6fc4ac;
-      --st-rapprochee-bg:#16302a;
-      --st-proposee:#b39cdd;
-      --st-proposee-bg:#291f3a;
-      --st-validee:#7bc492;
-      --st-validee-bg:#17301e;
-      --st-anomalie:#e58080;
-      --st-anomalie-bg:#3a1a1a;
-
-      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-      --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
-      --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#121613;
-    --surface:#181e1a;
-    --surface-2:#202722;
-    --surface-3:#2a322b;
-    --ink:#e8ece9;
-    --ink-dim:#a3aca6;
-    --ink-faint:#707972;
-    --border:#323b34;
-    --border-strong:#454f47;
-    --accent:#e0a13c;
-    --accent-ink:#1c1305;
-    --accent-soft:#3a2c11;
-
-    --st-planifiee:#a3aca6;
-    --st-planifiee-bg:#242b26;
-    --st-detectee:#7ba7d8;
-    --st-detectee-bg:#1c2a38;
-    --st-rapprochee:#6fc4ac;
-    --st-rapprochee-bg:#16302a;
-    --st-proposee:#b39cdd;
-    --st-proposee-bg:#291f3a;
-    --st-validee:#7bc492;
-    --st-validee-bg:#17301e;
-    --st-anomalie:#e58080;
-    --st-anomalie-bg:#3a1a1a;
-
-    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239aa6a2' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-    --shadow-md: 0 1px 2px rgba(0,0,0,0.3), 0 12px 26px -12px rgba(0,0,0,0.55);
-    --shadow-lg: 0 14px 32px -10px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.35);
   }
 
   *{ box-sizing:border-box; }
@@ -183,7 +172,7 @@
   .screen{ max-width:1480px; margin:0 auto; padding:28px 24px 64px 24px; }
   .screen-title-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:4px; }
   .screen-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:30px; letter-spacing:.002em; text-wrap:balance; margin:0; }
-  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:74ch; margin-top:6px; }
+  .screen-caption{ color:var(--ink-dim); font-size:13.5px; max-width:78ch; margin-top:6px; }
 
   .controls-bar{
     display:flex; align-items:center; gap:14px; flex-wrap:wrap;
@@ -199,7 +188,7 @@
     padding:7px 10px; min-height:34px; transition:border-color .12s ease, box-shadow .12s ease;
   }
   input[type="date"]:hover{ border-color:var(--ink-faint); }
-  input[type="date"]:focus-visible, button:focus-visible{
+  input[type="date"]:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible{
     outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);
   }
   .segmented{ display:flex; gap:2px; padding:3px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); }
@@ -219,6 +208,14 @@
   .chip.warn .n, .chip.warn .lbl{ color:var(--st-anomalie); }
   .chip.info{ background:var(--st-proposee-bg); border-color:transparent; }
   .chip.info .n, .chip.info .lbl{ color:var(--st-proposee); }
+
+  .sim-live-badge{
+    display:inline-flex; align-items:center; gap:7px; font-size:11.5px; color:var(--ink-dim);
+    background:var(--surface-2); border:1px solid var(--border); border-radius:999px; padding:6px 12px;
+  }
+  .sim-live-dot{ width:7px; height:7px; border-radius:50%; background:var(--st-validee); flex:none; animation:sim-live-pulse 2s ease-in-out infinite; }
+  @keyframes sim-live-pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.35; } }
+  @media (prefers-reduced-motion: reduce){ .sim-live-dot{ animation:none; } }
 
   .container-code{
     display:inline-block; font-family:"IBM Plex Mono", monospace; font-size:12.5px; letter-spacing:.01em;
@@ -284,6 +281,7 @@
   .btn-primary:hover{ filter:brightness(1.06); }
   .btn-ghost{ background:transparent; border-color:var(--border-strong); color:var(--ink-dim); }
   .btn-ghost:hover{ background:var(--surface); color:var(--ink); }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; }
 
   .proof-row{ display:flex; gap:4px; margin:4px 0 0 0; flex-wrap:wrap; align-items:center; }
   .proof-badge{
@@ -296,22 +294,76 @@
   .proof-badge.mismatch{ background:var(--st-anomalie-bg); color:var(--st-anomalie); }
   .proof-badge.missing{ background:var(--surface-3); color:var(--ink-faint); border:1px dashed var(--border-strong); }
 
+  /* ---------- indicateurs de flotte ---------- */
+  .fleet-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:0 0 18px 0; }
+  .fleet-card{ display:flex; align-items:center; gap:13px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:14px 16px; }
+  .fc-icon{
+    flex:none; width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:var(--surface-2); color:var(--ink-dim);
+  }
+  .fc-icon svg{ width:21px; height:21px; }
+  .fleet-card.total .fc-icon{ background:var(--st-rapprochee-bg); color:var(--st-rapprochee); }
+  .fleet-card.used .fc-icon{ background:var(--st-validee-bg); color:var(--st-validee); }
+  .fleet-card.unused .fc-icon{ background:var(--surface-3); color:var(--ink-faint); }
+  .fleet-card .fc-n{ font-family:"IBM Plex Mono",monospace; font-size:27px; font-weight:600; line-height:1; }
+  .fleet-card .fc-lbl{ font-size:11.5px; color:var(--ink-dim); margin-top:4px; }
+  .fleet-card.used .fc-n{ color:var(--st-validee); }
+  .fleet-card.unused .fc-n{ color:var(--ink-faint); }
+  @media (max-width:700px){ .fleet-row{ grid-template-columns:1fr; } }
+
+  /* ---------- filtre véhicules / filtre anomalies ---------- */
+  .filter-bar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 18px 0; }
+  .filter-bar-label{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px; white-space:nowrap; }
+  .fchip{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.02em;
+    padding:6px 13px; border-radius:999px; border:1px solid var(--border-strong); background:var(--surface); color:var(--ink-dim);
+    cursor:pointer; transition:background .12s ease,color .12s ease,border-color .12s ease;
+  }
+  .fchip:hover{ background:var(--surface-2); }
+  .fchip.on{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-ink); }
+  .fchip .n{ font-family:"IBM Plex Mono",monospace; font-size:10.5px; opacity:.7; margin-left:4px; }
+  .fchip.anomalie-chip{ border-color:color-mix(in srgb, var(--st-anomalie) 45%, var(--border-strong)); }
+
+  .anomaly-filter-bar{ display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px 0; }
+  .achip{
+    font-family:"Barlow Condensed", sans-serif; font-weight:600; font-size:11px; letter-spacing:.02em;
+    padding:5px 10px; border-radius:7px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink-dim);
+    cursor:pointer; transition:background .12s ease,color .12s ease,border-color .12s ease;
+  }
+  .achip:hover{ border-color:var(--border-strong); }
+  .achip.on{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+  .achip .n{ opacity:.7; margin-left:3px; font-family:"IBM Plex Mono",monospace; }
+  .achip.is-zero{ opacity:.5; }
+  .reset-link{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11.5px; color:var(--accent); background:none; border:none; cursor:pointer; padding:4px 6px; }
+  .reset-link:hover{ text-decoration:underline; }
+
   /* ---------- tracking layout ---------- */
   .tracking-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start; }
   @media (max-width:980px){ .tracking-grid{ grid-template-columns:1fr; } }
   .col{ display:flex; flex-direction:column; gap:20px; min-width:0; }
 
   .panel{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); }
-  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; }
+  .panel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; padding:16px 18px 0 18px; flex-wrap:wrap; }
   .panel-title{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:15.5px; letter-spacing:.01em; margin:0; }
   .panel-sub{ font-size:11px; color:var(--ink-faint); }
   .panel-body{ padding:14px 18px 18px 18px; }
 
   /* ---------- map ---------- */
+  .map-wrap{
+    position:relative; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border);
+    background:
+      radial-gradient(600px 300px at 15% 10%, rgba(224,161,60,0.05), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 28px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 28px),
+      var(--bg);
+  }
   .map-svg{ width:100%; height:auto; display:block; }
-  .zone-rect{ fill:var(--surface-2); stroke:var(--border-strong); stroke-width:1.4; }
-  .geofence-ring{ fill:none; stroke:var(--border-strong); stroke-width:1; stroke-dasharray:3 4; opacity:.75; }
-  .route-line{ fill:none; stroke:var(--border-strong); stroke-width:1.4; stroke-dasharray:2 6; stroke-linecap:round; }
+  .zone-rect{ stroke-width:1.4; }
+  .zone-rect.zone-nord{ fill:var(--zone-nord-bg); stroke:var(--zone-nord); }
+  .zone-rect.zone-sud{ fill:var(--zone-sud-bg); stroke:var(--zone-sud); }
+  .zone-rect.zone-port{ fill:var(--zone-port-bg); stroke:var(--zone-port); stroke-dasharray:4 4; }
+  .geofence-ring{ fill:none; stroke:var(--border-strong); stroke-width:1; stroke-dasharray:3 4; opacity:.6; }
+  .route-line{ fill:none; stroke:var(--zone-port); stroke-width:1.4; stroke-dasharray:2 6; stroke-linecap:round; opacity:.55; }
   .zone-label{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:12.5px; letter-spacing:.03em; text-transform:uppercase; fill:var(--ink); }
   .zone-sub{ font-family:"IBM Plex Sans", sans-serif; font-size:9.5px; fill:var(--ink-faint); }
   .no-geofence-box{ fill:var(--st-proposee-bg); stroke:var(--st-proposee); stroke-width:1.3; stroke-dasharray:3 3; }
@@ -321,8 +373,7 @@
   .client-zone-label{ font-family:"Barlow Condensed", sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.02em; fill:var(--st-detectee); cursor:pointer; }
   .client-zone-sub{ font-family:"IBM Plex Sans", sans-serif; font-size:8.5px; fill:var(--st-detectee); opacity:.85; }
   .link-line{ fill:none; stroke:var(--st-proposee); stroke-width:1; stroke-dasharray:2 3; opacity:.8; }
-  .truck-dot{ stroke:var(--surface); stroke-width:2; cursor:pointer; }
-  .truck-hit{ fill:transparent; cursor:pointer; }
+  .truck-dot{ stroke:var(--bg); stroke-width:2; cursor:pointer; }
   .truck-dot.st-rapprochee{ fill:var(--st-rapprochee); }
   .truck-dot.st-anomalie{ fill:var(--st-anomalie); }
   .truck-dot.st-detectee{ fill:var(--st-detectee); }
@@ -333,7 +384,38 @@
   .pulse-ring{ fill:none; stroke:var(--st-anomalie); stroke-width:2; opacity:.55; transform-box:fill-box; transform-origin:center; animation:pulse-ring 2.2s ease-out infinite; pointer-events:none; }
   @keyframes pulse-ring{ 0%{ transform:scale(1); opacity:.55; } 100%{ transform:scale(2.4); opacity:0; } }
   @media (prefers-reduced-motion: reduce){ .pulse-ring{ animation:none; opacity:.35; } }
+
+  /* ---------- barre légende + zoom, AU-DESSUS de la carte (jamais en
+     recouvrement du SVG : le schéma occupe déjà tout le canevas, un
+     overlay flottant dessus finissait par cacher la zone Port) ---------- */
+  .map-toolbar{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    margin-bottom:10px; padding:9px 11px;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm);
+  }
+  .map-legend-inline{ display:flex; flex-wrap:wrap; gap:5px 16px; }
+  .mlo-group{ display:flex; align-items:center; flex-wrap:wrap; gap:5px 10px; }
+  .mlo-title{
+    font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-faint); flex:none;
+  }
+  .mlo-row{ display:inline-flex; align-items:center; gap:5px; color:var(--ink-dim); font-size:10.5px; white-space:nowrap; }
+  .mlo-dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .mlo-swatch{ width:10px; height:8px; border-radius:2px; flex:none; }
+  .map-zoom-controls{
+    flex:none; display:flex; gap:1px;
+    border:1px solid var(--border-strong); border-radius:var(--radius-sm); overflow:hidden;
+  }
+  .map-zoom-controls button{
+    width:26px; height:24px; display:flex; align-items:center; justify-content:center;
+    background:var(--surface); border:none; border-right:1px solid var(--border); color:var(--ink-dim);
+    cursor:pointer; font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1;
+  }
+  .map-zoom-controls button:last-child{ border-right:none; }
+  .map-zoom-controls button:hover{ background:var(--surface-3); color:var(--ink); }
   .map-note{ margin-top:10px; font-size:11px; color:var(--ink-faint); }
+  .vehicle-off{ opacity:.15; pointer-events:none; transition:opacity .15s ease; }
+  .veh-group.is-highlighted .truck-dot{ stroke:var(--accent); stroke-width:3; }
 
   /* ---------- détail camion (clic sur la carte) ---------- */
   .truck-detail{
@@ -349,6 +431,7 @@
 
   /* ---------- présence en géofence ---------- */
   .geofence-list{ display:flex; flex-direction:column; gap:7px; margin-top:12px; }
+  .geofence-empty{ font-size:12px; color:var(--ink-faint); font-style:italic; margin-top:12px; }
   .geofence-item{
     display:flex; flex-direction:column; gap:0; padding:0; border-radius:var(--radius-sm);
     background:var(--surface-2); border:1px solid var(--border);
@@ -367,7 +450,7 @@
   .geofence-item.has-grace .geofence-dwell{ color:var(--st-proposee); border-color:transparent; background:var(--st-proposee-bg); }
   .geofence-detail{ padding:0 11px 10px 11px; font-size:11px; color:var(--ink-dim); border-top:1px dashed var(--border-strong); margin:0 11px; padding-top:8px; }
 
-  /* ---------- missions en cours ---------- */
+  /* ---------- missions en cours / planning intégré ---------- */
   .table-scroll{ overflow-x:auto; }
   table.tracking-table{ width:100%; min-width:760px; border-collapse:separate; border-spacing:0 8px; }
   table.tracking-table thead th{
@@ -385,39 +468,48 @@
   .tt-name{ font-weight:600; }
   .tt-sub{ font-size:10.5px; color:var(--ink-faint); margin-top:1px; }
   .tt-dim{ color:var(--ink-faint); font-style:italic; }
+  .tt-link{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:11px; color:var(--accent); background:none; border:none; cursor:pointer; padding:0; }
+  .tt-link:hover{ text-decoration:underline; }
 
   /* ---------- alertes ---------- */
   .alert-group-title{
     font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.07em; text-transform:uppercase;
-    color:var(--ink-faint); margin:14px 0 2px 0;
+    color:var(--ink-faint); margin:12px 0 2px 0;
   }
   .alert-group-title:first-child{ margin-top:0; }
-  .alert-list{ display:flex; flex-direction:column; gap:9px; }
-  .alert-card{ padding:0; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-2); overflow:hidden; }
+  .alert-list{ display:flex; flex-direction:column; gap:6px; }
+  .alert-empty{ font-size:12px; color:var(--ink-faint); font-style:italic; padding:6px 2px; }
+  /* cartes compactes façon "ligne", proche de la référence visuelle :
+     badge + titre sur une ligne, véhicule/heure alignés à droite ; le
+     descriptif détaillé ne s'affiche qu'au clic (dans .alert-detail). */
+  .alert-card{ padding:0; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-2); overflow:hidden; }
   .alert-card.sev-critical{ background:var(--st-anomalie-bg); border-color:color-mix(in srgb, var(--st-anomalie) 40%, var(--border)); }
   .alert-card.sev-attn{ background:var(--st-proposee-bg); border-color:color-mix(in srgb, var(--st-proposee) 35%, var(--border)); }
   .alert-card > details{ width:100%; }
-  .alert-card > details > summary{ list-style:none; cursor:pointer; display:flex; gap:10px; padding:11px 12px; }
+  .alert-card > details > summary{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 10px; }
   .alert-card > details > summary::-webkit-details-marker{ display:none; }
   .alert-card > details > summary:hover .alert-title{ text-decoration:underline; }
   .alert-badge{
-    flex:none; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-    font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:11px; margin-top:1px;
+    flex:none; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-family:"IBM Plex Mono", monospace; font-weight:700; font-size:9.5px;
   }
   .alert-card.sev-critical .alert-badge{ background:var(--surface); color:var(--st-anomalie); }
   .alert-card.sev-attn .alert-badge{ background:var(--surface); color:var(--st-proposee); }
-  .alert-title{ font-weight:600; font-size:12.5px; margin:0 0 2px 0; }
-  .alert-desc{ font-size:11.5px; color:var(--ink-dim); margin:0; }
-  .alert-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .alert-title{ font-weight:600; font-size:12px; margin:0; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .alert-right{ flex:none; display:flex; align-items:baseline; gap:5px; font-size:10.5px; color:var(--ink-faint); }
+  .alert-right .num{ color:var(--ink-dim); font-weight:600; }
+  .alert-desc{ font-size:11.5px; color:var(--ink-dim); margin:0 0 8px 0; }
+  .alert-meta{ font-size:10.5px; color:var(--ink-faint); margin-top:0; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .alert-meta .resolve-note{ font-style:italic; }
   .alert-source-tag{
     font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:9.5px; letter-spacing:.04em; text-transform:uppercase;
     background:var(--surface); border:1px solid var(--border-strong); border-radius:5px; padding:1px 6px; color:var(--ink-dim);
   }
   .alert-detail{
-    padding:0 12px 12px 44px; font-size:11.5px; color:var(--ink-dim);
+    padding:0 12px 12px 36px; font-size:11.5px; color:var(--ink-dim);
     border-top:1px dashed var(--border-strong); margin:0 12px; padding-top:9px;
   }
+  .alert-detail .btn{ margin-top:8px; }
 
   /* ---------- données à compléter ---------- */
   .complete-note{ font-size:12px; color:var(--ink-dim); margin:0 0 12px 0; }
@@ -436,6 +528,54 @@
   .complete-chip > details.popover > summary{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
   .complete-chip .popover-panel{ max-width:none; }
 
+  /* ---------- chauffeurs ---------- */
+  .driver-list{ display:flex; flex-direction:column; gap:7px; }
+  .driver-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-2); border:1px solid var(--border); }
+  .driver-row .dr-name{ font-weight:600; font-size:12.5px; }
+  .driver-row .dr-vehicle{ font-size:10.5px; color:var(--ink-faint); margin-top:1px; }
+  .driver-row .dr-score{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-faint); font-style:italic; white-space:nowrap; text-align:right; }
+  .driver-row.is-contested{ border-left:3px solid var(--st-anomalie); }
+
+  /* ---------- historique ---------- */
+  .history-empty{ font-size:12px; color:var(--ink-faint); font-style:italic; }
+  .history-timeline{ display:flex; flex-direction:column; gap:8px; }
+  .history-entry{ font-size:11.5px; border-left:2px solid var(--border-strong); padding-left:9px; }
+  .history-entry .h-time{ font-family:"IBM Plex Mono",monospace; color:var(--ink-faint); display:block; }
+  .history-entry .h-label{ color:var(--ink); font-weight:500; }
+  .history-entry.h-alert{ border-left-color:var(--st-anomalie); }
+
+  /* ---------- planning intégré : cartes de mission compactes ---------- */
+  .out-of-scope-note{ margin-top:12px; padding:10px 12px; border-radius:var(--radius-sm); border:1px dashed var(--border-strong); font-size:11px; color:var(--ink-faint); }
+  .mission-card-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(188px,1fr)); gap:10px; }
+  .mission-card{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md);
+    padding:9px 11px; cursor:pointer; transition:box-shadow .12s ease, border-color .12s ease;
+  }
+  .mission-card:hover{ box-shadow:var(--shadow-md); border-color:var(--border-strong); }
+  .mission-card:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft); }
+  .mission-card.is-anomalie{ border-left:3px solid var(--st-anomalie); background:var(--st-anomalie-bg); }
+  .mc-top{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; }
+  .mc-heure{ font-size:11px; color:var(--ink-dim); }
+  .mc-main{ font-weight:600; font-size:13px; margin-bottom:2px; line-height:1.3; }
+  .mc-sub{ font-size:11px; color:var(--ink-dim); line-height:1.35; }
+  .mc-hint{ font-size:10px; color:var(--ink-faint); margin-top:5px; font-style:italic; }
+
+  /* ---------- modales de détail (véhicule / mission / compléter) ---------- */
+  dialog.complete-modal, dialog.detail-modal{ width:min(480px,92vw); border:1px solid var(--border-strong); border-radius:var(--radius-lg); padding:0; background:var(--surface); color:var(--ink); box-shadow:var(--shadow-lg); }
+  dialog.detail-modal{ width:min(560px,94vw); }
+  dialog.complete-modal::backdrop, dialog.detail-modal::backdrop{ background:rgba(10,14,12,.55); }
+  .cm-head{ padding:16px 18px; border-bottom:1px solid var(--border); }
+  .cm-title{ font-family:"Barlow Condensed",sans-serif; font-weight:700; font-size:16px; margin:0; }
+  .cm-sub{ font-size:11.5px; color:var(--ink-dim); margin-top:3px; }
+  .cm-body{ padding:16px 18px; display:flex; flex-direction:column; gap:12px; max-height:70vh; overflow:auto; }
+  .cm-body label{ font-family:"Barlow Condensed",sans-serif; font-weight:600; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:5px; }
+  .cm-body select, .cm-body textarea{ width:100%; font-family:"IBM Plex Sans",sans-serif; font-size:13px; color:var(--ink); background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:8px 10px; }
+  .cm-body textarea{ min-height:60px; resize:vertical; }
+  .cm-foot{ padding:12px 18px 16px 18px; display:flex; gap:8px; justify-content:flex-end; border-top:1px solid var(--border); }
+  .modal-anomaly{ margin-top:4px; padding:10px 11px; background:var(--surface-2); border-radius:var(--radius-sm); font-size:12px; }
+  .modal-anomaly ul{ margin:6px 0 0 0; padding-left:18px; }
+  .modal-anomaly li{ margin-bottom:3px; }
+
   /* ---------- legend & footnote ---------- */
   .legend{
     margin-top:20px; display:flex; align-items:flex-start; gap:24px; flex-wrap:wrap;
@@ -452,7 +592,7 @@
 
   .footnote{
     margin-top:20px; display:flex; gap:12px; padding:14px 16px; background:var(--surface-2); border-radius:var(--radius-md);
-    color:var(--ink-dim); font-size:12.5px; max-width:90ch;
+    color:var(--ink-dim); font-size:12.5px; max-width:96ch;
   }
   .footnote .fn-badge{
     flex:none; width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center;
@@ -465,7 +605,7 @@
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; } }
 </style>
 
-<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — données fictives, wireframe à valider avant tout développement.</div>
+<div class="maquette-banner"><span class="mb-tag">Maquette</span> Jalon 0 — prototype de démonstration, simulateur local d'API Trace In (données fictives, aucune connexion réelle).</div>
 
 <header class="shell-header">
   <div class="brand-row">
@@ -479,7 +619,8 @@
     <span class="jalon-tag">Jalon 0 · Maquettes</span>
   </div>
   <nav class="tabs" aria-label="Écrans du jalon 0">
-    <a class="tab done" href="planning-operations.html">Planning des opérations</a>
+    <a class="tab done" href="dashboard.html">Dashboard</a>
+    <a class="tab done" href="remorques.html">Remorques</a>
     <a class="tab done" href="file-validation.html">File de validation</a>
     <div class="tab active" aria-current="page">Live tracking</div>
     <a class="tab" href="fiche-conteneur.html">Fiche conteneur</a>
@@ -492,7 +633,7 @@
   <div class="screen-title-row">
     <div>
       <h1 class="screen-title">Live tracking</h1>
-      <p class="screen-caption">Vue temps réel de l'agent tracking et de l'exploitation : carte des zones, missions en cours avec leur statut, données encore à compléter et alertes actives. <strong>Couche 4 — une vue</strong> : cet écran ne calcule rien, il affiche ce que le traitement a déjà produit ; les actions (valider, identifier un client, résoudre une anomalie) restent dans File de validation.</p>
+      <p class="screen-caption">Simulateur local d'une future API <strong>Trace In</strong> (Proline) : la carte est le référentiel unique des véhicules de cette démonstration — tous les autres blocs (missions, géofences, alertes, filtre, historique, indicateurs de flotte, chauffeurs, planning intégré) lisent exactement les mêmes données. <strong>Couche 4 — une vue</strong> : les actions de fond (valider une mission, résoudre une anomalie) restent dans File de validation ; les compléments de démonstration ci-dessous n'agissent que sur le référentiel local simulé.</p>
     </div>
   </div>
 
@@ -519,14 +660,15 @@
       </div>
     </div>
     <div class="spacer"></div>
-    <div class="stat-chips">
-      <div class="chip"><span class="n num">11</span><span class="lbl">missions en cours</span></div>
-      <div class="chip info"><span class="n num">1</span><span class="lbl">client à identifier</span></div>
-      <div class="chip warn"><span class="n num">1</span><span class="lbl">anomalie</span></div>
-      <div class="chip"><span class="n num">13</span><span class="lbl">alertes actives</span></div>
-      <div class="chip info"><span class="n num">1</span><span class="lbl">QR code à changer</span></div>
-    </div>
+    <span class="sim-live-badge" title="Aperçu figé du simulateur local, pas un flux temps réel — l'intégration Trace In réelle arrive au jalon 6"><span class="sim-live-dot"></span>Simulateur local · aperçu 10:42</span>
+    <div class="stat-chips" id="top-stat-chips"></div>
   </div>
+
+  <!-- Indicateurs de flotte -->
+  <div class="fleet-row" id="fleet-row" aria-label="Indicateurs de flotte"></div>
+
+  <!-- Filtre véhicules -->
+  <div class="filter-bar" id="vehicle-filter-bar" role="group" aria-label="Filtre par véhicule"></div>
 
   <div class="tracking-grid">
 
@@ -536,74 +678,75 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">Carte des zones</h2>
-          <span class="panel-sub">Aperçu simulé à 10:42</span>
+          <span class="panel-sub">Aperçu simulé à 10:42 · source : simulateur Trace In (local)</span>
         </div>
         <div class="panel-body">
-          <svg class="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord, Site Sud et zone client, avec la position des camions en mission — cliquer un camion ou une zone pour son détail">
-            <!-- routes -->
-            <path class="route-line" d="M 206 150 C 320 130, 380 90, 466 68"></path>
-            <path class="route-line" d="M 206 168 C 320 195, 380 235, 466 252"></path>
+          <div class="map-toolbar">
+            <div class="map-legend-inline" aria-hidden="true">
+              <div class="mlo-group">
+                <span class="mlo-title">Véhicules</span>
+                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-proposee);"></span>Proposée</span>
+                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-rapprochee);"></span>Rapprochée</span>
+                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-validee);"></span>Validée</span>
+                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-anomalie);"></span>Anomalie</span>
+                <span class="mlo-row"><span class="mlo-dot" style="background:var(--st-detectee);"></span>Détectée</span>
+              </div>
+              <div class="mlo-group">
+                <span class="mlo-title">Zones</span>
+                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-nord-bg); border:1px solid var(--zone-nord);"></span>Site Nord</span>
+                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-sud-bg); border:1px solid var(--zone-sud);"></span>Site Sud</span>
+                <span class="mlo-row"><span class="mlo-swatch" style="background:var(--zone-port-bg); border:1px dashed var(--zone-port);"></span>Port d'Abidjan</span>
+              </div>
+            </div>
+            <div class="map-zoom-controls">
+              <button type="button" id="map-zoom-in" title="Zoom avant" aria-label="Zoom avant">+</button>
+              <button type="button" id="map-zoom-out" title="Zoom arrière" aria-label="Zoom arrière">−</button>
+              <button type="button" id="map-zoom-reset" title="Recentrer" aria-label="Recentrer">⊙</button>
+            </div>
+          </div>
+          <div class="map-wrap">
+            <svg class="map-svg" id="map-svg" viewBox="0 0 700 336" role="img" aria-label="Carte schématique des zones Port d'Abidjan, Site Nord, Site Sud et zone client, avec la position des camions en mission — cliquer un camion ou une zone pour son détail">
+              <!-- routes -->
+              <path class="route-line" d="M 206 150 C 320 130, 380 90, 466 68"></path>
+              <path class="route-line" d="M 206 168 C 320 195, 380 235, 466 252"></path>
 
-            <!-- géofences -->
-            <rect class="geofence-ring" x="12" y="84" width="204" height="156" rx="24"></rect>
-            <rect class="geofence-ring" x="458" y="8" width="234" height="124" rx="20"></rect>
-            <rect class="geofence-ring" x="458" y="188" width="234" height="124" rx="20"></rect>
+              <!-- géofences -->
+              <rect class="geofence-ring" x="12" y="84" width="204" height="156" rx="24"></rect>
+              <rect class="geofence-ring" x="458" y="8" width="234" height="124" rx="20"></rect>
+              <rect class="geofence-ring" x="458" y="188" width="234" height="124" rx="20"></rect>
 
-            <!-- zone Port -->
-            <rect class="zone-rect" x="24" y="96" width="180" height="132" rx="16"></rect>
-            <text class="zone-label" x="114" y="150" text-anchor="middle">Port d'Abidjan</text>
-            <text class="zone-sub" x="114" y="166" text-anchor="middle">guérite unique — entrée / sortie</text>
+              <!-- zone Port -->
+              <rect class="zone-rect zone-port" x="24" y="96" width="180" height="132" rx="16"></rect>
+              <text class="zone-label" x="114" y="150" text-anchor="middle">Port d'Abidjan</text>
+              <text class="zone-sub" x="114" y="166" text-anchor="middle">guérite unique — entrée / sortie</text>
 
-            <!-- zone Nord -->
-            <rect class="zone-rect" x="470" y="20" width="210" height="100" rx="16"></rect>
-            <text class="zone-label" x="575" y="38" text-anchor="middle">Site Nord</text>
-            <text class="zone-sub" x="575" y="52" text-anchor="middle">géofence connue</text>
-            <text class="truck-label" x="575" y="82" text-anchor="middle" data-map-id="truck:TR-014">TR-014 · N'Guessan</text>
-            <circle class="truck-dot st-proposee" cx="575" cy="97" r="7" data-map-id="truck:TR-014"></circle>
-            <text class="truck-dwell" x="575" y="112" text-anchor="middle" id="dwell-TR-014"></text>
+              <!-- zone Nord -->
+              <rect class="zone-rect zone-nord" x="470" y="20" width="210" height="100" rx="16"></rect>
+              <text class="zone-label" x="575" y="38" text-anchor="middle">Site Nord</text>
+              <text class="zone-sub" x="575" y="52" text-anchor="middle">géofence connue</text>
 
-            <!-- zone Sud -->
-            <rect class="zone-rect" x="470" y="200" width="210" height="100" rx="16"></rect>
-            <text class="zone-label" x="575" y="218" text-anchor="middle">Site Sud</text>
-            <text class="zone-sub" x="575" y="232" text-anchor="middle">géofence connue</text>
-            <text class="truck-label" x="518" y="258" text-anchor="middle" data-map-id="truck:TR-041">TR-041 · Bamba</text>
-            <circle class="truck-dot st-proposee" cx="518" cy="273" r="7" data-map-id="truck:TR-041"></circle>
-            <text class="truck-dwell" x="518" y="288" text-anchor="middle" id="dwell-TR-041"></text>
-            <text class="truck-label" x="632" y="258" text-anchor="middle" data-map-id="truck:TR-055">TR-055 · Diabaté</text>
-            <circle class="truck-dot st-validee" cx="632" cy="273" r="7" data-map-id="truck:TR-055"></circle>
-            <text class="truck-dwell" x="632" y="288" text-anchor="middle" id="dwell-TR-055"></text>
+              <!-- zone Sud -->
+              <rect class="zone-rect zone-sud" x="470" y="200" width="210" height="100" rx="16"></rect>
+              <text class="zone-label" x="575" y="218" text-anchor="middle">Site Sud</text>
+              <text class="zone-sub" x="575" y="232" text-anchor="middle">géofence connue</text>
 
-            <!-- zone sans géofence -->
-            <line class="link-line" x1="518" y1="280" x2="560" y2="306"></line>
-            <rect class="no-geofence-box" x="524" y="306" width="150" height="24" rx="7"></rect>
-            <text class="no-geofence-label" x="599" y="322" text-anchor="middle">« Client non identifié »</text>
+              <!-- zone sans géofence -->
+              <line class="link-line" x1="518" y1="280" x2="560" y2="306"></line>
+              <rect class="no-geofence-box" x="524" y="306" width="150" height="24" rx="7"></rect>
+              <text class="no-geofence-label" x="599" y="322" text-anchor="middle">« Client non identifié »</text>
 
-            <!-- zone Client identifiée -->
-            <rect class="client-zone-box" x="24" y="250" width="180" height="54" rx="14" data-map-id="client:CFAO"></rect>
-            <text class="client-zone-label" x="114" y="274" text-anchor="middle" data-map-id="client:CFAO">Client — CFAO Motors</text>
-            <text class="client-zone-sub" x="114" y="290" text-anchor="middle" data-map-id="client:CFAO">zone client · sans géofence guérite dédiée</text>
+              <!-- zone Client identifiée -->
+              <rect class="client-zone-box" x="24" y="250" width="180" height="54" rx="14" data-map-id="client:CFAO"></rect>
+              <text class="client-zone-label" x="114" y="274" text-anchor="middle" data-map-id="client:CFAO">Client — CFAO Motors</text>
+              <text class="client-zone-sub" x="114" y="290" text-anchor="middle" data-map-id="client:CFAO">zone client · sans géofence guérite dédiée</text>
 
-            <!-- camions en route -->
-            <circle class="truck-dot st-rapprochee" cx="300" cy="120" r="7" data-map-id="truck:TR-027"></circle>
-            <text class="truck-label" x="311" y="118" data-map-id="truck:TR-027">TR-027 · Traoré</text>
-            <text class="truck-dwell" x="311" y="131" data-map-id="truck:TR-027" id="dwell-TR-027"></text>
+              <!-- véhicules : générés depuis SIM.vehicles (référentiel unique) -->
+              <g id="trucks-layer"></g>
+            </svg>
+          </div>
+          <p class="map-note" id="map-note"></p>
 
-            <circle class="pulse-ring" cx="358" cy="222" r="7"></circle>
-            <circle class="truck-dot st-anomalie" cx="358" cy="222" r="7" data-map-id="truck:TR-021"></circle>
-            <text class="truck-label" x="369" y="220" data-map-id="truck:TR-021">TR-021 · Cissé ⚠</text>
-            <text class="truck-dwell" x="369" y="233" data-map-id="truck:TR-021" id="dwell-TR-021"></text>
-
-            <circle class="truck-dot st-detectee" cx="278" cy="197" r="7" data-map-id="truck:TR-063"></circle>
-            <text class="truck-label" x="234" y="212" data-map-id="truck:TR-063">TR-063 · non confirmé</text>
-
-            <!-- camion en mouvement sans mission ni chauffeur -->
-            <circle class="pulse-ring" cx="390" cy="300" r="7"></circle>
-            <circle class="truck-dot st-anomalie" cx="390" cy="300" r="7" data-map-id="truck:TR-058"></circle>
-            <text class="truck-label" x="337" y="298" data-map-id="truck:TR-058">TR-058 · sans mission/chauffeur</text>
-          </svg>
-          <p class="map-note">Représentation schématique des zones (Port, Nord, Sud, Client), pas une carte géolocalisée réelle — l'intégration GPS/télématique arrive avec le jalon 6. 7 des 11 missions/activités en cours sont positionnées ici à titre d'exemple ; la liste complète figure ci-dessous. Cliquer un camion, un libellé ou une zone affiche son détail.</p>
-
-          <div class="truck-detail is-empty" id="truck-detail">Cliquez sur un camion ou sur une zone de la carte pour afficher son détail (chauffeur, preuves, géofence, mission).</div>
+          <div class="truck-detail is-empty" id="truck-detail">Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le filtre ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).</div>
 
           <div class="geofence-section">
             <div class="panel-sub" style="display:flex; align-items:center; justify-content:space-between; margin-top:16px;">
@@ -631,7 +774,7 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">Missions en cours</h2>
-          <span class="panel-sub">11 missions</span>
+          <span class="panel-sub" id="missions-count"></span>
         </div>
         <div class="panel-body">
           <div class="table-scroll">
@@ -647,182 +790,19 @@
                   <th>Statut</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td class="tt-heure">06:00</td>
-                  <td><div class="tt-name">Ibrahim Traoré</div></td>
-                  <td><span class="num">TR-027</span> · <span class="num">RQ-133</span></td>
-                  <td>Transfert</td>
-                  <td>— Port → Site (plein)</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-rapprochee"><span class="dot"></span>Rapprochée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">06:30</td>
-                  <td><div class="tt-name">Aya Kouassi</div></td>
-                  <td><span class="num">TR-032</span> · <span class="num">RQ-201+202</span></td>
-                  <td>Transfert</td>
-                  <td>— Site → Port (vide)</td>
-                  <td>Sud</td>
-                  <td><span class="statut-chip st-planifiee"><span class="dot"></span>Planifiée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">07:00</td>
-                  <td>
-                    <div class="tt-name">Moussa Diabaté</div>
-                    <details class="popover">
-                      <summary class="tag-flag warn">⚠ Passage guérite manquant</summary>
-                      <div class="popover-panel">
-                        <div class="popover-title">Passage guérite manquant</div>
-                        <p class="popover-note">Entrée détectée par GPS dans la géofence Site Sud à 09:40, mais aucun passage n'a été enregistré à la guérite pour ce retour.</p>
-                        <dl class="popover-compare">
-                          <div><dt>Guérite</dt><dd>aucun passage enregistré</dd></div>
-                          <div><dt>Tag / iButton</dt><dd>cohérent</dd></div>
-                          <div><dt>GPS</dt><dd>entrée Site Sud 09:40</dd></div>
-                        </dl>
-                      </div>
-                    </details>
-                  </td>
-                  <td><span class="num">TR-055</span> · <span class="num">RQ-116</span></td>
-                  <td>Mission client</td>
-                  <td>CFAO Motors</td>
-                  <td>Sud</td>
-                  <td><span class="statut-chip st-validee"><span class="dot"></span>Validée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">07:05</td>
-                  <td>
-                    <div class="tt-name">Serge Bamba</div>
-                    <details class="popover">
-                      <summary class="tag-flag warn">⚠ Tag non remonté</summary>
-                      <div class="popover-panel">
-                        <div class="popover-title">Tag / iButton non remonté</div>
-                        <p class="popover-note">Chauffeur identifié par la guérite (Serge Bamba), mais aucune lecture iButton depuis le début du service (07:05).</p>
-                        <dl class="popover-compare">
-                          <div><dt>Guérite</dt><dd>Serge Bamba</dd></div>
-                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                          <div><dt>GPS</dt><dd>cohérent</dd></div>
-                        </dl>
-                      </div>
-                    </details>
-                  </td>
-                  <td><span class="num">TR-041</span> · <span class="num">RQ-149</span></td>
-                  <td>Livraison-Récup</td>
-                  <td class="tt-dim">« Client non identifié »</td>
-                  <td>Sud</td>
-                  <td><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">07:35</td>
-                  <td><div class="tt-name">Aya Kouassi</div><div class="tt-sub">segment 1/2 · TR-009</div></td>
-                  <td><span class="num">TR-009</span> · <span class="num">RQ-175</span></td>
-                  <td>Mission client</td>
-                  <td>Unilever CI</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">08:10</td>
-                  <td><div class="tt-name">Koffi N'Guessan</div></td>
-                  <td><span class="num">TR-014</span> · <span class="num">RQ-108</span></td>
-                  <td>Livraison-Récup</td>
-                  <td>Nestlé CI</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-proposee"><span class="dot"></span>Proposée</span></td>
-                </tr>
-                <tr class="row-anomalie">
-                  <td class="tt-heure">08:20</td>
-                  <td>
-                    <div class="tt-name">Fatou Cissé</div>
-                    <div class="tt-sub">déclarée guérite · iButton : Ibrahim Traoré</div>
-                    <details class="popover">
-                      <summary class="tag-flag critical">⚠ Preuves incohérentes</summary>
-                      <div class="popover-panel">
-                        <div class="popover-title">Preuves incohérentes</div>
-                        <p class="popover-note">La guérite et l'iButton ne désignent pas le même chauffeur pour ce camion — l'agent doit comparer les sources avant validation.</p>
-                        <dl class="popover-compare">
-                          <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
-                          <div><dt>Tag / iButton</dt><dd>Ibrahim Traoré</dd></div>
-                          <div><dt>GPS</dt><dd>cohérent avec Ibrahim Traoré</dd></div>
-                        </dl>
-                        <div class="popover-actions"><button class="btn btn-ghost" type="button">Voir les preuves</button></div>
-                      </div>
-                    </details>
-                  </td>
-                  <td><span class="num">TR-021</span> · <span class="num">RQ-162</span></td>
-                  <td>Livraison-Récup</td>
-                  <td>Groupe Sifca</td>
-                  <td>Sud</td>
-                  <td><span class="statut-chip st-anomalie"><span class="dot"></span>Anomalie</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">08:45</td>
-                  <td>
-                    <div class="tt-name tt-dim">Chauffeur non confirmé</div>
-                    <details class="popover">
-                      <summary class="tag-flag critical">⚠ GPS non remonté</summary>
-                      <div class="popover-panel">
-                        <div class="popover-title">GPS non remonté</div>
-                        <p class="popover-note">Aucune émission GPS depuis 2h12 (dernière position connue 08:30). Ni la guérite ni le tag n'ont confirmé de chauffeur pour cette activité.</p>
-                        <dl class="popover-compare">
-                          <div><dt>Guérite</dt><dd>—</dd></div>
-                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                          <div><dt>GPS</dt><dd>silencieux depuis 08:30</dd></div>
-                        </dl>
-                      </div>
-                    </details>
-                  </td>
-                  <td><span class="num">TR-063</span> · <span class="num">RQ-190</span></td>
-                  <td class="tt-dim">—</td>
-                  <td class="tt-dim">Aucune ligne planifiée ne correspond</td>
-                  <td>Sud</td>
-                  <td><span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span></td>
-                </tr>
-                <tr class="row-anomalie">
-                  <td class="tt-heure">10:30</td>
-                  <td>
-                    <div class="tt-name tt-dim">Chauffeur non identifié</div>
-                    <details class="popover">
-                      <summary class="tag-flag critical">⚠ En mouvement — sans mission ni chauffeur</summary>
-                      <div class="popover-panel">
-                        <div class="popover-title">Véhicule en mouvement sans mission ni chauffeur</div>
-                        <p class="popover-note">GPS actif : le camion se déplace (Nord) depuis 10:18. Aucune mission planifiée ne correspond et aucun chauffeur n'a été confirmé (ni guérite, ni tag).</p>
-                        <dl class="popover-compare">
-                          <div><dt>Guérite</dt><dd>—</dd></div>
-                          <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                          <div><dt>GPS</dt><dd>actif, en mouvement</dd></div>
-                        </dl>
-                      </div>
-                    </details>
-                  </td>
-                  <td><span class="num">TR-058</span> · <span class="num">RQ-—</span></td>
-                  <td class="tt-dim">—</td>
-                  <td class="tt-dim">Aucune ligne planifiée ne correspond</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-detectee"><span class="dot"></span>Détectée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">09:00</td>
-                  <td><div class="tt-name">Jean-Baptiste Yao</div></td>
-                  <td><span class="num">TR-018</span> · <span class="num">RQ-140</span></td>
-                  <td>Travaux sur site</td>
-                  <td class="tt-dim">— interne</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-planifiee"><span class="dot"></span>Planifiée</span></td>
-                </tr>
-                <tr>
-                  <td class="tt-heure">10:00</td>
-                  <td><div class="tt-name">Paul Kouadio</div><div class="tt-sub">segment 2/2 · TR-009</div></td>
-                  <td><span class="num">TR-009</span> · <span class="num">RQ-175</span></td>
-                  <td>Mission client</td>
-                  <td>SIVAC</td>
-                  <td>Nord</td>
-                  <td><span class="statut-chip st-validee"><span class="dot"></span>Validée</span></td>
-                </tr>
-              </tbody>
+              <tbody id="missions-tbody"></tbody>
             </table>
           </div>
         </div>
+      </section>
+
+      <!-- Historique du véhicule sélectionné -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Historique du véhicule</h2>
+          <span class="panel-sub" id="history-sub"></span>
+        </div>
+        <div class="panel-body" id="history-panel"></div>
       </section>
 
     </div>
@@ -833,241 +813,11 @@
       <section class="panel">
         <div class="panel-head">
           <h2 class="panel-title">Alertes actives</h2>
-          <span class="panel-sub">13 en cours</span>
+          <span class="panel-sub" id="alerts-count"></span>
         </div>
         <div class="panel-body">
-
-          <p class="alert-group-title">🔴 Critique</p>
-          <div class="alert-list">
-
-            <div class="alert-card sev-critical">
-              <details>
-                <summary>
-                  <span class="alert-badge">⚠</span>
-                  <div>
-                    <p class="alert-title">Camion en mouvement sans mission ni chauffeur</p>
-                    <p class="alert-desc">TR-058 — GPS actif, camion en déplacement (Nord) depuis 10:18, aucune mission planifiée ne correspond, aucun chauffeur confirmé.</p>
-                    <div class="alert-meta"><span>détectée 10:18</span><span>·</span><span class="resolve-note">se résout à l'affectation d'une mission et d'un chauffeur confirmé</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">
-                  <dl class="popover-compare">
-                    <div><dt>Guérite</dt><dd>—</dd></div>
-                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                    <div><dt>GPS</dt><dd>actif, en mouvement</dd></div>
-                  </dl>
-                  Cas à examiner en priorité : aucune preuve d'identité, camion non stationnaire.
-                </div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-critical">
-              <details>
-                <summary>
-                  <span class="alert-badge">⚠</span>
-                  <div>
-                    <p class="alert-title">Preuves incohérentes <span class="alert-source-tag">Guérite ≠ Tag</span></p>
-                    <p class="alert-desc">TR-021 — Tag/iButton (Ibrahim Traoré) ≠ déclaration guérite (Fatou Cissé).</p>
-                    <div class="alert-meta"><span>détectée 08:16</span><span>·</span><span class="resolve-note">se résout à la résolution de l'anomalie en File de validation</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">
-                  <dl class="popover-compare">
-                    <div><dt>Guérite</dt><dd>Fatou Cissé</dd></div>
-                    <div><dt>Tag / iButton</dt><dd>Ibrahim Traoré</dd></div>
-                    <div><dt>GPS</dt><dd>cohérent avec Ibrahim Traoré</dd></div>
-                  </dl>
-                  L'agent doit comparer les trois sources avant validation — même logique de comparaison que dans Planning et File de validation.
-                </div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">GPS non remonté <span class="alert-source-tag">Source : GPS</span></p>
-                    <p class="alert-desc">TR-063 — aucune émission depuis 2h12 (dernière position connue 08:30). Statut déclaré : en mission (Sud).</p>
-                    <div class="alert-meta"><span>seuil : > 2h</span><span>·</span><span class="resolve-note">se résout à la reprise d'émission</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">
-                  <dl class="popover-compare">
-                    <div><dt>Guérite</dt><dd>—</dd></div>
-                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                    <div><dt>GPS</dt><dd>silencieux depuis 08:30</dd></div>
-                  </dl>
-                  Camion également signalé en mouvement sans mission/chauffeur confirmé — voir le cas TR-058 ci-dessus.
-                </div>
-              </details>
-            </div>
-
-          </div>
-
-          <p class="alert-group-title">🟠 Important</p>
-          <div class="alert-list">
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Temps de travail dépassé</p>
-                    <p class="alert-desc">Ibrahim Traoré — 53h30 cumulées sur les 6 derniers jours, seuil hebdomadaire 52h dépassé de 1h30.</p>
-                    <div class="alert-meta"><span>seuil : 52h / semaine</span><span>·</span><span class="resolve-note">se résout au renouvellement de la semaine de suivi</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Cumul glissant sur 6 jours, suivi automatique — indépendant des heures du shift en cours.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Temps de conduite continue dépassé</p>
-                    <p class="alert-desc">Koffi N'Guessan (TR-014) — 2h32 de conduite continue sans pause détectée, seuil 2h15 dépassé de 17 min.</p>
-                    <div class="alert-meta"><span>seuil : 2h15</span><span>·</span><span class="resolve-note">se résout à la première pause détectée</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Conduite continue depuis 08:10 (début de mission TR-014), aucune pause détectée depuis.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Mauvaise conduite</p>
-                    <p class="alert-desc">Paul Kouadio (TR-009, segment 2/2) — freinages brusques et accélérations rapides répétés (4 événements en 20 min).</p>
-                    <div class="alert-meta"><span>seuil : à caler avec le fournisseur télématique</span><span>·</span><span class="resolve-note">se résout si non répété sur la fenêtre suivante</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Fenêtre 10:05 → 10:25, camion TR-009 en route vers SIVAC.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Survitesse</p>
-                    <p class="alert-desc">Ibrahim Traoré (TR-027) — 3 survitesses détectées sur le shift, dernière à 10:15 (92 km/h / limite 70).</p>
-                    <div class="alert-meta"><span>seuil : ≥ 3 événements</span><span>·</span><span class="resolve-note">se résout en fin de shift si non répété</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Événements à 07:48, 09:02 et 10:15. Source : GPS/télématique.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Fin anticipée</p>
-                    <p class="alert-desc">Moussa Diabaté (TR-055) — fin de service détectée à 09:40, alors que la mission prévoit une fin vers 11:15 (écart 1h35).</p>
-                    <div class="alert-meta"><span>écart : 1h35</span><span>·</span><span class="resolve-note">se résout à la confirmation par l'agent</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Retour en geofence Site Sud à 09:40 sans passage guérite associé — voir aussi « Passage guérite manquant ».</div>
-              </details>
-            </div>
-
-          </div>
-
-          <p class="alert-group-title">🟡 À surveiller</p>
-          <div class="alert-list">
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Tag non remonté <span class="alert-source-tag">Source : Tag / iButton</span></p>
-                    <p class="alert-desc">TR-041 — Serge Bamba identifié par la guérite, aucune lecture iButton depuis le début du service (07:05).</p>
-                    <div class="alert-meta"><span>seuil : depuis le début de service</span><span>·</span><span class="resolve-note">se résout à la première lecture iButton</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">
-                  <dl class="popover-compare">
-                    <div><dt>Guérite</dt><dd>Serge Bamba</dd></div>
-                    <div><dt>Tag / iButton</dt><dd>—</dd></div>
-                    <div><dt>GPS</dt><dd>cohérent</dd></div>
-                  </dl>
-                </div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Passage guérite manquant <span class="alert-source-tag">Source : Guérite</span></p>
-                    <p class="alert-desc">TR-055 — entrée détectée par GPS dans Site Sud à 09:40, aucun passage guérite enregistré pour ce retour.</p>
-                    <div class="alert-meta"><span>détectée 09:40</span><span>·</span><span class="resolve-note">se résout à la régularisation du passage guérite</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">
-                  <dl class="popover-compare">
-                    <div><dt>Guérite</dt><dd>aucun passage enregistré</dd></div>
-                    <div><dt>Tag / iButton</dt><dd>cohérent</dd></div>
-                    <div><dt>GPS</dt><dd>entrée Site Sud 09:40</dd></div>
-                  </dl>
-                  Voir aussi « Fin anticipée » ci-dessus : même retour anticipé côté Site Sud.
-                </div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Retard de début de shift</p>
-                    <p class="alert-desc">Jean-Baptiste Yao — aucune activité détectée à 9h35, au-delà de 30 min après l'heure de référence (9h Nord).</p>
-                    <div class="alert-meta"><span>seuil : > 30 min</span><span>·</span><span class="resolve-note">se résout dès la première preuve d'activité</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Référence de shift Nord : 09:00. Aucune sortie de géofence, aucun passage guérite ni émission GPS constatés à 09:35.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">Faible rotation</p>
-                    <p class="alert-desc">Aya Kouassi — 1 rotation à 10h30 pour un objectif Nord de 5, contrôle au prorata du temps écoulé.</p>
-                    <div class="alert-meta"><span>objectif famille × zone</span><span>·</span><span class="resolve-note">se résout au-dessus de l'objectif</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Segments TR-032 (06:30) puis TR-009 (07:35→) : une seule rotation productive comptée à ce stade du shift.</div>
-              </details>
-            </div>
-
-            <div class="alert-card sev-attn">
-              <details>
-                <summary>
-                  <span class="alert-badge">!</span>
-                  <div>
-                    <p class="alert-title">6ᵉ jour consécutif</p>
-                    <p class="alert-desc">Koffi N'Guessan — aucun jour de repos depuis 6 jours de travail.</p>
-                    <div class="alert-meta"><span>suivi automatique</span><span>·</span><span class="resolve-note">se résout au prochain jour de repos</span></div>
-                  </div>
-                </summary>
-                <div class="alert-detail">Dernier jour de repos enregistré il y a 6 jours ouvrés.</div>
-              </details>
-            </div>
-
-          </div>
-
+          <div class="anomaly-filter-bar" id="anomaly-filter-bar" role="group" aria-label="Filtre par type d'anomalie"></div>
+          <div id="alerts-container"></div>
         </div>
       </section>
 
@@ -1077,32 +827,39 @@
           <h2 class="panel-title">Données à compléter</h2>
         </div>
         <div class="panel-body">
-          <p class="complete-note">Traitées dans l'écran File de validation — cette vue affiche, elle n'édite pas.</p>
-          <div class="complete-chips">
-            <div class="complete-chip info"><span>Clients sans géofence à identifier</span><span class="n">1</span></div>
-            <div class="complete-chip"><span>Missions Proposées en attente de validation</span><span class="n">3</span></div>
-            <div class="complete-chip warn"><span>Anomalies à résoudre</span><span class="n">1</span></div>
-            <div class="complete-chip info">
-              <details class="popover">
-                <summary><span>QR codes à changer</span><span class="n">1</span></summary>
-                <div class="popover-panel">
-                  <div class="popover-title">QR code à renouveler</div>
-                  <p class="popover-note">TR-055 — QR conteneur MSCU 778812-4 signalé à changer. Information renseignée dans le formulaire guérite le 25/08 à 07:02.</p>
-                  <dl class="popover-compare">
-                    <div><dt>Camion</dt><dd>TR-055</dd></div>
-                    <div><dt>Conteneur</dt><dd>MSCU 778812-4</dd></div>
-                    <div><dt>Renseigné par</dt><dd>formulaire guérite</dd></div>
-                  </dl>
-                </div>
-              </details>
-            </div>
-          </div>
+          <p class="complete-note">Ces compléments modifient le référentiel de la simulation (démo locale uniquement) ; dans le produit final, ces actions resteraient dans File de validation.</p>
+          <div class="complete-chips" id="complete-chips"></div>
+        </div>
+      </section>
+
+      <!-- Chauffeurs -->
+      <section class="panel">
+        <div class="panel-head">
+          <h2 class="panel-title">Chauffeurs</h2>
+          <span class="panel-sub">référentiel actif</span>
+        </div>
+        <div class="panel-body">
+          <p class="complete-note">Score de notation : pondération non validée (question ouverte, cahier des charges Missions §9.3) — affiché « à définir », aucune formule inventée.</p>
+          <div class="driver-list" id="driver-list"></div>
         </div>
       </section>
 
     </div>
 
   </div>
+
+  <!-- Planning intégré -->
+  <section class="panel" style="margin-top:20px;">
+    <div class="panel-head">
+      <h2 class="panel-title">Planning des opérations — intégré</h2>
+      <span class="panel-sub" id="planning-count"></span>
+    </div>
+    <div class="panel-body">
+      <p class="complete-note">Vue compacte du planning fusionnée dans Live Tracking, sur le même référentiel véhicules (aucune liste indépendante) — cliquez une carte pour le détail complet de la mission.</p>
+      <div class="mission-card-grid" id="planning-cards"></div>
+      <div class="out-of-scope-note" id="out-of-scope-note"></div>
+    </div>
+  </section>
 
   <div class="legend">
     <div class="legend-group">
@@ -1141,10 +898,12 @@
     <div class="legend-group">
       <span class="legend-title">Les alertes suivies (seuils de départ, paramétrables)</span>
       <ul class="alert-ref-list">
-        <li><b>GPS non remonté</b> — > 2h sans émission</li>
-        <li><b>Passage guérite manquant</b> — entrée/sortie GPS sans passage guérite associé</li>
-        <li><b>Tag non remonté</b> — aucune lecture iButton depuis le début de service</li>
-        <li><b>Preuves incohérentes</b> — guérite ≠ tag ≠ GPS</li>
+        <li><b>GPS silencieux</b> — > 2h sans émission</li>
+        <li><b>Guérite sans signal</b> — entrée/sortie GPS sans passage guérite associé</li>
+        <li><b>Camion sans clé iButton</b> — aucune lecture iButton depuis le début de service</li>
+        <li><b>Temps d'attente > 20 min</b> — catégorie prévue pour le filtre ; aucun seuil chiffré n'est fourni par les documents de cadrage à ce jour</li>
+        <li><b>Arrêt non identifié</b> — catégorie prévue pour le filtre ; aucun seuil chiffré n'est fourni par les documents de cadrage à ce jour</li>
+        <li><b>Identité divergente</b> — guérite ≠ tag ≠ GPS</li>
         <li><b>Retard début de shift</b> — > 30 min après l'heure de référence</li>
         <li><b>Faible rotation</b> — sous l'objectif famille × zone, au prorata du temps écoulé</li>
         <li><b>Survitesse</b> — ≥ 3 événements sur le shift</li>
@@ -1153,7 +912,7 @@
         <li><b>Temps de conduite continue dépassé</b> — seuil réglementaire de conduite sans pause</li>
         <li><b>Temps de travail dépassé</b> — cumul hebdomadaire au-delà du seuil</li>
         <li><b>6ᵉ jour consécutif</b> — suivi automatique des jours travaillés</li>
-        <li><b>Véhicule sans mission / sans chauffeur</b> — camion en mouvement non rattaché</li>
+        <li><b>Véhicule sans mission</b> / <b>véhicule sans chauffeur</b> — camion en mouvement non rattaché</li>
       </ul>
     </div>
   </div>
@@ -1161,224 +920,672 @@
   <div class="footnote">
     <span class="fn-badge">i</span>
     <div>
-      <p><b>Notes de conception (jalon 0)</b> — Écran couche 4 : une vue, pas une couche (cahier des charges Missions/Chauffeurs/Live §7.1). Il ne recalcule rien — carte, missions, alertes et compteurs sont ceux déjà produits par le traitement. Toute action (valider une mission, identifier un client, résoudre une anomalie) reste dans File de validation ; cet écran n'écrit rien.</p>
-      <p>Toutes les alertes sont <b>auto-résolubles</b> quand leur condition cesse et restent <b>tracées</b> ; aucun seuil n'est en dur, tous sont des paramètres éditables dans l'écran Paramètres (à venir). La carte est une représentation schématique des zones — aucune géolocalisation réelle n'est branchée à ce stade.</p>
-      <p>Le temps de présence en géofence applique la <b>règle des 15 minutes</b> : une sortie de moins de 15 min ne réinitialise pas le compteur, qui continue depuis la première entrée (voir « ℹ Règle des 15 minutes » sous la carte). L'état des <b>QR codes à changer</b> est renseigné dans le formulaire guérite et simplement repris ici, en lecture seule, comme le reste de cet écran.</p>
+      <p><b>Notes de conception (jalon 0 — phase prototype de démonstration)</b> — Tous les blocs de cet écran (carte, missions, géofences, alertes, filtre véhicule, filtre anomalie, historique, indicateurs de flotte, chauffeurs, planning intégré, données à compléter) lisent désormais un <b>unique</b> objet <code>SIM</code> en JavaScript (source unique de vérité, structurée pour préfigurer un futur connecteur API Trace In). Le référentiel actif de la simulation compte <b>7 véhicules</b>, exactement ceux positionnés sur la carte : TR-014, TR-021, TR-027, TR-041, TR-055, TR-058, TR-063.</p>
+      <p><b>Convention d'identifiant</b> — l'identifiant interne actuel reste <code>TR-xxx</code> ; la convention réelle demandée (<code>Cxxx</code>) n'a pas encore de correspondance confirmée avec ces 7 véhicules et n'a donc pas été devinée. Chaque véhicule porte un champ <code>display_id</code> prêt à recevoir le code <code>Cxxx</code> réel — dès qu'il sera renseigné, tous les blocs de l'écran (carte, filtre, tableaux, alertes, chauffeurs) l'afficheront automatiquement, sans autre changement de code.</p>
+      <p><b>Véhicules hors référentiel</b> — TR-009, TR-032 et TR-018 étaient référencés dans les données sources d'origine (missions, présence en géofence, alertes) sans exister sur la carte. Leurs données ne sont pas supprimées : elles sont conservées à part (<code>SIM.outOfScope</code>) pour un futur modèle global, mais n'apparaissent plus comme véhicules actifs de ce Live Tracking tant qu'ils ne rejoignent pas le référentiel de la carte (décision du 30/08/2026).</p>
+      <p>Les compléments effectués dans « Données à compléter » modifient le référentiel <b>local et temporaire</b> de cette démonstration (état perdu au rechargement de la page) — ce n'est pas une écriture réelle ; dans le produit final, ces actions resteraient dans File de validation, conformément à la règle « couche 4 : une vue, elle n'écrit rien » (cahier des charges Missions/Chauffeurs/Live §7.1). Le temps de présence en géofence applique toujours la <b>règle des 15 minutes</b>. Aucun seuil n'est en dur ; tous restent des paramètres éditables dans l'écran Paramètres (à venir). La carte demeure une représentation schématique des zones — aucune géolocalisation réelle n'est branchée à ce stade ; le simulateur est conçu pour être remplacé, bloc de données par bloc de données, par un vrai connecteur Trace In plus tard, sans changer la façon dont les écrans consomment <code>SIM</code>.</p>
     </div>
   </div>
 </main>
 
+<dialog class="complete-modal" id="modal-complete">
+  <form method="dialog">
+    <div class="cm-head">
+      <h3 class="cm-title" id="cm-title">Compléter</h3>
+      <p class="cm-sub" id="cm-sub"></p>
+    </div>
+    <div class="cm-body" id="cm-body"></div>
+    <div class="cm-foot">
+      <button type="button" class="btn btn-ghost" id="cm-cancel">Annuler</button>
+      <button type="button" class="btn btn-primary" id="cm-confirm">Confirmer</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Clic camion sur la carte -> détail véhicule (référentiel central) -->
+<dialog class="detail-modal" id="modal-vehicle">
+  <div class="cm-head">
+    <h3 class="cm-title" id="vm-title">Véhicule</h3>
+    <p class="cm-sub">Mêmes données que la carte, le filtre véhicule et les alertes — référentiel central.</p>
+  </div>
+  <div class="cm-body" id="vm-body"></div>
+  <div class="cm-foot"><button type="button" class="btn btn-ghost" id="vm-close">Fermer</button></div>
+</dialog>
+
+<!-- Clic carte de mission dans le planning intégré -> détail mission (référentiel central) -->
+<dialog class="detail-modal" id="modal-mission">
+  <div class="cm-head">
+    <h3 class="cm-title" id="mm-title">Mission</h3>
+    <p class="cm-sub" id="mm-sub"></p>
+  </div>
+  <div class="cm-body" id="mm-body"></div>
+  <div class="cm-foot"><button type="button" class="btn btn-ghost" id="mm-close">Fermer</button></div>
+</dialog>
+
+<script src="_shared/sim-data.js"></script>
 <script>
-  (function(){
+(function(){
 
-    // ---------- horloge de référence de la maquette ----------
-    var NOW = '10:42';
+  // ============================================================
+  // Cette page ne définit plus SIM/displayId/getVehicle/etc. — tout vient
+  // de _shared/sim-data.js (chargé juste au-dessus), la source unique de
+  // vérité partagée avec l'écran Remorques. Seul l'état propre à CETTE
+  // page (le filtre sélectionné) reste local.
+  // ============================================================
 
-    function toMin(hhmm){
-      var p = hhmm.split(':');
-      return (+p[0]) * 60 + (+p[1]);
-    }
+  var STATE = { vehicle:'all', anomalyType:'all' };
 
-    // Règle des 15 minutes : une sortie de géofence de moins de `graceMin`
-    // ne réinitialise pas le compteur de présence continue.
-    function computeDwell(events, nowStr, graceMin){
-      graceMin = graceMin || 15;
-      var evs = events.map(function(e){ return { type:e.type, m:toMin(e.time) }; })
-                       .sort(function(a,b){ return a.m - b.m; });
-      var anchor = null, lastExit = null;
-      evs.forEach(function(e){
-        if (e.type === 'enter'){
-          if (anchor === null) anchor = e.m;
-          else if (lastExit !== null && (e.m - lastExit) >= graceMin) anchor = e.m;
-          lastExit = null;
-        } else if (e.type === 'exit'){
-          lastExit = e.m;
-        }
+  function visibleVehicles(){
+    if (STATE.vehicle === 'all') return SIM.vehicles;
+    var v = getVehicle(STATE.vehicle);
+    return v ? [v] : [];
+  }
+
+  // ============================================================
+  // RENDU : Indicateurs de flotte (calculés, jamais écrits en dur)
+  // ============================================================
+  function renderFleet(){
+    var total = SIM.vehicles.length;
+    var used = SIM.vehicles.filter(function(v){ return v.mission && (v.mission.type || v.mission.to); }).length;
+    var unused = total - used;
+    var el = document.getElementById('fleet-row');
+    var icTruck = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="7" width="13" height="9"></rect><path d="M14 10h4l3 3v3h-7z"></path><circle cx="6" cy="18" r="1.6"></circle><circle cx="17.5" cy="18" r="1.6"></circle></svg>';
+    var icPerson = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"></circle><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"></path></svg>';
+    var icPersonOff = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="8" r="3.4"></circle><path d="M3.5 20c0-3.9 3.1-7 7-7 1.1 0 2.1.25 3 .7"></path><line x1="16" y1="6" x2="21" y2="16"></line><line x1="21" y1="6" x2="16" y2="16"></line></svg>';
+    el.innerHTML =
+      '<div class="fleet-card total"><div class="fc-icon">' + icTruck + '</div><div><div class="fc-n num">' + total + '</div><div class="fc-lbl">Total de la flotte (référentiel simulé)</div></div></div>' +
+      '<div class="fleet-card used"><div class="fc-icon">' + icPerson + '</div><div><div class="fc-n num">' + used + '</div><div class="fc-lbl">Véhicules utilisés (avec activité ce shift)</div></div></div>' +
+      '<div class="fleet-card unused"><div class="fc-icon">' + icPersonOff + '</div><div><div class="fc-n num">' + unused + '</div><div class="fc-lbl">Véhicules non utilisés</div></div></div>';
+  }
+
+  // ============================================================
+  // RENDU : Filtre véhicules (généré depuis SIM.vehicles)
+  // ============================================================
+  function renderVehicleFilter(){
+    var el = document.getElementById('vehicle-filter-bar');
+    var html = '<span class="filter-bar-label">Filtrer par véhicule</span>';
+    html += '<button type="button" class="fchip' + (STATE.vehicle === 'all' ? ' on' : '') + '" data-vehicle-filter="all">Tous les véhicules <span class="n">' + SIM.vehicles.length + '</span></button>';
+    SIM.vehicles.forEach(function(v){
+      var isAnom = v.statut === 'anomalie';
+      html += '<button type="button" class="fchip' + (STATE.vehicle === v.id ? ' on' : '') + (isAnom ? ' anomalie-chip' : '') + '" data-vehicle-filter="' + v.id + '">' + esc(displayId(v)) + '</button>';
+    });
+    html += '<button type="button" class="reset-link" id="reset-filters">Réinitialiser les filtres</button>';
+    el.innerHTML = html;
+    el.querySelectorAll('[data-vehicle-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        STATE.vehicle = btn.getAttribute('data-vehicle-filter');
+        onFilterChange();
       });
-      var now = toMin(nowStr);
-      return { anchorMin: anchor, elapsedMin: (anchor === null ? null : now - anchor) };
-    }
+    });
+    document.getElementById('reset-filters').addEventListener('click', function(){
+      STATE.vehicle = 'all'; STATE.anomalyType = 'all';
+      onFilterChange();
+    });
+  }
 
-    function formatDwell(min){
-      if (min === null || min < 0) return '—';
-      min = Math.round(min);
-      if (min < 60) return min + ' min';
-      var h = Math.floor(min / 60), m = min % 60;
-      return h + ' h ' + (m < 10 ? '0' : '') + m;
-    }
-
-    // ---------- données fictives : présence en géofence ----------
-    var GEOFENCE_PRESENCE = [
-      { truck:'TR-021', zone:"Groupe Sifca (client)", events:[ { type:'enter', time:'10:00' } ] },
-      { truck:'TR-027', zone:'Site Nord', events:[ { type:'enter', time:'09:30' } ] },
-      { truck:'TR-009', zone:'SIVAC (client · Nord)', events:[ { type:'enter', time:'10:24' } ] },
-      { truck:'TR-014', zone:'Site Nord', events:[ { type:'enter', time:'09:44' } ] },
-      { truck:'TR-041', zone:'Site Sud', events:[
-          { type:'enter', time:'09:48' },
-          { type:'exit',  time:'09:53' },
-          { type:'enter', time:'09:58' }
-        ], graceDemo:true },
-      { truck:'TR-055', zone:'Site Sud', events:[ { type:'enter', time:'09:40' } ] }
-    ];
-
-    function renderGeofenceList(){
-      var list = document.getElementById('geofence-list');
-      if (!list) return;
-      list.innerHTML = '';
-      GEOFENCE_PRESENCE.forEach(function(g){
-        var d = computeDwell(g.events, NOW, 15);
-        var det = document.createElement('details');
-        det.className = 'geofence-item' + (g.graceDemo ? ' has-grace' : '');
-        var timelineHtml = g.events.map(function(e){
-          return '<div class="popover-timeline-item' + (e.type === 'exit' ? ' is-exit' : '') + '"><b>' + e.time + '</b> — ' + (e.type === 'enter' ? 'entrée' : 'sortie') + '</div>';
-        }).join('');
-        var graceNote = g.graceDemo
-          ? '<p class="popover-note">La sortie de 09:53 à 09:58 dure moins de 15 minutes : elle ne réinitialise pas le compteur, qui continue depuis la première entrée (09:48) — règle des 15 minutes.</p>'
-          : '';
-        det.innerHTML =
-          '<summary>' +
-            '<div><div class="geofence-truck">' + g.truck + '</div><div class="geofence-zone">' + g.zone + '</div></div>' +
-            '<span class="geofence-dwell">Entrée il y a ' + formatDwell(d.elapsedMin) + '</span>' +
-          '</summary>' +
-          '<div class="geofence-detail">' +
-            '<div class="popover-timeline">' + timelineHtml + '</div>' +
-            graceNote +
-            'Première entrée retenue : <b class="num">' + minToClock(d.anchorMin) + '</b> · référence ' + NOW +
-          '</div>';
-        list.appendChild(det);
+  // ============================================================
+  // RENDU : Filtre anomalies (types fixes du cadrage, comptes réels)
+  // ============================================================
+  function renderAnomalyFilter(){
+    var el = document.getElementById('anomaly-filter-bar');
+    var html = '<button type="button" class="achip' + (STATE.anomalyType === 'all' ? ' on' : '') + '" data-anomaly-filter="all">Tous les types <span class="n">' + SIM.alerts.length + '</span></button>';
+    SIM.alertTypes.forEach(function(t){
+      var n = alertCountForType(t.key);
+      html += '<button type="button" class="achip' + (STATE.anomalyType === t.key ? ' on' : '') + (n === 0 ? ' is-zero' : '') + '" data-anomaly-filter="' + t.key + '">' + esc(t.label) + ' <span class="n">' + n + '</span></button>';
+    });
+    el.innerHTML = html;
+    el.querySelectorAll('[data-anomaly-filter]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        STATE.anomalyType = btn.getAttribute('data-anomaly-filter');
+        renderAnomalyFilter();
+        renderAlerts();
       });
+    });
+  }
 
-      // reprise des temps de présence directement à côté des camions positionnés sur la carte
-      GEOFENCE_PRESENCE.forEach(function(g){
-        var el = document.getElementById('dwell-' + g.truck);
-        if (!el) return;
-        var d = computeDwell(g.events, NOW, 15);
-        el.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
-      });
-    }
-
-    function minToClock(min){
-      if (min === null) return '—';
-      var h = Math.floor(min / 60) % 24, m = min % 60;
-      return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
-    }
-
-    // ---------- exemple pédagogique : règle des 15 minutes (patron) ----------
-    function renderRuleDemo(){
-      var el = document.getElementById('rule-demo-result');
-      if (!el) return;
-      var d = computeDwell([
-        { type:'enter', time:'10:00' },
-        { type:'exit',  time:'10:05' },
-        { type:'enter', time:'10:10' }
-      ], '10:30', 15);
-      el.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
-    }
-
-    // ---------- détail camion / zone (clic sur la carte) ----------
-    var TRUCK_INFO = {
-      'TR-014': { driver:"Koffi N'Guessan", statut:'st-proposee', statutLabel:'Proposée',
-        mission:'Livraison-Récup · Nestlé CI · Nord',
-        sources:{ guerite:'ok', tag:'ok', gps:'ok' },
-        geofence:{ zone:'Site Nord', events:[ { type:'enter', time:'09:44' } ] },
-        note:'Temps de conduite continue dépassé (2h32, seuil 2h15) — voir les alertes.' },
-      'TR-041': { driver:'Serge Bamba', statut:'st-proposee', statutLabel:'Proposée',
-        mission:"Livraison-Récup · « Client non identifié » · Sud",
-        sources:{ guerite:'ok', tag:'missing', gps:'ok' },
-        geofence:{ zone:'Site Sud', events:[ { type:'enter', time:'09:48' }, { type:'exit', time:'09:53' }, { type:'enter', time:'09:58' } ] },
-        note:'Tag iButton non remonté depuis le début du service (07:05). Courte sortie 09:53→09:58 sans effet sur le compteur (règle des 15 min).' },
-      'TR-055': { driver:'Moussa Diabaté', statut:'st-validee', statutLabel:'Validée',
-        mission:'Mission client · CFAO Motors · Sud',
-        sources:{ guerite:'attn', tag:'ok', gps:'ok' },
-        geofence:{ zone:'Site Sud', events:[ { type:'enter', time:'09:40' } ] },
-        note:'Passage guérite manquant en entrée (09:40) et fin de service anticipée (prévue ≈ 11:15).' },
-      'TR-027': { driver:'Ibrahim Traoré', statut:'st-rapprochee', statutLabel:'Rapprochée',
-        mission:'Transfert · Port → Site (plein) · Nord',
-        sources:{ guerite:'ok', tag:'ok', gps:'ok' },
-        geofence:{ zone:'Site Nord', events:[ { type:'enter', time:'09:30' } ] },
-        note:'Survitesse : 3 événements sur le shift (dernier 10:15, 92 km/h / limite 70).' },
-      'TR-021': { driver:'Fatou Cissé (déclarée guérite) / Ibrahim Traoré (tag)', statut:'st-anomalie', statutLabel:'Anomalie',
-        mission:'Livraison-Récup · Groupe Sifca · Sud',
-        sources:{ guerite:'mismatch', tag:'mismatch', gps:'ok' },
-        geofence:{ zone:'Groupe Sifca (client)', events:[ { type:'enter', time:'10:00' } ] },
-        note:'⚠ Preuves incohérentes — la guérite et le tag ne désignent pas le même chauffeur.' },
-      'TR-063': { driver:'Non confirmé', statut:'st-detectee', statutLabel:'Détectée',
-        mission:'Aucune ligne planifiée ne correspond · Sud',
-        sources:{ guerite:'missing', tag:'missing', gps:'missing' },
-        geofence:null,
-        note:'GPS non remonté depuis 2h12 (dernière émission 08:30). Chauffeur non confirmé.' },
-      'TR-058': { driver:'Non identifié', statut:'st-detectee', statutLabel:'Détectée',
-        mission:'Aucune ligne planifiée ne correspond · Nord',
-        sources:{ guerite:'missing', tag:'missing', gps:'ok' },
-        geofence:null,
-        note:'⚠ Camion en mouvement (GPS actif depuis 10:18) sans mission planifiée ni chauffeur confirmé.' }
-    };
-
-    var CLIENT_INFO = {
-      'CFAO': { name:'CFAO Motors', note:"Zone client identifiée, sans géofence guérite dédiée ; la présence d'un camion y est estimée uniquement via le GPS. TR-055 y a réalisé sa mission du shift." }
-    };
-
-    function srcLabel(v){
-      return v === 'ok' ? 'cohérent' : v === 'attn' ? 'à vérifier' : v === 'mismatch' ? 'incohérent' : 'non remonté';
-    }
-    function srcClass(v){
-      return v === 'ok' ? 'ok' : v === 'attn' ? 'attn' : v === 'mismatch' ? 'mismatch' : 'missing';
-    }
-
-    function renderTruckDetail(code){
-      var info = TRUCK_INFO[code];
-      var panel = document.getElementById('truck-detail');
-      if (!panel || !info) return;
-      panel.classList.remove('is-empty');
-      var geo;
-      if (info.geofence){
-        var d = computeDwell(info.geofence.events, NOW, 15);
-        geo = info.geofence.zone + ' · entrée il y a ' + formatDwell(d.elapsedMin);
-      } else {
-        geo = 'Hors géofence connue (en transit ou non rattaché)';
+  // ============================================================
+  // RENDU : Carte — pastilles générées depuis SIM.vehicles
+  // ============================================================
+  function renderMap(){
+    var layer = document.getElementById('trucks-layer');
+    var html = '';
+    SIM.vehicles.forEach(function(v){
+      var off = (STATE.vehicle !== 'all' && STATE.vehicle !== v.id);
+      var groupClass = 'veh-group' + (off ? ' vehicle-off' : '');
+      html += '<g class="' + groupClass + '" data-vehicle-group="' + v.id + '">';
+      if (v.map.pulse){ html += '<circle class="pulse-ring" cx="' + v.map.x + '" cy="' + v.map.y + '" r="7"></circle>'; }
+      html += '<circle class="truck-dot st-' + v.statut + '" cx="' + v.map.x + '" cy="' + v.map.y + '" r="7" data-map-id="truck:' + v.id + '"></circle>';
+      html += '<text class="truck-label" x="' + v.map.labelX + '" y="' + v.map.labelY + '"' + (v.map.anchor === 'middle' ? ' text-anchor="middle"' : '') + ' data-map-id="truck:' + v.id + '">' + esc(displayId(v)) + ' · ' + esc(v.map.shortLabel) + '</text>';
+      if (v.map.dwellX !== null && v.map.dwellX !== undefined){
+        html += '<text class="truck-dwell" x="' + v.map.dwellX + '" y="' + v.map.dwellY + '"' + (v.map.anchor === 'middle' ? ' text-anchor="middle"' : '') + ' id="dwell-' + v.id + '"></text>';
       }
-      panel.innerHTML =
-        '<div class="td-head"><span class="td-title">' + code + '</span>' +
-          '<span class="statut-chip ' + info.statut + '"><span class="dot"></span>' + info.statutLabel + '</span></div>' +
-        '<div class="td-grid">' +
-          '<div class="td-row"><dt>Chauffeur</dt><dd>' + info.driver + '</dd></div>' +
-          '<div class="td-row"><dt>Mission</dt><dd>' + info.mission + '</dd></div>' +
-          '<div class="td-row"><dt>Géofence</dt><dd>' + geo + '</dd></div>' +
-          '<div class="td-row"><dt>Preuves</dt><dd><span class="proof-row">' +
-            '<span class="proof-badge ' + srcClass(info.sources.guerite) + '" title="Guérite : ' + srcLabel(info.sources.guerite) + '">G</span>' +
-            '<span class="proof-badge ' + srcClass(info.sources.tag) + '" title="Tag / iButton : ' + srcLabel(info.sources.tag) + '">TAG</span>' +
-            '<span class="proof-badge ' + srcClass(info.sources.gps) + '" title="GPS : ' + srcLabel(info.sources.gps) + '">GPS</span>' +
-          '</span></dd></div>' +
-        '</div>' +
-        '<p class="popover-note" style="margin-top:8px; margin-bottom:0;">' + info.note + '</p>';
-    }
+      html += '</g>';
+    });
+    layer.innerHTML = html;
 
-    function renderClientDetail(id){
-      var info = CLIENT_INFO[id];
-      var panel = document.getElementById('truck-detail');
-      if (!panel || !info) return;
-      panel.classList.remove('is-empty');
-      panel.innerHTML =
-        '<div class="td-head"><span class="td-title">Client — ' + info.name + '</span>' +
-          '<span class="tag-flag info">zone client</span></div>' +
-        '<p class="popover-note" style="margin-bottom:0;">' + info.note + '</p>';
-    }
+    var note = document.getElementById('map-note');
+    note.textContent = 'Représentation schématique des zones (Port, Nord, Sud, Client), pas une carte géolocalisée réelle — l’intégration GPS/télématique arrive avec le jalon 6. Les ' + SIM.vehicles.length + ' véhicules positionnés ici sont l’intégralité du référentiel actif de la simulation : tous les blocs de cet écran (missions, géofences, alertes, historique, planning) portent exclusivement sur ces véhicules. Cliquer un camion, un libellé ou une zone affiche son détail.';
+  }
 
-    function initMapClicks(){
-      var svg = document.querySelector('.map-svg');
-      if (!svg) return;
-      svg.addEventListener('click', function(ev){
-        var el = ev.target.closest('[data-map-id]');
-        if (!el) return;
-        var parts = el.getAttribute('data-map-id').split(':');
-        if (parts[0] === 'truck') renderTruckDetail(parts[1]);
-        else if (parts[0] === 'client') renderClientDetail(parts[1]);
+  // ============================================================
+  // RENDU : Présence en géofence
+  // ============================================================
+  function renderGeofenceList(){
+    var list = document.getElementById('geofence-list');
+    var vs = visibleVehicles().filter(function(v){ return v.geofence; });
+    if (vs.length === 0){
+      list.innerHTML = '';
+      list.insertAdjacentHTML('afterend', '');
+      list.parentElement.querySelectorAll('.geofence-empty').forEach(function(n){ n.remove(); });
+      var empty = document.createElement('div');
+      empty.className = 'geofence-empty';
+      empty.textContent = 'Aucun véhicule en géofence connue pour ce filtre.';
+      list.parentElement.appendChild(empty);
+      return;
+    }
+    list.parentElement.querySelectorAll('.geofence-empty').forEach(function(n){ n.remove(); });
+    list.innerHTML = '';
+    vs.forEach(function(v){
+      var g = v.geofence;
+      var d = computeDwell(g.events, NOW, 15);
+      var det = document.createElement('details');
+      det.className = 'geofence-item' + (g.graceDemo ? ' has-grace' : '');
+      var timelineHtml = g.events.map(function(e){
+        return '<div class="popover-timeline-item' + (e.type === 'exit' ? ' is-exit' : '') + '"><b>' + e.time + '</b> — ' + (e.type === 'enter' ? 'entrée' : 'sortie') + '</div>';
+      }).join('');
+      var graceNote = g.graceDemo
+        ? '<p class="popover-note">Une sortie de courte durée ne réinitialise pas le compteur : il continue depuis la première entrée — règle des 15 minutes.</p>'
+        : '';
+      det.innerHTML =
+        '<summary>' +
+          '<div><div class="geofence-truck">' + esc(displayId(v)) + '</div><div class="geofence-zone">' + esc(g.zone) + '</div></div>' +
+          '<span class="geofence-dwell">Entrée il y a ' + formatDwell(d.elapsedMin) + '</span>' +
+        '</summary>' +
+        '<div class="geofence-detail">' +
+          '<div class="popover-timeline">' + timelineHtml + '</div>' +
+          graceNote +
+          'Première entrée retenue : <b class="num">' + minToClock(d.anchorMin) + '</b> · référence ' + NOW +
+        '</div>';
+      list.appendChild(det);
+
+      var dwellEl = document.getElementById('dwell-' + v.id);
+      if (dwellEl) dwellEl.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
+    });
+  }
+
+  // ============================================================
+  // RENDU : Missions en cours
+  // ============================================================
+  function renderMissions(){
+    var tbody = document.getElementById('missions-tbody');
+    var vs = visibleVehicles();
+    document.getElementById('missions-count').textContent = vs.length + ' mission' + (vs.length > 1 ? 's' : '');
+    tbody.innerHTML = vs.map(function(v){
+      var m = v.mission;
+      var rowClass = v.statut === 'anomalie' ? ' class="row-anomalie"' : '';
+      var clientCell = m.client ? esc(m.client) : '<span class="tt-dim">' + esc(m.to || 'Aucune ligne planifiée ne correspond') + '</span>';
+      return '<tr' + rowClass + '>' +
+        '<td class="tt-heure">' + esc(m.heure) + '</td>' +
+        '<td><div class="tt-name' + (v.driver.confirmed ? '' : ' tt-dim') + '">' + esc(v.driver.name) + '</div></td>' +
+        '<td><span class="num">' + esc(displayId(v)) + '</span> · <span class="num">' + esc(v.trailer_id || '—') + '</span></td>' +
+        '<td>' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + '</td>' +
+        '<td>' + clientCell + '</td>' +
+        '<td>' + esc(m.site) + '</td>' +
+        '<td><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></td>' +
+      '</tr>';
+    }).join('') || '<tr><td colspan="7" class="tt-dim" style="text-align:center; padding:16px;">Aucun véhicule pour ce filtre.</td></tr>';
+  }
+
+  // ============================================================
+  // RENDU : Planning intégré — cartes de mission compactes
+  // (même référentiel que la carte et « Missions en cours », aucune
+  // liste indépendante ; clic sur une carte -> modal mission)
+  // ============================================================
+  function renderPlanningCards(){
+    var container = document.getElementById('planning-cards');
+    var vs = visibleVehicles();
+    document.getElementById('planning-count').textContent = vs.length + ' mission' + (vs.length > 1 ? 's' : '');
+    container.innerHTML = vs.map(function(v){
+      var m = v.mission;
+      var dest = m.client ? esc(m.client) : esc(m.to || '—');
+      return '<div class="mission-card' + (v.statut === 'anomalie' ? ' is-anomalie' : '') + '" data-mission-vehicle="' + v.id + '" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Détail mission ' + esc(displayId(v)) + '">' +
+        '<div class="mc-top"><span class="mc-heure num">' + esc(m.heure) + '</span><span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
+        '<div class="mc-main">' + esc(displayId(v)) + ' · ' + esc(v.trailer_id || '—') + '</div>' +
+        '<div class="mc-sub">' + esc(v.driver.name) + '</div>' +
+        '<div class="mc-sub">' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + ' → ' + dest + '</div>' +
+        '<div class="mc-hint">Voir le détail</div>' +
+      '</div>';
+    }).join('') || '<p class="tt-dim" style="padding:8px 2px;">Aucun véhicule pour ce filtre.</p>';
+
+    container.querySelectorAll('[data-mission-vehicle]').forEach(function(card){
+      card.addEventListener('click', function(){ openMissionModal(card.getAttribute('data-mission-vehicle')); });
+      card.addEventListener('keydown', function(ev){
+        if (ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); openMissionModal(card.getAttribute('data-mission-vehicle')); }
       });
+    });
+
+    var noteEl = document.getElementById('out-of-scope-note');
+    noteEl.textContent = '3 véhicules hors référentiel actif (non affichés ici) : ' + SIM.outOfScope.ids.join(', ') + ' — ' + SIM.outOfScope.note;
+  }
+
+  // ============================================================
+  // RENDU : Alertes actives (filtrées par véhicule + type)
+  // ============================================================
+  function severityGroupLabel(sev){
+    return sev === 'critique' ? '🔴 Critique' : sev === 'important' ? '🟠 Important' : '🟡 À surveiller';
+  }
+  function renderAlerts(){
+    var list = alertsFor(STATE.vehicle, STATE.anomalyType);
+    document.getElementById('alerts-count').textContent = list.length + ' en cours' + (STATE.vehicle !== 'all' || STATE.anomalyType !== 'all' ? ' (filtrées)' : '');
+    var groups = { critique: [], important: [], surveiller: [] };
+    list.forEach(function(a){ groups[a.severity].push(a); });
+
+    var html = '';
+    ['critique','important','surveiller'].forEach(function(sev){
+      if (groups[sev].length === 0) return;
+      html += '<p class="alert-group-title">' + severityGroupLabel(sev) + '</p><div class="alert-list">';
+      groups[sev].forEach(function(a){
+        var v = getVehicle(a.vehicle_id);
+        var cardSev = sev === 'critique' ? 'sev-critical' : 'sev-attn';
+        var badge = sev === 'critique' ? '⚠' : '!';
+        html += '<div class="alert-card ' + cardSev + '" data-alert-id="' + a.id + '">' +
+          '<details>' +
+            '<summary>' +
+              '<span class="alert-badge">' + badge + '</span>' +
+              '<span class="alert-title">' + esc(a.title) + '</span>' +
+              '<span class="alert-right"><span class="num">' + esc(displayId(v)) + '</span>' + (a.timestamp ? ' · <span class="num">' + esc(a.timestamp) + '</span>' : '') + '</span>' +
+            '</summary>' +
+            '<div class="alert-detail">' +
+              '<p class="alert-desc">' + esc(a.description) + (a.sourceTag ? ' <span class="alert-source-tag">' + esc(a.sourceTag) + '</span>' : '') + '</p>' +
+              '<div class="alert-meta">' + (a.meta ? '<span>' + esc(a.meta) + '</span><span>·</span>' : '') + '<span class="resolve-note">' + esc(a.resolveNote) + '</span></div>' +
+              (a.detail && a.detail.compare ?
+                '<dl class="popover-compare" style="margin-top:8px;">' +
+                  '<div><dt>Guérite</dt><dd>' + esc(a.detail.compare.guerite) + '</dd></div>' +
+                  '<div><dt>Tag / iButton</dt><dd>' + esc(a.detail.compare.tag) + '</dd></div>' +
+                  '<div><dt>GPS</dt><dd>' + esc(a.detail.compare.gps) + '</dd></div>' +
+                '</dl>' : '') +
+              (a.detail && a.detail.note ? '<p style="margin:8px 0 0 0;">' + esc(a.detail.note) + '</p>' : '') +
+              '<button type="button" class="btn btn-ghost btn-goto-vehicle" data-goto-vehicle="' + a.vehicle_id + '" style="margin-top:8px;">Voir ' + esc(displayId(v)) + ' sur la carte</button>' +
+            '</div>' +
+          '</details>' +
+        '</div>';
+      });
+      html += '</div>';
+    });
+    if (list.length === 0){ html = '<p class="alert-empty">Aucune alerte active pour ce filtre.</p>'; }
+    var container = document.getElementById('alerts-container');
+    container.innerHTML = html;
+    container.querySelectorAll('.btn-goto-vehicle').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-goto-vehicle');
+        selectVehicle(id);
+      });
+    });
+  }
+
+  // ============================================================
+  // RENDU : Détail véhicule — un seul gabarit HTML partagé entre le
+  // panneau inline (#truck-detail, alimenté par le filtre) et le
+  // modal ouvert par un clic sur la carte : mêmes données, jamais un
+  // véhicule fictif. derivedPosition()/lastKnownTime() viennent de
+  // _shared/sim-data.js (même dérivation que l'écran Remorques).
+  // ============================================================
+  function vehicleDetailHTML(v){
+    var geo;
+    if (v.geofence){
+      var d = computeDwell(v.geofence.events, NOW, 15);
+      geo = esc(v.geofence.zone) + ' · entrée il y a ' + formatDwell(d.elapsedMin);
+    } else {
+      geo = 'Hors géofence connue (en transit ou non rattaché)';
     }
+    var missionLabel = v.mission.client ? (v.mission.type + ' · ' + v.mission.client + ' · ' + v.mission.site) : (v.mission.type ? v.mission.type + ' · ' + v.mission.to + ' · ' + v.mission.site : v.mission.to + ' · ' + v.mission.site);
+    var vehicleAlerts = SIM.alerts.filter(function(a){ return a.vehicle_id === v.id; });
+    var anomaliesHtml = vehicleAlerts.length
+      ? vehicleAlerts.map(function(a){ return '<span class="tag-flag ' + (a.severity === 'critique' ? 'critical' : 'warn') + '" style="margin:0 4px 4px 0;">' + esc(a.title) + '</span>'; }).join('')
+      : '<span class="tt-dim">Aucune</span>';
+    return (
+      '<div class="td-head"><span class="td-title">' + esc(displayId(v)) + '</span>' +
+        '<span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
+      '<div class="td-grid">' +
+        '<div class="td-row"><dt>Position</dt><dd>' + derivedPosition(v) + '</dd></div>' +
+        '<div class="td-row"><dt>Dernière position connue</dt><dd>' + esc(lastKnownTime(v)) + '</dd></div>' +
+        '<div class="td-row"><dt>Chauffeur</dt><dd>' + esc(v.driver.name) + '</dd></div>' +
+        '<div class="td-row"><dt>Remorque</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
+        '<div class="td-row"><dt>Mission</dt><dd>' + esc(missionLabel) + '</dd></div>' +
+        '<div class="td-row"><dt>Géofence</dt><dd>' + geo + '</dd></div>' +
+        '<div class="td-row"><dt>Vitesse</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
+        '<div class="td-row"><dt>Kilométrage aujourd\'hui</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
+        '<div class="td-row"><dt>Preuves</dt><dd><span class="proof-row">' +
+          '<span class="proof-badge ' + srcClass(v.sources.guerite) + '" title="Guérite : ' + srcLabel(v.sources.guerite) + '">G</span>' +
+          '<span class="proof-badge ' + srcClass(v.sources.tag) + '" title="Tag / iButton : ' + srcLabel(v.sources.tag) + '">TAG</span>' +
+          '<span class="proof-badge ' + srcClass(v.sources.gps) + '" title="GPS : ' + srcLabel(v.sources.gps) + '">GPS</span>' +
+        '</span></dd></div>' +
+        '<div class="td-row" style="grid-column:1 / -1;"><dt>Anomalies actives</dt><dd>' + anomaliesHtml + '</dd></div>' +
+      '</div>' +
+      '<p class="popover-note" style="margin-top:8px; margin-bottom:0;">' + esc(v.note) + '</p>'
+    );
+  }
 
+  function renderTruckDetail(id){
+    var v = getVehicle(id);
+    var panel = document.getElementById('truck-detail');
+    if (!v){ panel.classList.add('is-empty'); panel.textContent = 'Véhicule inconnu du référentiel actif.'; return; }
+    panel.classList.remove('is-empty');
+    panel.innerHTML = vehicleDetailHTML(v);
+  }
+
+  // Clic sur un camion de la carte -> modal véhicule, alimenté par le
+  // même référentiel (aucune donnée reconstruite pour l'occasion).
+  function openVehicleModal(id){
+    var v = getVehicle(id);
+    if (!v) return;
+    document.getElementById('vm-title').textContent = displayId(v) + ' — détail véhicule';
+    document.getElementById('vm-body').innerHTML = vehicleDetailHTML(v);
+    var dlg = document.getElementById('modal-vehicle');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  function renderClientDetail(id){
+    if (id !== 'CFAO') return;
+    var panel = document.getElementById('truck-detail');
+    panel.classList.remove('is-empty');
+    panel.innerHTML =
+      '<div class="td-head"><span class="td-title">Client — CFAO Motors</span><span class="tag-flag info">zone client</span></div>' +
+      '<p class="popover-note" style="margin-bottom:0;">Zone client identifiée, sans géofence guérite dédiée ; la présence d’un camion y est estimée uniquement via le GPS. TR-055 y a réalisé sa mission du shift.</p>';
+  }
+
+  // ============================================================
+  // RENDU : Détail mission — clic sur une carte du planning intégré.
+  // Mêmes champs que la mission dans SIM.vehicles ; aucune donnée
+  // inventée (conteneur, départ, etc. restent « — » si absents du
+  // référentiel).
+  // ============================================================
+  function missionDetailHTML(v){
+    var m = v.mission;
+    var proofsHtml = '<span class="proof-row">' +
+      '<span class="proof-badge ' + srcClass(v.sources.guerite) + '" title="Guérite : ' + srcLabel(v.sources.guerite) + '">G</span>' +
+      '<span class="proof-badge ' + srcClass(v.sources.tag) + '" title="Tag / iButton : ' + srcLabel(v.sources.tag) + '">TAG</span>' +
+      '<span class="proof-badge ' + srcClass(v.sources.gps) + '" title="GPS : ' + srcLabel(v.sources.gps) + '">GPS</span>' +
+    '</span>';
+    var containerHtml = v.container
+      ? esc(v.container.code) + (v.container.qrToChange ? ' <span class="tag-flag warn">QR à changer</span>' : '')
+      : '<span class="tt-dim">—</span>';
+    var vehicleAlerts = SIM.alerts.filter(function(a){ return a.vehicle_id === v.id; });
+    var hasAnomaly = v.statut === 'anomalie' || vehicleAlerts.length > 0;
+    var anomalyBody = hasAnomaly
+      ? ('<ul>' +
+          (v.statut === 'anomalie' ? '<li>' + esc(v.note) + '</li>' : '') +
+          vehicleAlerts.map(function(a){ return '<li>' + esc(a.title) + ' — ' + esc(a.description) + '</li>'; }).join('') +
+        '</ul>')
+      : '<span class="tt-dim">Aucune anomalie active pour ce véhicule.</span>';
+    return (
+      '<div class="td-head"><span class="td-title">' + esc(displayId(v)) + ' · ' + esc(m.heure) + '</span>' +
+        '<span class="statut-chip st-' + v.statut + '"><span class="dot"></span>' + esc(v.statutLabel) + '</span></div>' +
+      '<div class="td-grid">' +
+        '<div class="td-row"><dt>Camion</dt><dd>' + esc(displayId(v)) + '</dd></div>' +
+        '<div class="td-row"><dt>Chauffeur</dt><dd>' + esc(v.driver.name) + '</dd></div>' +
+        '<div class="td-row"><dt>Remorque(s)</dt><dd>' + esc(v.trailer_id || '—') + (v.trailer_type ? ' · ' + esc(v.trailer_type) : '') + '</dd></div>' +
+        '<div class="td-row"><dt>Type de mission</dt><dd>' + (m.type ? esc(m.type) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+        '<div class="td-row"><dt>Client</dt><dd>' + (m.client ? esc(m.client) : '<span class="tt-dim">' + esc(m.to || '—') + '</span>') + '</dd></div>' +
+        '<div class="td-row"><dt>Conteneur(s)</dt><dd>' + containerHtml + '</dd></div>' +
+        '<div class="td-row"><dt>Départ</dt><dd>' + (m.from ? esc(m.from) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+        '<div class="td-row"><dt>Destination</dt><dd>' + (m.to ? esc(m.to) : '<span class="tt-dim">—</span>') + '</dd></div>' +
+        '<div class="td-row"><dt>Heure planifiée départ</dt><dd>' + esc(m.heure) + ' · ' + esc(m.site) + '</dd></div>' +
+        '<div class="td-row"><dt>Heure approchée arrivée</dt><dd><span class="tt-dim">— (non suivi par ce référentiel simulé)</span></dd></div>' +
+        '<div class="td-row"><dt>Preuves</dt><dd>' + proofsHtml + '</dd></div>' +
+      '</div>' +
+      '<div class="modal-anomaly"><b>Anomalie</b><br>' + anomalyBody + '</div>'
+    );
+  }
+
+  function openMissionModal(id){
+    var v = getVehicle(id);
+    if (!v) return;
+    document.getElementById('mm-title').textContent = 'Mission — ' + displayId(v);
+    document.getElementById('mm-sub').textContent = (v.mission.type || 'Type non défini') + ' · ' + v.mission.heure;
+    document.getElementById('mm-body').innerHTML = missionDetailHTML(v);
+    var dlg = document.getElementById('modal-mission');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+
+  // ============================================================
+  // RENDU : Historique du véhicule sélectionné
+  // ============================================================
+  function renderHistory(){
+    var panel = document.getElementById('history-panel');
+    var sub = document.getElementById('history-sub');
+    if (STATE.vehicle === 'all'){
+      sub.textContent = 'sélectionnez un véhicule';
+      panel.innerHTML = '<p class="history-empty">Choisissez un véhicule (carte, filtre ou alerte) pour afficher son historique d’événements et de positions simulés.</p>';
+      return;
+    }
+    var v = getVehicle(STATE.vehicle);
+    if (!v){ panel.innerHTML = '<p class="history-empty">Véhicule inconnu du référentiel actif.</p>'; return; }
+    sub.textContent = displayId(v);
+
+    // vehicleHistory() vient de _shared/sim-data.js — même dérivation que
+    // le modal remorque de l'écran Remorques (mission + géofence + alertes).
+    var entries = vehicleHistory(v);
+
+    panel.innerHTML = '<div class="history-timeline">' + entries.map(function(e){
+      return '<div class="history-entry' + (e.alert ? ' h-alert' : '') + '"><span class="h-time num">' + esc(e.time) + '</span><span class="h-label">' + esc(e.label) + '</span></div>';
+    }).join('') + '</div>';
+  }
+
+  // ============================================================
+  // RENDU : Chauffeurs (référentiel actif, score « à définir »)
+  // ============================================================
+  function renderDrivers(){
+    var byName = {};
+    SIM.vehicles.forEach(function(v){
+      if (!v.driver.confirmed && !v.driver.contested) return; // exclut "Non confirmé" / "Non identifié" : ce ne sont pas des identités
+      var key = v.driver.contested ? 'Fatou Cissé' : v.driver.name;
+      if (!byName[key]) byName[key] = { name:key, vehicles:[], contested:!!v.driver.contested };
+      byName[key].vehicles.push(displayId(v));
+    });
+    // Ibrahim Traoré conduit TR-027 normalement ; son iButton est aussi lu sur TR-021 (anomalie en cours de résolution)
+    if (byName['Fatou Cissé'] && !byName['Ibrahim Traoré']){
+      var trV = getVehicle('TR-027');
+      if (trV) byName['Ibrahim Traoré'] = { name:'Ibrahim Traoré', vehicles:[displayId(trV)], contested:false };
+    }
+    var list = Object.keys(byName).map(function(k){ return byName[k]; });
+    var el = document.getElementById('driver-list');
+    el.innerHTML = list.map(function(d){
+      return '<div class="driver-row' + (d.contested ? ' is-contested' : '') + '">' +
+        '<div><div class="dr-name">' + esc(d.name) + (d.contested ? ' <span class="tag-flag critical">identité contestée</span>' : '') + '</div>' +
+        '<div class="dr-vehicle">' + esc(d.vehicles.join(', ')) + '</div></div>' +
+        '<div class="dr-score">Score : à définir</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // ============================================================
+  // RENDU : Données à compléter (interactif, agit sur SIM)
+  // ============================================================
+  function renderComplete(){
+    var vs = SIM.vehicles;
+    var clientsToId = vs.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }).length;
+    var proposees = vs.filter(function(v){ return v.statut === 'proposee'; }).length;
+    var anomalies = vs.filter(function(v){ return v.statut === 'anomalie'; }).length;
+    var qr = vs.filter(function(v){ return v.container && v.container.qrToChange; });
+
+    var el = document.getElementById('complete-chips');
+    var html = '';
+    html += '<div class="complete-chip' + (clientsToId > 0 ? ' info' : '') + '"><span>Clients sans géofence à identifier</span>' +
+      '<span style="display:flex; align-items:center; gap:8px;"><span class="n">' + clientsToId + '</span>' +
+      (clientsToId > 0 ? '<button type="button" class="btn btn-primary" id="btn-complete-client">Compléter</button>' : '') + '</span></div>';
+    html += '<div class="complete-chip"><span>Missions Proposées en attente de validation</span><span class="n">' + proposees + '</span></div>';
+    html += '<div class="complete-chip warn"><span>Anomalies à résoudre (File de validation)</span><span class="n">' + anomalies + '</span></div>';
+    qr.forEach(function(v){
+      html += '<div class="complete-chip info" data-qr-vehicle="' + v.id + '"><span>QR code à changer — ' + esc(displayId(v)) + ' · ' + esc(v.container.code) + '</span>' +
+        '<span style="display:flex; align-items:center; gap:8px;"><span class="n">1</span>' +
+        '<button type="button" class="btn btn-ghost btn-qr-resolve" data-qr-resolve="' + v.id + '">Marquer changé</button></span></div>';
+    });
+    el.innerHTML = html;
+
+    var btn = document.getElementById('btn-complete-client');
+    if (btn) btn.addEventListener('click', openCompleteClientModal);
+    el.querySelectorAll('.btn-qr-resolve').forEach(function(b){
+      b.addEventListener('click', function(){
+        var vid = b.getAttribute('data-qr-resolve');
+        var v = getVehicle(vid);
+        if (v && v.container) v.container.qrToChange = false;
+        renderAll(); // le référentiel a changé : toutes les vues se remettent à jour
+      });
+    });
+  }
+
+  // ---------- modale « compléter le client » (démo locale) ----------
+  function openCompleteClientModal(){
+    var v = SIM.vehicles.filter(function(vv){ return vv.mission && !vv.mission.client && vv.mission.to === "« Client non identifié »"; })[0];
+    if (!v) return;
+    document.getElementById('cm-title').textContent = 'Identifier le client — ' + displayId(v);
+    document.getElementById('cm-sub').textContent = 'Le nom affiché par défaut vient de la déclaration guérite. Cette confirmation met à jour le référentiel de la simulation.';
+    var body = document.getElementById('cm-body');
+    body.innerHTML =
+      '<div><label for="cm-client-select">Client réel</label>' +
+      '<select id="cm-client-select"><option value="" selected disabled>— à identifier —</option>' +
+      SIM.clientOptions.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('') +
+      '</select></div>' +
+      '<div><label for="cm-comment">Commentaire (démo, non persistant)</label><textarea id="cm-comment" placeholder="Ex. : client confirmé par téléphone avec le chauffeur."></textarea></div>';
+    var dlg = document.getElementById('modal-complete');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+    document.getElementById('cm-confirm').onclick = function(){
+      var sel = document.getElementById('cm-client-select');
+      if (!sel.value) { sel.focus(); return; }
+      v.mission.client = sel.value;
+      v.mission.to = sel.value;
+      v.map.shortLabel = v.map.shortLabel.split(' →')[0] + ' → ' + sel.value;
+      closeDialog(dlg);
+      renderAll(); // référentiel modifié localement : toutes les vues se remettent à jour
+    };
+  }
+  function closeDialog(dlg){ if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+  document.getElementById('cm-cancel').addEventListener('click', function(){ closeDialog(document.getElementById('modal-complete')); });
+  document.getElementById('vm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-vehicle')); });
+  document.getElementById('mm-close').addEventListener('click', function(){ closeDialog(document.getElementById('modal-mission')); });
+
+  // ============================================================
+  // RENDU : bandeau de statistiques (calculé depuis SIM)
+  // ============================================================
+  function renderTopStats(){
+    var missions = SIM.vehicles.length;
+    var clientsToId = SIM.vehicles.filter(function(v){ return v.mission && !v.mission.client && v.mission.to === "« Client non identifié »"; }).length;
+    var anomalies = SIM.vehicles.filter(function(v){ return v.statut === 'anomalie'; }).length;
+    var alertsN = SIM.alerts.length;
+    var qr = SIM.vehicles.filter(function(v){ return v.container && v.container.qrToChange; }).length;
+    var el = document.getElementById('top-stat-chips');
+    var html = '<div class="chip"><span class="n num">' + missions + '</span><span class="lbl">missions en cours</span></div>';
+    if (clientsToId > 0) html += '<div class="chip info"><span class="n num">' + clientsToId + '</span><span class="lbl">client à identifier</span></div>';
+    if (anomalies > 0) html += '<div class="chip warn"><span class="n num">' + anomalies + '</span><span class="lbl">anomalie</span></div>';
+    html += '<div class="chip"><span class="n num">' + alertsN + '</span><span class="lbl">alertes actives</span></div>';
+    if (qr > 0) html += '<div class="chip info"><span class="n num">' + qr + '</span><span class="lbl">QR code à changer</span></div>';
+    el.innerHTML = html;
+  }
+
+  // ---------- sélection d'un véhicule (carte, filtre, alerte) ----------
+  function selectVehicle(id){
+    STATE.vehicle = id;
+    onFilterChange();
+    renderTruckDetail(id);
+  }
+
+  function onFilterChange(){
+    renderVehicleFilter();
+    renderMap();
+    renderMissions();
     renderGeofenceList();
-    renderRuleDemo();
-    initMapClicks();
+    renderAlerts();
+    renderHistory();
+    renderPlanningCards();
+    if (STATE.vehicle === 'all'){
+      var td = document.getElementById('truck-detail');
+      td.classList.add('is-empty');
+      td.textContent = 'Cliquez sur un camion, une zone de la carte, ou choisissez un véhicule dans le filtre ci-dessus pour afficher son détail (chauffeur, preuves, géofence, mission).';
+    } else {
+      renderTruckDetail(STATE.vehicle);
+    }
+  }
 
-  })();
+  function renderAll(){
+    renderTopStats();
+    renderFleet();
+    renderVehicleFilter();
+    renderAnomalyFilter();
+    renderMap();
+    renderGeofenceList();
+    renderMissions();
+    renderAlerts();
+    renderHistory();
+    renderDrivers();
+    renderComplete();
+    renderPlanningCards();
+    if (STATE.vehicle !== 'all') renderTruckDetail(STATE.vehicle);
+  }
+
+  // ---------- exemple pédagogique : règle des 15 minutes ----------
+  function renderRuleDemo(){
+    var el = document.getElementById('rule-demo-result');
+    if (!el) return;
+    var d = computeDwell([ { type:'enter', time:'10:00' }, { type:'exit', time:'10:05' }, { type:'enter', time:'10:10' } ], '10:30', 15);
+    el.textContent = 'Entrée il y a ' + formatDwell(d.elapsedMin);
+  }
+
+  // ---------- clics sur la carte (délégation, y compris éléments générés) ----------
+  // Clic camion sur la carte -> sélection (filtre + panneau inline, comme
+  // avant) ET modal véhicule (nouvelle règle) : les deux lisent SIM.vehicles.
+  function initMapClicks(){
+    var svg = document.querySelector('.map-svg');
+    if (!svg) return;
+    svg.addEventListener('click', function(ev){
+      var el = ev.target.closest('[data-map-id]');
+      if (!el) return;
+      var parts = el.getAttribute('data-map-id').split(':');
+      if (parts[0] === 'truck'){ selectVehicle(parts[1]); openVehicleModal(parts[1]); }
+      else if (parts[0] === 'client') renderClientDetail(parts[1]);
+    });
+  }
+
+  // ---------- zoom décoratif de la carte (transformation de vue pure —
+  // ne change aucune donnée, aucune position réelle n'est recalculée) ----------
+  function initMapZoom(){
+    var svg = document.getElementById('map-svg');
+    if (!svg) return;
+    var BASE = { x:0, y:0, w:700, h:336 };
+    var view = { x:0, y:0, w:700, h:336 };
+    function apply(){ svg.setAttribute('viewBox', view.x + ' ' + view.y + ' ' + view.w + ' ' + view.h); }
+    function zoom(factor){
+      var newW = Math.min(BASE.w, Math.max(BASE.w * 0.45, view.w * factor));
+      var newH = newW * (BASE.h / BASE.w);
+      var cx = view.x + view.w / 2, cy = view.y + view.h / 2;
+      view = { x:cx - newW / 2, y:cy - newH / 2, w:newW, h:newH };
+      apply();
+    }
+    var zi = document.getElementById('map-zoom-in');
+    var zo = document.getElementById('map-zoom-out');
+    var zr = document.getElementById('map-zoom-reset');
+    if (zi) zi.addEventListener('click', function(){ zoom(0.85); });
+    if (zo) zo.addEventListener('click', function(){ zoom(1.18); });
+    if (zr) zr.addEventListener('click', function(){ view = { x:BASE.x, y:BASE.y, w:BASE.w, h:BASE.h }; apply(); });
+  }
+
+  // ---------- deep-link entrant (ex. depuis Remorques : ?vehicle=TR-027
+  // [&modal=mission]) — utilise l'identifiant du référentiel central,
+  // jamais un véhicule recréé pour l'occasion. ----------
+  function initDeepLink(){
+    var params = new URLSearchParams(location.search);
+    var vehicleId = params.get('vehicle');
+    if (!vehicleId || !getVehicle(vehicleId)) return;
+    selectVehicle(vehicleId);
+    if (params.get('modal') === 'mission') openMissionModal(vehicleId);
+    else openVehicleModal(vehicleId);
+  }
+
+  renderAll();
+  renderRuleDemo();
+  initMapClicks();
+  initMapZoom();
+  initDeepLink();
+
+})();
 </script>
